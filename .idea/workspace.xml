@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Others loaders pending">
+    <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="F0621 road to finish">
+      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LoadF0621.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadF0621.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoadF0710.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadF0710.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +38,7 @@
     "Python.LoadF0621.executor": "Run",
     "Python.LoadF0710.executor": "Run",
     "Python.LoadIQBF.executor": "Run",
+    "Python.test.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
@@ -73,7 +74,9 @@
       <workItem from="1713670240777" duration="608000" />
       <workItem from="1714069064964" duration="634000" />
       <workItem from="1714168575838" duration="4211000" />
-      <workItem from="1714256429164" duration="15787000" />
+      <workItem from="1714256429164" duration="18915000" />
+      <workItem from="1714339546677" duration="743000" />
+      <workItem from="1714346870593" duration="11467000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
@@ -107,7 +110,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714229726145</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="F0621 road to finish">
+      <option name="closed" value="true" />
+      <created>1714324205912</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1714324205912</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -129,11 +140,13 @@
     <MESSAGE value="to_sql ready" />
     <MESSAGE value="LoadPDT621 and vouchers" />
     <MESSAGE value="Others loaders pending" />
-    <option name="LAST_COMMIT_MESSAGE" value="Others loaders pending" />
+    <MESSAGE value="F0621 road to finish" />
+    <option name="LAST_COMMIT_MESSAGE" value="F0621 road to finish" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/pytest$test.coverage" NAME="test Coverage Results" MODIFIED="1714347435504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadF0710.coverage" NAME="LoadF0710 Coverage Results" MODIFIED="1714276982008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pytest$LoadF0621.coverage" NAME="LoadF0621 Coverage Results" MODIFIED="1714277853947" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pytest$LoadF0621.coverage" NAME="LoadF0621 Coverage Results" MODIFIED="1714365012865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadIQBF.coverage" NAME="LoadIQBF Coverage Results" MODIFIED="1713571664237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
