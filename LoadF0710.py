@@ -1,34 +1,23 @@
 import pandas as pd
 import os
 from sqlalchemy import create_engine
-import psycopg2
 import zipfile
 
-df1 = pd.DataFrame({
-    'col1': ['a', 'b', 'c'],
-    'col2': [1, 2, 3],
-    'col3': ['x', 'y', 'z']
-})
-
-df2 = pd.DataFrame({
-    'col1': ['c', 'e', 'f'],
-    'col2': [4, 5, 6],
-    'col4': ['u', 'v', 'w']
-})
-
-# Unir los dataframes
-df_unido = pd.merge(df1, df2, how='outer')
-
-print(df_unido)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
 
-dfs = [df1, df2, df3, ..., df50]  # reemplaza esto con tus dataframes
+# .assign(ruc=i[0:11])
+def load_f0710(carpeta: str):
+    set_f0710 = pd.DataFrame()
+    engine = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
+                           ':5432/warehouse')
+    for i in list(filter(lambda x: (x[12:16] == '0710'), os.listdir(carpeta))):
+        with (zipfile.ZipFile(carpeta + '/' + i, 'r') as zipf):
+            with zipf.open(i[28:36] + i[0:11] + 'pdt621_casillas.csv') as archivo_csv:
+                f0621 = pd.read_csv(archivo_csv, usecols=[6, 7], header=0).T.reset_index(drop=True)
 
-# Inicializa el dataframe final con el primer dataframe de la lista
-df_final = dfs[0]
+    return print(set_f0710)  # .to_sql('_9', engine, if_exists='append', index=False, schema='acc')
 
-# Itera sobre los dataframes restantes y únelos al dataframe final
-for df in dfs[1:]:
-    df_final = pd.merge(df_final, df, on=['col1', 'col2'], how='outer')
 
-print(df_final)
+load_f0710('C:/Users/Raknaros/Desktop/temporal/declaraciones')

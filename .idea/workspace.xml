@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="F0621 road to finish">
-      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+    <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="F0621 finished">
+      <change afterPath="$PROJECT_DIR$/ReadPDFFactura.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoadF0621.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadF0621.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LoadBancarizar.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadBancarizar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LoadF0710.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadF0710.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LoadIQBF.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadIQBF.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,9 +38,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.LoadBancarizar.executor": "Run",
     "Python.LoadF0621.executor": "Run",
     "Python.LoadF0710.executor": "Run",
     "Python.LoadIQBF.executor": "Run",
+    "Python.ReadPDFFactura.executor": "Run",
     "Python.test.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -49,12 +54,17 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+        <option value="bundled-python-sdk-09665e90c3a7-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.15026.15" />
       </set>
     </attachedChunks>
   </component>
@@ -76,7 +86,14 @@
       <workItem from="1714168575838" duration="4211000" />
       <workItem from="1714256429164" duration="18915000" />
       <workItem from="1714339546677" duration="743000" />
-      <workItem from="1714346870593" duration="11467000" />
+      <workItem from="1714346870593" duration="12331000" />
+      <workItem from="1714445746471" duration="1195000" />
+      <workItem from="1714494553399" duration="3765000" />
+      <workItem from="1714600192133" duration="1384000" />
+      <workItem from="1714706594477" duration="1239000" />
+      <workItem from="1714894837873" duration="196000" />
+      <workItem from="1714924824112" duration="81000" />
+      <workItem from="1714925003852" duration="10192000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
@@ -118,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714324205912</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="F0621 finished">
+      <option name="closed" value="true" />
+      <created>1714365638264</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1714365638265</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,12 +166,15 @@
     <MESSAGE value="LoadPDT621 and vouchers" />
     <MESSAGE value="Others loaders pending" />
     <MESSAGE value="F0621 road to finish" />
-    <option name="LAST_COMMIT_MESSAGE" value="F0621 road to finish" />
+    <MESSAGE value="F0621 finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="F0621 finished" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pytest$test.coverage" NAME="test Coverage Results" MODIFIED="1714347435504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pytest$test.coverage" NAME="test Coverage Results" MODIFIED="1714962033036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadF0710.coverage" NAME="LoadF0710 Coverage Results" MODIFIED="1714276982008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadF0621.coverage" NAME="LoadF0621 Coverage Results" MODIFIED="1714365012865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadIQBF.coverage" NAME="LoadIQBF Coverage Results" MODIFIED="1713571664237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pytest$ReadPDFFactura.coverage" NAME="ReadPDFFactura Coverage Results" MODIFIED="1714706597093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pytest$LoadBancarizar.coverage" NAME="LoadBancarizar Coverage Results" MODIFIED="1714967408876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
