@@ -13,10 +13,10 @@ def load_bancarizar(ruta: str):
     bancarizar = pd.read_excel(ruta + '/importar.xlsx', sheet_name='bancarizar', date_format='%d/%m/%Y',
                                parse_dates=[2, ]
                                , na_values=' ')
-    #bancarizar['adquiriente'] = bancarizar['adquiriente'].str.strip()  # .upper()
-    #bancarizar['proveedor'] = bancarizar['proveedor'].str.strip()  # .upper()
-    #bancarizar['documento_relacionado'] = bancarizar['documento_relacionado'].str.strip()  # .upper()
-    #bancarizar['observaciones'] = bancarizar['observaciones'].str.strip()  # .upper()
+    bancarizar['adquiriente'] = bancarizar['adquiriente'].str.strip().str.upper()
+    bancarizar['proveedor'] = bancarizar['proveedor'].str.strip().str.upper()
+    bancarizar['documento_relacionado'] = bancarizar['documento_relacionado'].str.strip().str.upper()
+    bancarizar['observaciones'] = bancarizar['observaciones'].str.strip().str.upper()
 
     return print(bancarizar.to_sql('v_bcp', engine, if_exists='append', index=False))
 
