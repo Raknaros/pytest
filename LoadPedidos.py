@@ -23,7 +23,7 @@ def load_pedidos(ruta: str):
     pedidos['punto_entrega'] = pedidos['punto_entrega'].str.strip().str.upper()
     pedidos['notas'] = pedidos['notas'].str.strip().str.upper()
     pedidos['estado'] = pedidos['estado'].str.strip().str.upper()
-
+    #observacion, si en algun campo de numero va algun espacio verificar como se parsea por el read_excel y corregir para este caso y otros
     return print(pedidos.to_sql('pedidos', engine, if_exists='append', index=False))  #
 
 
