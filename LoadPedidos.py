@@ -18,11 +18,12 @@ def load_pedidos(ruta: str):
                             parse_dates=[0, ],
                             na_values=' ', false_values=['no', 'NO', 'No'], true_values=['si', 'Si', 'SI'])
     #pedidos.astype(dtype={'c': int, 'd': np.int64, 'f': np.int32}, copy=False, errors='raise')
-    pedidos['rubro'] = pedidos['rubro'].str.strip().str.upper()
-    pedidos['contado_credito'] = pedidos['contado_credito'].str.strip().str.upper()
-    pedidos['punto_entrega'] = pedidos['punto_entrega'].str.strip().str.upper()
-    pedidos['notas'] = pedidos['notas'].str.strip().str.upper()
-    pedidos['estado'] = pedidos['estado'].str.strip().str.upper()
+
+    str_columns = ['rubro', 'contado_credito', 'punto_entrega', 'notas', 'estado']
+    for column in str_columns:
+        if pedidos[column].notna().any():
+            pedidos[column] = pedidos[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
+
     #observacion, si en algun campo de numero va algun espacio verificar como se parsea por el read_excel y corregir para este caso y otros
     return print(pedidos.to_sql('pedidos', engine, if_exists='append', index=False))  #
 
