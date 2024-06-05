@@ -25,15 +25,17 @@ def load_cotizaciones(ruta: str):
     cotizaciones['cuota3'] = cotizaciones['cuota3'].apply(lambda x: round(x, 3))
     cotizaciones['cuota4'] = cotizaciones['cuota4'].apply(lambda x: round(x, 3))
 
+    
+    #sumar peso total de los articulos por cotizacion y colocarlo en datos adicionales de guia
+    for column in str_columns:
+        if cotizaciones[column].notna().any():
+            cotizaciones[column] = cotizaciones[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
+
     facturas = cotizaciones[['pedido', 'cuo', 'alias', 'emision', ' ruc', 'moneda', 'descripcion', 'unid_medida',
                              'cantidad', 'precio_unit', 'forma_pago', 'observacion', 'vencimiento', 'cuota1',
                              'vencimiento2', 'cuota2', 'vencimiento3', 'cuota3', 'vencimiento4', 'cuota4']]
     remision_remitente = cotizaciones[['pedido', 'cuo', 'alias', 'emision', 'lugar_entrega', 'placa', 'conductor',
                                        'datos_adicionales', 'observaciones']]
-    #sumar peso total de los articulos por cotizacion y colocarlo en datos adicionales de guia
-    for column in str_columns:
-        if cotizaciones[column].notna().any():
-            cotizaciones[column] = cotizaciones[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
 
     return print(cotizaciones)  #.to_sql('pedidos', engine, if_exists='append', index=False)
 
