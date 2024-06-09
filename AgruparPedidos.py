@@ -18,7 +18,7 @@ for root, dirs, filenames in os.walk('C:\\Users\\Raknaros\\Desktop\\temporal\\pd
             pdfFiles.append(os.path.join(root, filename))
         # Appending files to root name from OS (operating system).
 #CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
-pedidos = pd.read_excel('C:/Users/Raknaros/Desktop' + '/Result_76.xlsx',
+pedidos = pd.read_excel('C:/Users/Raknaros/Desktop' + '/Result_3.xlsx',
                         dtype={'proveedor': str, 'adquiriente': str, 'factura': str},
                         na_values=' ')
 
@@ -39,7 +39,7 @@ pedidos.loc[condition, 'sliced_col'] = pedidos.loc[condition, 'sliced_col'].str.
 adquirientes = pedidos['adquiriente'].unique()
 for adquiriente in adquirientes:
     print(adquiriente)
-"""
+
 # Iterar sobre cada valor único
 for adquiriente in adquirientes:
     merger = PdfMerger()
@@ -63,7 +63,7 @@ for adquiriente in adquirientes:
     print(adquiriente)
     merger.close()
 
-"""
+
 
 
 
