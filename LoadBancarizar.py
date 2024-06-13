@@ -11,7 +11,7 @@ def load_bancarizar(ruta: str):
                            ':3306/salessystem')
 
     bancarizar = pd.read_excel(ruta + '/importar.xlsx', sheet_name='bancarizar', date_format='%d/%m/%Y',
-                               parse_dates=[2, ]
+                               parse_dates=[2, ], dtype={'observaciones': str}
                                , na_values=' ')
 
     str_columns = ['adquiriente', 'proveedor', 'documento_relacionado', 'observaciones']
