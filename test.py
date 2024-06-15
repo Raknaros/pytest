@@ -1,45 +1,59 @@
+from time import sleep
+
 import pandas as pd
+import os
 from sqlalchemy import create_engine
-import mysql.connector
 import numpy as np
 
-# Create the initial DataFrame
-data = {
-    'grupo': ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'],
-    'fecha': ['2024-05-01', '2024-05-01', '2024-04-20', '2024-05-25', '2024-03-10', '2024-07-22', '2024-04-20', '2024-04-20'],
-    'col1': [10, 15, 20, 25, 30, 35, 40, 45],
-    'col2': [1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5],
-    'col3': [100, 200, 300, 400, 500, 600, 700, 800]
-}
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
-df = pd.DataFrame(data)
 
-# Convert the 'fecha' column to datetime type
-df['fecha'] = pd.to_datetime(df['fecha'])
+def tofacturas(periodo: str):
 
-# Define custom functions
-def min_date_to_int(x):
-    return int(x.min().strftime('%Y%m%d'))
+    salessystem = create_engine(
+        'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
+        ':3306/salessystem')
 
-def multiply_and_round_down(sub_df):
-    # Replace missing values with 0 before multiplication
-    sub_df[['col1']].fillna(0, inplace=True)
-    sub_df['col2'].fillna(0, inplace=True)
+    warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
+                              ':5432/warehouse')
 
-    # Calculate the sum of element-wise products
-    total_product = (sub_df[['col1']] * sub_df['col2']).sum()
+    ventas = pd.read_sql('SELECT * FROM facturas_salessystem WHERE periodo_tributario =' + periodo, warehouse,
+                         parse_dates=['fecha'], dtype={'periodo_tributario': int, 'ruc': np.int64, 'alias': object})
 
-    # Apply the IVA multiplier and rounding
-    total_with_iva = np.floor(total_product * 1.18).astype(int)
+    # Es necesario filtrar solo los proveedores que esten dentro de la lista de proveedores de salessystem
 
-    return total_with_iva
+    # Luego obtener el alias desde el ruc para colocar el alias en proveedor y no el ruc
 
-# Group by 'grupo' and apply custom functions
-result = df.groupby('grupo').agg(
-    fecha_min=('fecha', min_date_to_int),
-    suma_multiplicacion=('grupo', multiply_and_round_down),
-    max_col3=('col3', 'max')
-).reset_index()
+    def columnas_pedidos(group):
+        uno = group['emision'].min(skipna=True) - pd.Timedelta(days=2)
+        dos = group['emision'].min().strftime('%Y%m')
+        tres = 'CREDITO' if 'CREDITO' in group['forma_pago'].values else 'CONTADO'
+        cuatro = np.floor((group['cantidad'] * group['precio_unit']).sum() * 1.18).astype(int)
+        cinco = 'ENTREGADO'
+        return pd.Series({
+            'fecha_pedido': uno,
+            'periodo': dos,
+            'contado_credito': tres,
+            'importe_total': cuatro,
+            'estado': cinco
+        })
 
-# Print the result
-print(result)
+    pedidos = ventas.groupby('ruc').apply(columnas_pedidos, include_groups=False).reset_index()
+    pedidos.rename(
+        columns={'ruc': 'adquiriente'},
+        inplace=True)
+    cantidad_pedidos = str(pedidos['adquiriente'].count())
+    # pedidos.to_sql('pedidos', salessystem, if_exists='append', index=False)
+    sleep(2)
+    pedidos = pd.read_sql('SELECT cod_pedido, adquiriente FROM pedidos ORDER BY id DESC LIMIT ' + cantidad_pedidos,
+                          salessystem,
+                          parse_dates=['fecha'])
+    pedidos.rename(columns={'adquiriente': 'ruc'}, inplace=True)
+    facturas = ventas.merge(pedidos, on='ruc', how='inner')
+
+    return print(facturas.dtypes)  # .to_sql('facturas', salessystem, if_exists='append', index=False)
+
+
+tofacturas('202405')
+
