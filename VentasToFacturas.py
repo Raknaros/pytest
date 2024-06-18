@@ -30,7 +30,7 @@ def tofacturas(periodo: str):
         uno = group['emision'].min(skipna=True) - pd.Timedelta(days=2)
         #Fecha minima convertida a formato YYYYMM
         dos = group['emision'].min().strftime('%Y%m')
-        #Identificar si alguna factura es a credito o si todo es al contado
+        #Identificar si alguna factura es a credito o si es al contado
         tres = 'CREDITO' if 'CREDITO' in group['forma_pago'].values else 'CONTADO'
         #Multiplicar cantidad por precio unitario y agregarle el IGV, redondeado a entero
         cuatro = np.floor((group['cantidad'] * group['precio_unit']).sum() * 1.18).astype(int)
@@ -78,4 +78,4 @@ def tofacturas(periodo: str):
 
 print(tofacturas('202405'))
 
-#PENDIENTE IMPLEMENTAR TRIPLE DECIMAL, RETENCION Y DETRACCION DESDE PARSER SUNAT HASTA ESTA FUNCION
+#TODO PENDIENTE IMPLEMENTAR TRIPLE DECIMAL, RETENCION Y DETRACCION DESDE PARSER SUNAT HASTA ESTA FUNCION
