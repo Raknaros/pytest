@@ -32,9 +32,10 @@ def load_cotizaciones(ruta: str):
             cotizaciones[column] = cotizaciones[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
 
     facturas = cotizaciones[['pedido', 'cuo', 'alias', 'emision', ' ruc', 'moneda', 'descripcion', 'unid_medida',
-                             'cantidad', 'precio_unit', 'forma_pago', 'observacion', 'vencimiento', 'cuota1',
+                             'cantidad', 'precio_unit', 'observacion', 'vencimiento', 'cuota1',
                              'vencimiento2', 'cuota2', 'vencimiento3', 'cuota3', 'vencimiento4', 'cuota4']]
-    remision_remitente = cotizaciones[['pedido', 'cuo', 'alias', 'emision', 'lugar_entrega', 'placa', 'conductor',
+    #AGRUPAR COLOCANDO EL PRIMER VALOR DE CADA COLUMNA Y MULTIPLICANDO PESO POR CANTIDAD SUMANDO
+    remision_remitente = cotizaciones[['pedido', 'cuo', 'alias', 'traslado', 'lugar_entrega', 'placa', 'conductor',
                                        'datos_adicionales', 'observaciones']]
 
     return print(cotizaciones)  #.to_sql('pedidos', engine, if_exists='append', index=False)

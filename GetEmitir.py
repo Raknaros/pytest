@@ -28,7 +28,7 @@ def tofacturas(proveedor: str):
         y._append(y[['sub_total', 'igv', 'total']].sum().rename((x, '', '', '', '', '', '', 'Totales')))
         for x, y in lista.groupby(level=0)
     ])
-
+    #Considerar agregar multihoja por proveedor
     return lista.to_excel('lista_emision.xlsx', sheet_name='emitir', float_format='%.3f')
 #TODO agregar parametro rango de fechas, formatear la fecha y asegurar los 3 decimales en caso de ser necesario
 
