@@ -1,3 +1,5 @@
+import math
+
 import pandas as pd
 import os
 from sqlalchemy import create_engine
@@ -39,17 +41,17 @@ def load_cotizaciones(ruta: str):
     #    ['pedido', 'cuo', 'alias', 'traslado', 'lugar_entrega', 'cantidad', 'peso_articulo', 'placa', 'conductor',
     #     'datos_adicionales', 'observaciones']]
 
-    def agg_custom(group):
-        first_values = group.iloc[0]  # Tomar el primer valor de cada columna
+    def columnas_guia(group):
+        guia = group.iloc[0]  # Tomar el primer valor de cada columna
         total_peso = (group['cantidad'] * group['peso_articulo']).sum()  # Sumar el producto de cantidad y peso
-        first_values['datos_adicionales'] = total_peso  # Actualizar el valor de 'peso' en el primer registro
-
-        return first_values
+        guia['datos_adicionales'] = 'PesoTotal: ' + str(math.ceil(total_peso))  # Actualizar el valor de 'peso' en el primer registro
+        #guia = guia
+        return guia
 
     # Agrupar por 'cuo' y aplicar la función de agregación personalizada
     remision_remitente = cotizaciones[
         ['cui', 'pedido', 'cuo', 'alias', 'traslado', 'lugar_entrega', 'cantidad', 'peso_articulo', 'placa', 'conductor',
-         'datos_adicionales', 'observaciones']].groupby('cui').apply(agg_custom)
+         'datos_adicionales', 'observaciones']].groupby('cui').apply(columnas_guia, include_groups=False).drop(['cantidad', 'peso_articulo'], axis=1)
     return print(remision_remitente)  #.to_sql('pedidos', engine, if_exists='append', index=False)
 
 
