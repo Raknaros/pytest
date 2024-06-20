@@ -16,6 +16,7 @@ def load_cotizaciones(ruta: str):
                                  parse_dates=[3, 17, 19, 21, 23, ],
                                  na_values=' ')
 
+    cotizaciones['cui'] = cotizaciones['pedido'] + cotizaciones['cuo'].astype(str)
     str_columns = ['alias', 'moneda', 'descripcion', 'unid_medida', 'lugar_entrega', 'datos_adicionales',
                    'observaciones']
 
@@ -47,8 +48,8 @@ def load_cotizaciones(ruta: str):
 
     # Agrupar por 'cuo' y aplicar la función de agregación personalizada
     remision_remitente = cotizaciones[
-        ['pedido', 'cuo', 'alias', 'traslado', 'lugar_entrega', 'cantidad', 'peso_articulo', 'placa', 'conductor',
-         'datos_adicionales', 'observaciones']].groupby('cuo').apply(agg_custom)
+        ['cui', 'pedido', 'cuo', 'alias', 'traslado', 'lugar_entrega', 'cantidad', 'peso_articulo', 'placa', 'conductor',
+         'datos_adicionales', 'observaciones']].groupby('cui').apply(agg_custom)
     return print(remision_remitente)  #.to_sql('pedidos', engine, if_exists='append', index=False)
 
 
