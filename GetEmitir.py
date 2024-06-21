@@ -14,11 +14,18 @@ def tofacturas(proveedor: str, dias: str):
         'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
         ':3306/salessystem')
 
-    facturas = pd.read_sql("SELECT * FROM lista_facturas", con=salessystem,
-                           parse_dates=['emision', 'vencimiento', 'vencimiento2', 'vencimiento3', 'vencimiento4'])
+    facturas = {}
 
-    guias = pd.read_sql("SELECT * FROM lista_guias", salessystem, index_col='cui',
-                        parse_dates=['traslado'])
+    guias = {}
+
+    lista_facturas = pd.read_sql("SELECT * FROM lista_facturas", con=salessystem,
+                                 parse_dates=['emision', 'vencimiento', 'vencimiento2', 'vencimiento3', 'vencimiento4'])
+
+    list_guias = pd.read_sql("SELECT * FROM lista_guias", salessystem, index_col='cui',
+                             parse_dates=['traslado'])
+
+    for i in lista_facturas['alias'].unique():
+        facturas[i] = lista_facturas[lista_facturas['alias'] == i]
 
     with pd.ExcelWriter('PorEmitir.xlsx', engine='xlsxwriter') as writer:
         lista = pd.pivot_table(facturas, values=["sub_total", "igv", "total", "vencimiento", "moneda"],
