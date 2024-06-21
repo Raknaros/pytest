@@ -15,11 +15,11 @@ def tofacturas(proveedor: str):
         ':3306/salessystem')
 
 
-    facturas = pd.read_sql("SELECT * FROM lista_facturas WHERE alias = '" + proveedor + "'", salessystem)
+    facturas = pd.read_sql("SELECT * FROM lista_facturas WHERE alias = '" + proveedor + "'", con= salessystem, parse_dates=['emision', 'vencimiento', 'vencimiento2', 'vencimiento3', 'vencimiento4'])
 
-    guias = pd.read_sql("SELECT * FROM lista_guias WHERE alias = '" + proveedor + "'", salessystem)
+    guias = pd.read_sql("SELECT * FROM lista_guias WHERE alias = '" + proveedor + "'", salessystem, index_col='cui', parse_dates=['traslado'])
 
-    guias.set_index("cui", inplace=True)
+    #guias.set_index("cui", inplace=True)
 
     #emitir.style.format({'cantidad': '{:.0f}', 'precio_unit': '{:.3f}'})
 
@@ -30,6 +30,7 @@ def tofacturas(proveedor: str):
                                     'moneda': 'first'})
 
     lista = lista[['sub_total', 'igv', 'total', 'vencimiento', 'moneda']]
+    lista = lista.sort_index(level='emision')
     #TODO ORDENAR POR FECHA DE EMISION (CONSIDERAR QUE ES UN INDICE)
 
     lista = pd.concat([
@@ -38,11 +39,11 @@ def tofacturas(proveedor: str):
                                                                  guias.at[x, 'datos_adicionales'], '', 'Totales')))
         for x, y in lista.groupby(level=0)
     ])
-
+    print(lista.index.names)
     #Considerar agregar multihoja por proveedor
     return lista.to_excel('lista_emision.xlsx', sheet_name='emitir', float_format='%.3f')
 
 
 #TODO agregar parametro rango de fechas, formatear la fecha y asegurar los 3 decimales en caso de ser necesario
 
-tofacturas('ELITE,JVM')
+tofacturas('ELITE')
