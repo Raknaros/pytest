@@ -14,22 +14,35 @@ def tofacturas(proveedor: str):
         'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
         ':3306/salessystem')
 
-    lista_emision = pd.read_sql("SELECT * FROM lista_emitir WHERE alias = '" + proveedor + "'", salessystem)
+
+    facturas = pd.read_sql("SELECT * FROM lista_facturas WHERE alias = '" + proveedor + "'", salessystem)
+
+    guias = pd.read_sql("SELECT * FROM lista_guias WHERE alias = '" + proveedor + "'", salessystem)
+
+    guias.set_index("cui", inplace=True)
+
     #emitir.style.format({'cantidad': '{:.0f}', 'precio_unit': '{:.3f}'})
 
-    lista = pd.pivot_table(lista_emision, values=["sub_total", "igv", "total", "vencimiento", "moneda"],
-                           index=['cui', 'guia', 'numero', 'emision', 'descripcion', 'unidad_medida', 'cantidad', 'p_unit'],
+    lista = pd.pivot_table(facturas, values=["sub_total", "igv", "total", "vencimiento", "moneda"],
+                           index=['cui', 'guia', 'numero', 'emision', 'descripcion', 'unidad_medida', 'cantidad',
+                                  'p_unit'],
                            aggfunc={'sub_total': 'sum', 'igv': 'sum', 'total': 'sum', 'vencimiento': 'first',
                                     'moneda': 'first'})
 
     lista = lista[['sub_total', 'igv', 'total', 'vencimiento', 'moneda']]
+    #TODO ORDENAR POR FECHA DE EMISION (CONSIDERAR QUE ES UN INDICE)
 
     lista = pd.concat([
-        y._append(y[['sub_total', 'igv', 'total']].sum().rename((x, '', '', '', '', '', '', 'Totales')))
+        y._append(y[['sub_total', 'igv', 'total']].sum().rename((x, guias.at[x, 'placa'], guias.at[x, 'conductor'],
+                                                                 guias.at[x, 'traslado'], guias.at[x, 'llegada'],
+                                                                 guias.at[x, 'datos_adicionales'], '', 'Totales')))
         for x, y in lista.groupby(level=0)
     ])
+
     #Considerar agregar multihoja por proveedor
     return lista.to_excel('lista_emision.xlsx', sheet_name='emitir', float_format='%.3f')
+
+
 #TODO agregar parametro rango de fechas, formatear la fecha y asegurar los 3 decimales en caso de ser necesario
 
-tofacturas('SONICSERV')
+tofacturas('ELITE,JVM')
