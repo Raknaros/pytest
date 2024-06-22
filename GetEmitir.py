@@ -49,7 +49,7 @@ def tofacturas(proveedores: str, dias: int):
                 break
             current_lista = pd.pivot_table(lista_proveedor,
                                            values=["sub_total", "igv", "total", "vencimiento", "moneda"],
-                                           index=['cui', 'guia', 'numero', 'emision', 'descripcion', 'unidad_medida',
+                                           index=['cui', 'guia', 'numero', 'ruc', 'emision', 'descripcion', 'unidad_medida',
                                                   'cantidad', 'p_unit'],
                                            aggfunc={'sub_total': 'sum', 'igv': 'sum', 'total': 'sum',
                                                     'vencimiento': 'first',
@@ -60,7 +60,7 @@ def tofacturas(proveedores: str, dias: int):
                 y._append(
                     y[['sub_total', 'igv', 'total']].sum().rename(
                         (x, list_guias.at[x, 'placa'], list_guias.at[x, 'conductor'],
-                         '', list_guias.at[x, 'llegada'],
+                         '', '', list_guias.at[x, 'llegada'],
                          list_guias.at[x, 'datos_adicionales'], '', 'Totales')))
                 for x, y in current_lista.groupby(level=0)
             ])
@@ -74,9 +74,11 @@ def tofacturas(proveedores: str, dias: int):
             current_worksheet.set_column(0, 0, 13)
             current_worksheet.set_column(1, 1, 11)
             current_worksheet.set_column(2, 2, 10)
-            current_worksheet.set_column(3, 3, 10)
-            current_worksheet.set_column(4, 4, 65)
-            current_worksheet.set_column(11, 11, 10)
+            current_worksheet.set_column(3, 3, 12)
+            current_worksheet.set_column(4, 4, 11)
+            current_worksheet.set_column(5, 5, 45)
+            current_worksheet.set_column(6, 6, 5)
+            current_worksheet.set_column(12, 12, 10)
 
 
 tofacturas('ELITE,ESPINO,SILVER,INVSONIC,SONICSERV', 2)
