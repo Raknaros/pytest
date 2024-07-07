@@ -22,4 +22,4 @@ def load_bancarizar(ruta: str):
     return print(bancarizar.to_sql('v_bcp', engine, if_exists='append', index=False))
 
 
-load_bancarizar('C:/Users/Giu/OneDrive/facturacion')
+load_bancarizar('D:/OneDrive/facturacion')
