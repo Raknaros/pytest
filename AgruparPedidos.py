@@ -9,15 +9,20 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 pdfFiles = []  # variable '1', '2', '3'
-
+#Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
 for root, dirs, filenames in os.walk('C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidos'):  # Root and directory pathway.
+    # Iterar por cada archivo
     for filename in filenames:
         #print(root.replace('\\', '/') + '/' + filename)
         #print(os.path.join(root, filename))
+        # Condicion si el archivo termina en .pdf osea si tiene formato pdf
         if filename.lower().endswith('.pdf'):  # for loop for all files with .pdf in the name.
+            #Agregar los archivos pdf a la lista pdfFiles
             pdfFiles.append(os.path.join(root, filename))
         # Appending files to root name from OS (operating system).
-#CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
+
+# LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
+#TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
 pedidos = pd.read_excel('C:/Users/Raknaros/Desktop' + '/Result_3.xlsx',
                         dtype={'proveedor': str, 'adquiriente': str, 'factura': str},
                         na_values=' ')
@@ -26,8 +31,9 @@ pedidos = pd.read_excel('C:/Users/Raknaros/Desktop' + '/Result_3.xlsx',
 condition = pedidos['guia'].str.startswith('EG')
 
 # Aplicar slice solo a los que cumplen la condición
+# TODO CAMBIAR EL ENCABEZADO SLICED COL A GUIA
 pedidos.loc[condition, 'sliced_col'] = pedidos.loc[condition, 'guia'].str.slice(7, -1)
-#CAMBIAR EL ENCABEZADO SLICED COL A GUIA
+
 # Quitar ceros iniciales a los valores que cumplen la condición
 pedidos.loc[condition, 'sliced_col'] = pedidos.loc[condition, 'sliced_col'].str.lstrip('0')
 
