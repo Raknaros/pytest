@@ -8,9 +8,16 @@ from pypdf import PdfReader, PdfWriter, PdfMerger
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
+warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
+                          ':5432/warehouse')
+
+salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
+                            ':3306/salessystem')
+
 pdfFiles = []  # variable '1', '2', '3'
 #Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
-for root, dirs, filenames in os.walk('C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidos'):  # Root and directory pathway.
+for root, dirs, filenames in os.walk(
+        'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosjunio'):  # Root and directory pathway.
     # Iterar por cada archivo
     for filename in filenames:
         #print(root.replace('\\', '/') + '/' + filename)
@@ -23,26 +30,29 @@ for root, dirs, filenames in os.walk('C:\\Users\\Raknaros\\Desktop\\temporal\\pd
 
 # LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
 #TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
-pedidos = pd.read_excel('C:/Users/Raknaros/Desktop' + '/Result_3.xlsx',
-                        dtype={'proveedor': str, 'adquiriente': str, 'factura': str},
-                        na_values=' ')
+lista = pd.read_sql(
+    "SELECT numero_documento AS adquiriente, ruc AS proveedor, numero_correlativo AS factura, (CASE tipo_documento_referencia WHEN 1 THEN null ELSE TRIM('|' FROM SPLIT_PART(numero_documento_referencia,'-',2))::INT END)::TEXT AS guia FROM facturas_noanuladas WHERE periodo_tributario = 202406 ORDER BY adquiriente, proveedor, factura",
+    dtype={'proveedor': str, 'adquiriente': str, 'factura': str, 'guia': str}, con=warehouse)
+
+proveedores = pd.read_sql("SELECT tipo_proveedor, numero_documento, alias FROM proveedores", con=salessystem, dtype_backend="pyarrow")
+
+lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
 
 # Condición para strings que comienzan con 'EG07'
-condition = pedidos['guia'].str.startswith('EG')
+#condition = lista['guia'].str.startswith('EG')
 
 # Aplicar slice solo a los que cumplen la condición
 # TODO CAMBIAR EL ENCABEZADO SLICED COL A GUIA
-pedidos.loc[condition, 'sliced_col'] = pedidos.loc[condition, 'guia'].str.slice(7, -1)
+#lista.loc[condition, 'sliced_col'] = lista.loc[condition, 'guia'].str.slice(7, -1)
 
 # Quitar ceros iniciales a los valores que cumplen la condición
-pedidos.loc[condition, 'sliced_col'] = pedidos.loc[condition, 'sliced_col'].str.lstrip('0')
+#lista.loc[condition, 'sliced_col'] = lista.loc[condition, 'sliced_col'].str.lstrip('0')
 
 # Para los valores que no cumplen la condición, copiar la columna original
 #pedidos.loc[~condition, 'sliced_col'] = pedidos.loc[~condition, 'guia']
 
 
-
-adquirientes = pedidos['adquiriente'].unique()
+adquirientes = lista['adquiriente'].unique()
 for adquiriente in adquirientes:
     print(adquiriente)
 
@@ -50,41 +60,39 @@ for adquiriente in adquirientes:
 for adquiriente in adquirientes:
     merger = PdfMerger()
     # Filtrar el DataFrame para obtener el sub DataFrame
-    pedido = pedidos[pedidos['adquiriente'] == adquiriente]
+    lista_filtrada_poradquiriente = lista_filtrada[lista_filtrada['adquiriente'] == adquiriente]
 
     # Crear una lista para almacenar los resultados de este sub DataFrame
     sub_list = []
 
     # Iterar sobre las filas del sub DataFrame y agregar los valores de las columnas 2 y 3 a la lista
-    for index, row in pedido.iterrows():
+    for index, row in lista_filtrada_poradquiriente.iterrows():
 
-        print('C:/Users/Raknaros/Desktop/temporal/pdfpedidos/'+'PDF-DOC-E001'+row['factura']+row['proveedor']+'.pdf')
-        merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidos/'+'PDF-DOC-E001'+row['factura']+row['proveedor']+'.pdf')
+        print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + 'PDF-DOC-E001' + row['factura'] + row[
+            'proveedor'] + '.pdf')
+        merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + 'PDF-DOC-E001' + row['factura'] + row[
+            'proveedor'] + '.pdf')
 
-        if pd.notna(row['sliced_col']):
-            print('C:/Users/Raknaros/Desktop/temporal/pdfpedidos/'+row['proveedor']+'-09-EG07-'+row['sliced_col']+'.pdf')
-            merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidos/'+row['proveedor']+'-09-EG07-'+row['sliced_col']+'.pdf')
+        if row['guia'] is not None and row['guia'] != 'None' and not pd.isna(row['guia']):
+            print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + row['proveedor'] + '-09-EG07-' + row[
+                'guia'] + '.pdf')
+            merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + row['proveedor'] + '-09-EG07-' + row[
+                'guia'] + '.pdf')
 
-    merger.write(adquiriente+".pdf")
+    merger.write("202406_" + adquiriente + ".pdf")
     print(adquiriente)
     merger.close()
 
 
-
-
-
-
-
-
-
 #print(pedidos.dtypes)
-def unir ():
-
+def unir():
     merger = PdfMerger()
     for filename in pdfFiles:
         merger.append(filename)
     merger.write("combined.pdf")
     merger.close()
+
+
 # Assigning the pdfWriter() function to pdfWriter.
 #pdfWriter = pypdf.PdfWriter()
 """
