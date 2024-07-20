@@ -81,4 +81,4 @@ def tofacturas(proveedores: str, dias: int):
             current_worksheet.set_column(12, 12, 10)
 
 
-tofacturas('SILVER,INGCACH,ESPINO,INVSONIC', 2)
+tofacturas('SILVER,CONSULCACH,ESPINO', 2)
