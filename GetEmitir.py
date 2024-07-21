@@ -26,59 +26,124 @@ def tofacturas(proveedores: str, dias: int):
         'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
         ':3306/salessystem')
 
-    facturas = {}
-
-    guias = {}
-
     lista_facturas = pd.read_sql("SELECT * FROM lista_facturas WHERE emision " + fechas, con=salessystem,
                                  parse_dates=['emision', 'vencimiento', 'vencimiento2', 'vencimiento3', 'vencimiento4'])
 
-    list_guias = pd.read_sql("SELECT * FROM lista_guias", salessystem, index_col='cui',
-                             parse_dates=['traslado'])
+    lista_guias = pd.read_sql("SELECT * FROM lista_guias", salessystem,
+                              parse_dates=['traslado'])
 
-    lista_proveedores = pd.read_sql('SELECT alias, numero_documento, usuario_sol, clave_sol FROM proveedores', salessystem)
+    lista_proveedores = pd.read_sql('SELECT alias, numero_documento, usuario_sol, clave_sol FROM proveedores',
+                                    salessystem)
 
-    lista_facturas['emision'] = lista_facturas['emision'].dt.strftime('%d/%m/%Y')
+    def formato_fecha(fecha):
+        return pd.to_datetime(fecha, format='%Y-%m-%d').strftime('%d/%m/%Y')
 
-    lista_facturas['vencimiento'] = lista_facturas['vencimiento'].dt.strftime('%d/%m/%Y')
+    def formato_float(num):
+        if pd.notna(num):
+            # Convertir el número a string para contar los decimales
+            num_str = f'{num:.10f}'  # Tomamos hasta 10 decimales para asegurarnos de capturar todos
+            num_decimales = len(num_str.split('.')[1].rstrip('0'))  # Contar los decimales significativos
+
+            # Mostrar hasta 4 decimales como máximo
+            if num_decimales > 4:
+                return f'{num:.4f}'
+            elif 0 < num_decimales <= 2:
+                return f'{num:.2f}'
+            elif 2 < num_decimales <= 4:
+                return f'{num:.{num_decimales}f}'
+            else:
+                return f'{num:.0f}'
+        else:
+            return ''
+
+    # Aplicar las funciones de formato a las columnas respectivas
+    lista_facturas['emision'] = lista_facturas['emision'].apply(formato_fecha)
+    lista_facturas['vencimiento'] = lista_facturas['vencimiento'].apply(formato_fecha)
+    lista_guias['traslado'] = lista_guias['traslado'].apply(formato_fecha)
+
+    lista_facturas[['cantidad', 'p_unit']] = lista_facturas[['cantidad', 'p_unit']].applymap(formato_float)
 
     with pd.ExcelWriter('PorEmitir.xlsx', engine='xlsxwriter') as writer:
+        workbook = writer.book
+        formato1 = workbook.add_format({'bold': True, 'font_size': 12})
+        formato2 = workbook.add_format({'italic': True, 'font_size': 10})
+        formato3 = workbook.add_format({'font_size': 10})
+        formato4 = workbook.add_format({'bold': True, 'font_size': 8})
+        formato5_totales = workbook.add_format({'bg_color': '#FFFF00', 'font_size': 10})
+        alineamiento = workbook.add_format({'align': 'right'})
+
         for proveedor in proveedores:
             lista_proveedor = lista_facturas[lista_facturas['alias'] == proveedor]
+            # LISTA DE CUI SIN DUPLICADOS BASADA EN LAS FACTURAS
+            lista_cui = lista_proveedor['cui'].drop_duplicates().tolist()
             if lista_proveedor.empty:
                 break
-            current_lista = pd.pivot_table(lista_proveedor,
-                                           values=["sub_total", "igv", "total", "vencimiento", "moneda"],
-                                           index=['cui', 'guia', 'numero', 'ruc', 'emision', 'descripcion', 'unidad_medida',
-                                                  'cantidad', 'p_unit'],
-                                           aggfunc={'sub_total': 'sum', 'igv': 'sum', 'total': 'sum',
-                                                    'vencimiento': 'first',
-                                                    'moneda': 'first'})
+            current_worksheet = workbook.add_worksheet(proveedor)
+            fila = 0
+            current_worksheet.write_row(fila, 0, lista_proveedores.loc[
+                lista_proveedores['alias'] == proveedor].values.flatten().tolist(), formato4)
+            fila += 1
+            current_worksheet.write_row(fila, 0, ['CUI', 'GUIA', 'FACTURA', 'EMISION', 'ADQUIRIENTE', 'U. MED',
+                                                  'DESCRIPCION', 'CANTIDAD', 'P. UNIT.', 'SUB-TOTAL', 'VENCIMIENTO',
+                                                  'MONEDA'], formato1)
+            fila += 1
+            for cui in lista_cui:
+                # SELECCIONAR LAS FACTURAS QUE COINCIDAN CON EL CUI SELECCIONADO RESETEANDO EL INDICE PARA QUE EMPIECE DESDE 0
+                factura = lista_facturas[lista_facturas['cui'] == cui].reset_index(drop=False)
+                # POR CADA INDICE Y FILA
+                for index, row in factura.iterrows():
+                    # SI EL INDICE ES 0 O ES LA PRIMERA LINEA DE LA FACTURA
+                    if index == 0:
+                        # COLOCAR TODOS LOS DATOS
+                        current_worksheet.write_row(fila, 0,
+                                                    (cui, row['guia'], row['numero'], row['emision'], row['ruc'],
+                                                     row['unidad_medida'], row['descripcion'], row['cantidad'],
+                                                     row['p_unit'], row['sub_total'], row['vencimiento'],
+                                                     row['moneda']), formato3)
+                        fila += 1
+                        if len(factura) == 1:
+                            current_worksheet.write_row(fila, 9, (factura['sub_total'].sum(),
+                                                                  factura['sub_total'].sum() * 0.18,
+                                                                  factura['sub_total'].sum() * 1.18), formato5_totales)
+                            fila += 1
+                            # CONSIDERAR COLOCAR CADA DETALLE DE LA GUIA CON SU ENCABEZADO EN FORMATO MAS PEQUENO
+                            current_worksheet.write_row(fila, 1,
+                                                        lista_guias[lista_guias['cui'] == cui].drop(['cui', 'alias'],
+                                                                                                    axis=1).values.flatten().tolist(),
+                                                        formato2)
+                            # +2 REEMPLAZA A LA FILA VACIA QUE SE NECESITA
+                            fila += 2
+                    # SI EL INDICE ES EL ULTIMO COLOCAR TOTALES (en la emision solo figuran cantidad, p.unit, igv total y total por item)
+                    elif index == len(factura) - 1:
+                        current_worksheet.write_row(fila, 5, (row['unidad_medida'], row['descripcion'], row['cantidad'],
+                                                              row['p_unit'], row['sub_total']), formato3)
+                        fila += 1
+                        # SUBTOTALIZAR CADA ARTICULO Y EL TOTAL DE LA FACTURA TAMBIEN CON SU ENCABEZADO PEQUENO
+                        current_worksheet.write_row(fila, 9, (factura['sub_total'].sum(),
+                                                              factura['sub_total'].sum() * 0.18,
+                                                              factura['sub_total'].sum() * 1.18), formato5_totales)
+                        fila += 1
+                        # CONSIDERAR COLOCAR CADA DETALLE DE LA GUIA CON SU ENCABEZADO EN FORMATO MAS PEQUENO
+                        current_worksheet.write_row(fila, 1,
+                                                    lista_guias[lista_guias['cui'] == cui].drop(['cui', 'alias'],
+                                                                                                axis=1).values.flatten().tolist(),
+                                                    formato2)
+                        # +2 REEMPLAZA A LA FILA VACIA QUE SE NECESITA
+                        fila += 2
+                    else:
+                        current_worksheet.write_row(fila, 5, (row['unidad_medida'], row['descripcion'], row['cantidad'],
+                                                              row['p_unit'], row['sub_total']), formato3)
+                        fila += 1
+            current_worksheet.set_column(0, 0, 12)  # COLUMNA CUI
+            current_worksheet.set_column(1, 1, 10)  # COLUMNA GUIA
+            current_worksheet.set_column(2, 2, 10)  # COLUMNA FACTURA
+            current_worksheet.set_column(3, 3, 10)  # COLUMNA EMISION
+            current_worksheet.set_column(4, 4, 11)  # COLUMNA ADQUIRIENTE
+            current_worksheet.set_column(5, 5, 4)  # COLUMNA UNIDAD DE MEDIDA
+            current_worksheet.set_column(6, 6, 45)  # COLUMNA DESCRIPCION
+            current_worksheet.set_column(7, 8, None, alineamiento)
+            current_worksheet.set_column(10, 10, 10)  # COLUMNA VENCIMIENTO
 
-            current_lista = current_lista[['sub_total', 'igv', 'total', 'vencimiento', 'moneda']]
-            current_lista = pd.concat([
-                y._append(
-                    y[['sub_total', 'igv', 'total']].sum().rename(
-                        (x, list_guias.at[x, 'placa'], list_guias.at[x, 'conductor'],
-                         '', '', list_guias.at[x, 'llegada'],
-                         list_guias.at[x, 'datos_adicionales'], '', 'Totales')))
-                for x, y in current_lista.groupby(level=0)
-            ])
-            current_lista.to_excel(writer, sheet_name=proveedor, float_format='%.3f', startrow=1)
-            workbook = writer.book
-            current_worksheet = writer.sheets[proveedor]
-            current_worksheet.write_row(0, 0, lista_proveedores.loc[lista_proveedores['alias'] == proveedor].values.flatten().tolist())
-            cell_format = workbook.add_format({'bold': True, 'font_size': 10})
+# TODO ORDENAR DE PROVEEDORES CON MENOS FACTURAS A PROVEEDORES CON MAS FACTURAS, ORGANIZAR MEJOR LOS DATOS DE LA GUIA PARA QUE SE MUESTREN MAS
 
-            current_worksheet.set_column(1, 15, None, cell_format)
-            current_worksheet.set_column(0, 0, 13)
-            current_worksheet.set_column(1, 1, 11)
-            current_worksheet.set_column(2, 2, 10)
-            current_worksheet.set_column(3, 3, 12)
-            current_worksheet.set_column(4, 4, 11)
-            current_worksheet.set_column(5, 5, 45)
-            current_worksheet.set_column(6, 6, 5)
-            current_worksheet.set_column(12, 12, 10)
-
-
-tofacturas('SILVER,CONSULCACH,ESPINO', 2)
+tofacturas('TOCAM,INGCACH,VYC,NOVATEX,CONSULCELIZ,ESPINO,SILVER,CONSULCACH,KENTHIVAS,NEGORABILLY,INBOX,SONICSERV,INVSONIC,ELITE,INGCELIZ,ENFOCATE', 2)
