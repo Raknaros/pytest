@@ -76,7 +76,8 @@ def tofacturas(proveedores: str, dias: int):
             lista_proveedor = lista_facturas[lista_facturas['alias'] == proveedor]
             # LISTA DE CUI SIN DUPLICADOS BASADA EN LAS FACTURAS
             lista_cui = lista_proveedor['cui'].drop_duplicates().tolist()
-            if lista_proveedor.empty:
+
+            if lista_proveedor.empty or len(lista_proveedor) == 0:
                 break
             current_worksheet = workbook.add_worksheet(proveedor)
             fila = 0
@@ -144,6 +145,9 @@ def tofacturas(proveedores: str, dias: int):
             current_worksheet.set_column(7, 8, None, alineamiento)
             current_worksheet.set_column(10, 10, 10)  # COLUMNA VENCIMIENTO
 
+
 # TODO ORDENAR DE PROVEEDORES CON MENOS FACTURAS A PROVEEDORES CON MAS FACTURAS, ORGANIZAR MEJOR LOS DATOS DE LA GUIA PARA QUE SE MUESTREN MAS
 
-tofacturas('TOCAM,INGCACH,VYC,NOVATEX,CONSULCELIZ,ESPINO,SILVER,CONSULCACH,KENTHIVAS,NEGORABILLY,INBOX,SONICSERV,INVSONIC,ELITE,INGCELIZ,ENFOCATE', 2)
+tofacturas(
+    'TOCAM,VYC,NOVATEX,CONSULCELIZ,ESPINO,SILVER,CONSULCACH,KENTHIVAS,NEGORABILLY,INBOX,INVSONIC,ELITE,ENFOCATE,CHERRYS,INGCACH,INGCELIZ',
+    3)#

@@ -17,7 +17,7 @@ salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988
 pdfFiles = []  # variable '1', '2', '3'
 #Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
 for root, dirs, filenames in os.walk(
-        'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosjunio'):  # Root and directory pathway.
+        'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosjulio'):  # Root and directory pathway.
     # Iterar por cada archivo
     for filename in filenames:
         #print(root.replace('\\', '/') + '/' + filename)
@@ -31,10 +31,12 @@ for root, dirs, filenames in os.walk(
 # LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
 #TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
 lista = pd.read_sql(
-    "SELECT numero_documento AS adquiriente, ruc AS proveedor, numero_correlativo AS factura, (CASE tipo_documento_referencia WHEN 1 THEN null ELSE TRIM('|' FROM SPLIT_PART(numero_documento_referencia,'-',2))::INT END)::TEXT AS guia FROM facturas_noanuladas WHERE periodo_tributario = 202406 ORDER BY adquiriente, proveedor, factura",
+    "SELECT numero_documento AS adquiriente, ruc AS proveedor, numero_correlativo AS factura, (CASE tipo_documento_referencia WHEN 1 THEN null ELSE TRIM('|' FROM SPLIT_PART(numero_documento_referencia,'-',2))::INT END)::TEXT AS guia FROM facturas_noanuladas WHERE periodo_tributario = 202407 ORDER BY adquiriente, proveedor, factura",
     dtype={'proveedor': str, 'adquiriente': str, 'factura': str, 'guia': str}, con=warehouse)
 
 proveedores = pd.read_sql("SELECT tipo_proveedor, numero_documento, alias FROM proveedores", con=salessystem, dtype_backend="pyarrow")
+
+customers = pd.read_sql("SELECT ruc, alias FROM customers", con=salessystem, dtype_backend="pyarrow")
 
 lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
 
@@ -53,8 +55,6 @@ lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'
 
 
 adquirientes = lista['adquiriente'].unique()
-for adquiriente in adquirientes:
-    print(adquiriente)
 
 # Iterar sobre cada valor único
 for adquiriente in adquirientes:
@@ -68,18 +68,18 @@ for adquiriente in adquirientes:
     # Iterar sobre las filas del sub DataFrame y agregar los valores de las columnas 2 y 3 a la lista
     for index, row in lista_filtrada_poradquiriente.iterrows():
 
-        print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + 'PDF-DOC-E001' + row['factura'] + row[
+        print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjulio/' + 'PDF-DOC-E001' + row['factura'] + row[
             'proveedor'] + '.pdf')
-        merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + 'PDF-DOC-E001' + row['factura'] + row[
+        merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjulio/' + 'PDF-DOC-E001' + row['factura'] + row[
             'proveedor'] + '.pdf')
 
         if row['guia'] is not None and row['guia'] != 'None' and not pd.isna(row['guia']):
-            print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + row['proveedor'] + '-09-EG07-' + row[
+            print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjulio/' + row['proveedor'] + '-09-EG07-' + row[
                 'guia'] + '.pdf')
-            merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjunio/' + row['proveedor'] + '-09-EG07-' + row[
+            merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosjulio/' + row['proveedor'] + '-09-EG07-' + row[
                 'guia'] + '.pdf')
 
-    merger.write("202406_" + adquiriente + ".pdf")
+    merger.write("202407_" + adquiriente + '_' + customers.loc[customers['ruc'] == int(adquiriente), 'alias'].values[0] + ".pdf")
     print(adquiriente)
     merger.close()
 
