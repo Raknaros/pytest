@@ -112,4 +112,4 @@ def load_cotizaciones(ruta: str):
                  remision_remitente.to_sql('remision_remitente', engine, if_exists='append', index=False))  ##
 
 
-load_cotizaciones('D:/pytest/pedidos_20240923.xlsx')
+load_cotizaciones('D:/pytest/pedidos_20241001.xlsx')
