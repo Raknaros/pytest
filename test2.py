@@ -1,15 +1,46 @@
+import pandas as pd
 import os
+from sqlalchemy import create_engine
+import numpy as np
+import pypdf
+from pypdf import PdfReader, PdfWriter, PdfMerger
 
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
-path = "C:/Users/Raknaros/Downloads/pdfsoctubre/notacredito"
-dir_list = os.listdir(path)
+warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
+                          ':5432/warehouse')
 
-for i in dir_list:
-    print(i)
-#print("Files and directories in '", path, "' :")
-# prints all files
-#print(dir_list)
+salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
+                            ':3306/salessystem')
 
+pdfFiles = []  # variable '1', '2', '3'
+#Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
+for root, dirs, filenames in os.walk(
+        'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosoctubre'):  # Root and directory pathway.
+    # Iterar por cada archivo
+    for filename in filenames:
+        #print(root.replace('\\', '/') + '/' + filename)
+        #print(os.path.join(root, filename))
+        # Condicion si el archivo termina en .pdf osea si tiene formato pdf
+        if filename.lower().endswith('.pdf'):  # for loop for all files with .pdf in the name.
+            #Agregar los archivos pdf a la lista pdfFiles
+            pdfFiles.append(os.path.join(root, filename))
+        # Appending files to root name from OS (operating system).
+
+# LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
+#TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
+lista = pd.read_sql(
+    "SELECT numero_documento AS adquiriente, ruc AS proveedor, numero_correlativo AS factura, (CASE WHEN tipo_documento_referencia = 9 AND SUBSTRING(numero_documento_referencia,1,4) = 'EG07' THEN TRIM('|' FROM SPLIT_PART(numero_documento_referencia,'-',2))::INT END)::TEXT AS guia FROM facturas_noanuladas WHERE periodo_tributario = 202410 ORDER BY adquiriente, proveedor, factura",
+    dtype={'proveedor': str, 'adquiriente': str, 'factura': str, 'guia': str}, con=warehouse)
+
+proveedores = pd.read_sql("SELECT tipo_proveedor, numero_documento, alias FROM proveedores", con=salessystem, dtype_backend="pyarrow")
+
+customers = pd.read_sql("SELECT ruc, alias FROM customers", con=salessystem, dtype_backend="pyarrow")
+
+lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
+
+adquirientes = lista['adquiriente'].unique()
 
 
 
