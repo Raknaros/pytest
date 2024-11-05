@@ -1,5 +1,14 @@
+import os
 
 
+path = "C:/Users/Raknaros/Downloads/pdfsoctubre/notacredito"
+dir_list = os.listdir(path)
+
+for i in dir_list:
+    print(i)
+#print("Files and directories in '", path, "' :")
+# prints all files
+#print(dir_list)
 
 
 

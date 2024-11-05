@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/pytest.iml" filepath="$PROJECT_DIR$/.idea/pytest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../salessystem_db/.idea/salessystem_db.iml" filepath="$PROJECT_DIR$/../salessystem_db/.idea/salessystem_db.iml" />
     </modules>
   </component>
 </project>
