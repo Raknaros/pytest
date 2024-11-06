@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 import numpy as np
 import pypdf
 from pypdf import PdfReader, PdfWriter, PdfMerger
+import fnmatch
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -14,80 +15,89 @@ warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrr
 salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
                             ':3306/salessystem')
 
-pdfFiles = []  # variable '1', '2', '3'
-#Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
-for root, dirs, filenames in os.walk(
-        'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosoctubre'):  # Root and directory pathway.
-    # Iterar por cada archivo
-    for filename in filenames:
-        #print(root.replace('\\', '/') + '/' + filename)
-        #print(os.path.join(root, filename))
-        # Condicion si el archivo termina en .pdf osea si tiene formato pdf
-        if filename.lower().endswith('.pdf'):  # for loop for all files with .pdf in the name.
-            #Agregar los archivos pdf a la lista pdfFiles
-            pdfFiles.append(os.path.join(root, filename))
-        # Appending files to root name from OS (operating system).
+ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosoctubre'
 
-# LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
-#TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
+periodo = "202410"
+
+directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosoctubre'
+
+# Obtener lista de archivos PDF en el directorio
+archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
+
 facturas_noanuladas = pd.read_sql(
-    "SELECT * FROM facturas_noanuladas WHERE periodo_tributario = 202410 ORDER BY numero_documento, ruc, numero_correlativo",
-    dtype={'ruc': str, 'numero_documento': str, 'numero_correlativo': str, 'numero_documento_referencia': str}, con=warehouse)
+    "SELECT ruc AS proveedor,numero_serie AS serie, numero_correlativo AS correlativo, numero_documento AS adquiriente, tipo_documento_referencia, numero_documento_referencia FROM facturas_noanuladas WHERE periodo_tributario = " + periodo + " ORDER BY adquiriente, proveedor, correlativo",
+    dtype={'proveedor': str, 'adquiriente': str, 'correlativo': str, 'numero_documento_referencia': str}, con=warehouse)
 
 facturas_noanuladas['guia'] = np.where(
     (facturas_noanuladas['tipo_documento_referencia'] == 9) &
     (facturas_noanuladas['numero_documento_referencia'].str[:4] == 'EG07'),
-    facturas_noanuladas['numero_documento_referencia'].str.split('-').str[1].str.replace('|', '').astype(int).astype(str),
+    facturas_noanuladas['numero_documento_referencia'].str.split('-').str[1].str.replace('|', '').astype(int).astype(
+        str),
     None
 )
 
-proveedores = pd.read_sql("SELECT tipo_proveedor, numero_documento, alias FROM proveedores", con=salessystem, dtype_backend="pyarrow")
+proveedores = pd.read_sql("SELECT numero_documento AS proveedor, alias FROM proveedores", con=salessystem,
+                          dtype_backend="pyarrow")
 
-customers = pd.read_sql("SELECT ruc, alias FROM customers", con=salessystem, dtype_backend="pyarrow")
+customers = pd.read_sql("SELECT related_user, CAST(ruc AS CHAR) AS adquiriente, alias FROM customers", con=salessystem,
+                        dtype_backend="pyarrow")
 
-#lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
+lista_filtrada = facturas_noanuladas[~facturas_noanuladas['adquiriente'].isin(proveedores['proveedor'].astype(str))]
 
-#adquirientes = lista['adquiriente'].unique()
+adquirientes = lista_filtrada['adquiriente'].unique()
 
+lista = pd.merge(lista_filtrada, customers, on='adquiriente', how='left')
 
+for adquiriente in adquirientes:
+    merger = PdfWriter()
+    #Filtrar el Dataframe por adquiriente
+    lista_adquiriente = lista[lista['adquiriente'] == adquiriente]
+    print(f'Pedido de {lista_adquiriente['alias'].iloc[0]}')
 
+    for index, row in lista_adquiriente.iterrows():
+        expresiones = [
+            f'PDF-DOC-{row['serie']}-{row['correlativo']}{row['proveedor']}*',
+            f'PDF-DOC-{row['serie']}{row['correlativo']}{row['proveedor']}*',
+            f'{row['proveedor']}-01-{row['serie']}-{row['correlativo']}*'
+        ]
 
-print(facturas_noanuladas)
+        factura = None
+        for expresion in expresiones:
+            coincidencias = fnmatch.filter(archivos, expresion)
+            if coincidencias:
+                factura = coincidencias[0]
+                break
 
+        if factura:
+            merger.append(os.path.join(directorio, factura))
+        else:
+            print(f'Falta la factura {row['serie']}-{row['correlativo']} de {row['proveedor']}')
 
+        if row['guia'] is not None and row['guia'] != 'None' and not pd.isna(row['guia']):
+            guia = fnmatch.filter(archivos, f'{row['proveedor']}-09-EG07-{row['guia']}*')
+            if guia:
+                merger.append(os.path.join(directorio, guia[0]))
+            else:
+                print(f'Falta la guia EG07-{row['guia']} de {row['proveedor']}')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    merger.write(f'{periodo}_{adquiriente}_{lista_adquiriente['alias'].iloc[0]}.pdf')
+    merger.close()
 
 #TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
 
 
 #SOBRE LAS ENTIDADES/PROVEEDORES
-    #TODO CONSULTAR LISTA DE FACTURAS POR PERIODO TRIBUTARIO
-    #QUE CANTIDAD DE VENTAS TOTALES TIENE CADA ENTIDAD/PROVEEDOR
-    #TODO AGRUPAR POR ENTIDAD Y SUMAR TOTAL + IGV
-    #QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A PROVEEDORES TIPO 1
-    #TODO CONSULTA PROVEEDORES TIPO 1 Y 2 Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAS DE ESOS PROVEEDORES
-    #QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A PROVEEDORES TIPO 3
-    #TODO CONSULTAR PROVEEDORES TIPO 3 Y CONSULTA QUE FACTURAS CORRESPONDEN A COMPRAS DE ESOS PROVEEDORES
-    #QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A CUSTOMERS INTERNOS
-    #TODO CONSULTAR CUSTOMERS INTERNOS Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAR DE ESOS CUSTOMERS
-    #QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A CUSTOMERS EXTERNOS
-    #TODO CONSULTAR CUSTOMERS EXTERNOS Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAR DE ESOS CUSTOMERS
+#TODO CONSULTAR LISTA DE FACTURAS POR PERIODO TRIBUTARIO
+#QUE CANTIDAD DE VENTAS TOTALES TIENE CADA ENTIDAD/PROVEEDOR
+#TODO AGRUPAR POR ENTIDAD Y SUMAR TOTAL + IGV
+#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A PROVEEDORES TIPO 1
+#TODO CONSULTA PROVEEDORES TIPO 1 Y 2 Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAS DE ESOS PROVEEDORES
+#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A PROVEEDORES TIPO 3
+#TODO CONSULTAR PROVEEDORES TIPO 3 Y CONSULTA QUE FACTURAS CORRESPONDEN A COMPRAS DE ESOS PROVEEDORES
+#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A CUSTOMERS INTERNOS
+#TODO CONSULTAR CUSTOMERS INTERNOS Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAR DE ESOS CUSTOMERS
+#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A CUSTOMERS EXTERNOS
+#TODO CONSULTAR CUSTOMERS EXTERNOS Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAR DE ESOS CUSTOMERS
 
 #SOBRE LOS COMPROBANTES
 #QUE CANTIDAD DE COMPROBANTES NO TIENEN GUIA

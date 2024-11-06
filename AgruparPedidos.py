@@ -3,7 +3,8 @@ import os
 from sqlalchemy import create_engine
 import numpy as np
 import pypdf
-from pypdf import PdfReader, PdfWriter, PdfMerger
+from pypdf import PdfWriter
+import fnmatch
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -14,96 +15,72 @@ warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrr
 salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
                             ':3306/salessystem')
 
-pdfFiles = []  # variable '1', '2', '3'
-#Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
-for root, dirs, filenames in os.walk(
-        'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosoctubre'):  # Root and directory pathway.
-    # Iterar por cada archivo
-    for filename in filenames:
-        #print(root.replace('\\', '/') + '/' + filename)
-        #print(os.path.join(root, filename))
-        # Condicion si el archivo termina en .pdf osea si tiene formato pdf
-        if filename.lower().endswith('.pdf'):  # for loop for all files with .pdf in the name.
-            #Agregar los archivos pdf a la lista pdfFiles
-            pdfFiles.append(os.path.join(root, filename))
-        # Appending files to root name from OS (operating system).
+ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosoctubre'
 
-# LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
-#TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
-lista = pd.read_sql(
-    "SELECT numero_documento AS adquiriente, ruc AS proveedor, numero_correlativo AS factura, (CASE WHEN tipo_documento_referencia = 9 AND SUBSTRING(numero_documento_referencia,1,4) = 'EG07' THEN TRIM('|' FROM SPLIT_PART(numero_documento_referencia,'-',2))::INT END)::TEXT AS guia FROM facturas_noanuladas WHERE periodo_tributario = 202410 ORDER BY adquiriente, proveedor, factura",
-    dtype={'proveedor': str, 'adquiriente': str, 'factura': str, 'guia': str}, con=warehouse)
+periodo = "202410"
 
-proveedores = pd.read_sql("SELECT tipo_proveedor, numero_documento, alias FROM proveedores", con=salessystem, dtype_backend="pyarrow")
+directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosoctubre'
 
-customers = pd.read_sql("SELECT ruc, alias FROM customers", con=salessystem, dtype_backend="pyarrow")
+# Obtener lista de archivos PDF en el directorio
+archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
 
-lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
+facturas_noanuladas = pd.read_sql(
+    "SELECT ruc AS proveedor,numero_serie AS serie, numero_correlativo AS correlativo, numero_documento AS adquiriente, tipo_documento_referencia, numero_documento_referencia FROM facturas_noanuladas WHERE periodo_tributario = " + periodo + " ORDER BY adquiriente, proveedor, correlativo",
+    dtype={'proveedor': str, 'adquiriente': str, 'correlativo': str, 'numero_documento_referencia': str}, con=warehouse)
 
-# Condición para strings que comienzan con 'EG07'
-#condition = lista['guia'].str.startswith('EG')
+facturas_noanuladas['guia'] = np.where(
+    (facturas_noanuladas['tipo_documento_referencia'] == 9) &
+    (facturas_noanuladas['numero_documento_referencia'].str[:4] == 'EG07'),
+    facturas_noanuladas['numero_documento_referencia'].str.split('-').str[1].str.replace('|', '').astype(int).astype(
+        str),
+    None
+)
 
-# Aplicar slice solo a los que cumplen la condición
-# TODO CAMBIAR EL ENCABEZADO SLICED COL A GUIA
-#lista.loc[condition, 'sliced_col'] = lista.loc[condition, 'guia'].str.slice(7, -1)
+proveedores = pd.read_sql("SELECT numero_documento AS proveedor, alias FROM proveedores", con=salessystem,
+                          dtype_backend="pyarrow")
 
-# Quitar ceros iniciales a los valores que cumplen la condición
-#lista.loc[condition, 'sliced_col'] = lista.loc[condition, 'sliced_col'].str.lstrip('0')
+customers = pd.read_sql("SELECT related_user, CAST(ruc AS CHAR) AS adquiriente, alias FROM customers", con=salessystem,
+                        dtype_backend="pyarrow")
 
-# Para los valores que no cumplen la condición, copiar la columna original
-#pedidos.loc[~condition, 'sliced_col'] = pedidos.loc[~condition, 'guia']
+lista_filtrada = facturas_noanuladas[~facturas_noanuladas['adquiriente'].isin(proveedores['proveedor'].astype(str))]
 
+adquirientes = lista_filtrada['adquiriente'].unique()
 
-adquirientes = lista['adquiriente'].unique()
+lista = pd.merge(lista_filtrada, customers, on='adquiriente', how='left')
 
-# Iterar sobre cada valor único
 for adquiriente in adquirientes:
-    merger = PdfMerger()
-    # Filtrar el DataFrame para obtener el sub DataFrame
-    lista_filtrada_poradquiriente = lista_filtrada[lista_filtrada['adquiriente'] == adquiriente]
+    merger = PdfWriter()
+    #Filtrar el Dataframe por adquiriente
+    lista_adquiriente = lista[lista['adquiriente'] == adquiriente]
+    print(f'Pedido de {lista_adquiriente['alias'].iloc[0]}')
 
-    # Crear una lista para almacenar los resultados de este sub DataFrame
-    sub_list = []
+    for index, row in lista_adquiriente.iterrows():
+        expresiones = [
+            f'PDF-DOC-{row['serie']}-{row['correlativo']}{row['proveedor']}*',
+            f'PDF-DOC-{row['serie']}{row['correlativo']}{row['proveedor']}*',
+            f'{row['proveedor']}-01-{row['serie']}-{row['correlativo']}*'
+        ]
 
-    # Iterar sobre las filas del sub DataFrame y agregar los valores de las columnas 2 y 3 a la lista
-    for index, row in lista_filtrada_poradquiriente.iterrows():
+        factura = None
+        for expresion in expresiones:
+            coincidencias = fnmatch.filter(archivos, expresion)
+            if coincidencias:
+                factura = coincidencias[0]
+                break
 
-        print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosoctubre/' + 'PDF-DOC-E001' + row['factura'] + row[
-            'proveedor'] + '.pdf')
-        merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosoctubre/' + 'PDF-DOC-E001' + row['factura'] + row[
-            'proveedor'] + '.pdf')
+        if factura:
+            merger.append(os.path.join(directorio, factura))
+        else:
+            print(f'Falta la factura {row['serie']}-{row['correlativo']} de {row['proveedor']}')
 
         if row['guia'] is not None and row['guia'] != 'None' and not pd.isna(row['guia']):
-            print('C:/Users/Raknaros/Desktop/temporal/pdfpedidosoctubre/' + row['proveedor'] + '-09-EG07-' + row[
-                'guia'] + '.pdf')
-            merger.append('C:/Users/Raknaros/Desktop/temporal/pdfpedidosoctubre/' + row['proveedor'] + '-09-EG07-' + row[
-                'guia'] + '.pdf')
+            guia = fnmatch.filter(archivos, f'{row['proveedor']}-09-EG07-{row['guia']}*')
+            if guia:
+                merger.append(os.path.join(directorio, guia[0]))
+            else:
+                print(f'Falta la guia EG07-{row['guia']} de {row['proveedor']}')
 
-    merger.write("202410_" + adquiriente + '_' + customers.loc[customers['ruc'] == int(adquiriente), 'alias'].values[0] + ".pdf")
-    print(adquiriente)
+    merger.write(f'{periodo}_{adquiriente}_{lista_adquiriente['alias'].iloc[0]}.pdf')
     merger.close()
 
-
-#print(pedidos.dtypes)
-def unir():
-    merger = PdfMerger()
-    for filename in pdfFiles:
-        merger.append(filename)
-    merger.write("combined.pdf")
-    merger.close()
-
-
-# Assigning the pdfWriter() function to pdfWriter.
-#pdfWriter = pypdf.PdfWriter()
-"""
-for filename in pdfFiles:  # Starting a for loop.
-    pdfFileObj = open(filename, 'rb')  # Opens each of the file paths in filename variable.
-    pdfReader = pypdf.PdfReader(pdfFileObj)  # Reads each of the files in the new varaible you've created above and stores into memory.
-    pageObj = pdfReader.pages[pageNum]  # Reads only those that are in the varaible.
-    pdfWriter.add_page(pageObj)  # Adds each of the PDFs it's read to a new page.
-
-pdfOutput = open('Power_BI_Test_Files.pdf', 'wb')
-
-# Writing the output file using the pdfWriter function.
-pdfWriter.write(pdfOutput)
-pdfOutput.close()"""
+#PENDIENTE AGRUPAR POR related_user
