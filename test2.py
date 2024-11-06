@@ -17,7 +17,7 @@ salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988
 pdfFiles = []  # variable '1', '2', '3'
 #Iterar y capturar la ruta, el directorio y los archivos de la carpeta indicada
 for root, dirs, filenames in os.walk(
-        'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosoctubre'):  # Root and directory pathway.
+        'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosoctubre'):  # Root and directory pathway.
     # Iterar por cada archivo
     for filename in filenames:
         #print(root.replace('\\', '/') + '/' + filename)
@@ -30,19 +30,29 @@ for root, dirs, filenames in os.walk(
 
 # LISTA DE FACTURAS Y GUIAS SEGUN ADQUIRIENTE
 #TODO CAMBIAR EL ENCABEZADO GUIA A DOC_REFERENCIA
-lista = pd.read_sql(
-    "SELECT numero_documento AS adquiriente, ruc AS proveedor, numero_correlativo AS factura, (CASE WHEN tipo_documento_referencia = 9 AND SUBSTRING(numero_documento_referencia,1,4) = 'EG07' THEN TRIM('|' FROM SPLIT_PART(numero_documento_referencia,'-',2))::INT END)::TEXT AS guia FROM facturas_noanuladas WHERE periodo_tributario = 202410 ORDER BY adquiriente, proveedor, factura",
-    dtype={'proveedor': str, 'adquiriente': str, 'factura': str, 'guia': str}, con=warehouse)
+facturas_noanuladas = pd.read_sql(
+    "SELECT * FROM facturas_noanuladas WHERE periodo_tributario = 202410 ORDER BY numero_documento, ruc, numero_correlativo",
+    dtype={'ruc': str, 'numero_documento': str, 'numero_correlativo': str, 'numero_documento_referencia': str}, con=warehouse)
+
+facturas_noanuladas['guia'] = np.where(
+    (facturas_noanuladas['tipo_documento_referencia'] == 9) &
+    (facturas_noanuladas['numero_documento_referencia'].str[:4] == 'EG07'),
+    facturas_noanuladas['numero_documento_referencia'].str.split('-').str[1].str.replace('|', '').astype(int).astype(str),
+    None
+)
 
 proveedores = pd.read_sql("SELECT tipo_proveedor, numero_documento, alias FROM proveedores", con=salessystem, dtype_backend="pyarrow")
 
 customers = pd.read_sql("SELECT ruc, alias FROM customers", con=salessystem, dtype_backend="pyarrow")
 
-lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
+#lista_filtrada = lista[~lista['adquiriente'].isin(proveedores['numero_documento'].astype(str))]
 
-adquirientes = lista['adquiriente'].unique()
+#adquirientes = lista['adquiriente'].unique()
 
 
+
+
+print(facturas_noanuladas)
 
 
 
