@@ -29,6 +29,7 @@ def get_precuadros():
                 current_worksheet = workbook.add_worksheet(cod_pedido)
                 current_worksheet.write_row(0, 0,
                                             pedidos.loc[pedidos['cod_pedido'] == cod_pedido].values.flatten().tolist())
+                current_worksheet.write_column()
             except:
                 None
             finally:

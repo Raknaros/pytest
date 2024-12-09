@@ -1,3 +1,4 @@
+import zipfile
 import pandas as pd
 import os
 from sqlalchemy import create_engine
@@ -15,11 +16,11 @@ warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrr
 salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
                             ':3306/salessystem')
 
-ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosoctubre'
+ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202410"
+periodo = "202411"
 
-directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosoctubre'
+directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosnoviembre'
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
@@ -82,5 +83,21 @@ for adquiriente in adquirientes:
 
     merger.write(f'{periodo}_{adquiriente}_{lista_adquiriente['alias'].iloc[0]}.pdf')
     merger.close()
+"""
+# Carpeta que contiene los archivos PDF
+carpeta_pdf = os.getcwd()
 
+# Archivos PDF en la carpeta
+pedidos = [archivo for archivo in os.listdir(carpeta_pdf) if archivo.endswith('.pdf')]
+
+for contacto in customers['related_user'].unique().dropna():
+    lista_por_contacto = customers[customers['related_user'] == contacto]
+    print(f'Pedido de {contacto}')
+    with zipfile.ZipFile(f'{periodo}_{contacto}.zip', "w") as zip_file:
+        for index, row in lista_por_contacto.iterrows():
+            pedido = fnmatch.filter(pedidos, f'{periodo}_{row['adquiriente']}_{row['alias']}*')
+            if pedido:
+                print(f'{periodo}_{row['adquiriente']}_{row['alias']}')
+                zip_file.write(os.path.join(carpeta_pdf, pedido[0]))
+"""
 #PENDIENTE AGRUPAR POR related_user

@@ -112,4 +112,7 @@ def load_cotizaciones(ruta: str):
                  remision_remitente.to_sql('remision_remitente', engine, if_exists='append', index=False))  ##
 
 
-load_cotizaciones('D:/pytest/pedidos_20240901.xlsx')
+load_cotizaciones('D:/salessystem_db/pedidos_20241205.xlsx')
+
+
+#TODO ANULAR INGRESO SI SE REPITE EL CUI, COLOCAR ESTADO DE PEDIDO "EN PROCESO" SI SE SUBE EL CUADRO CON EL COD DE PEDIDO

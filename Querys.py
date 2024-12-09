@@ -13,7 +13,11 @@ warehouse = create_engine(
 
 bancarizar_emitidos = "SELECT numero_documento,ruc,(CASE  WHEN (SELECT fecha_cuota1 FROM acc._7 WHERE cui_relacionado=concat('5',cui)) IS null THEN fecha_emision ELSE (SELECT fecha_cuota1 FROM acc._7 WHERE cui_relacionado=concat('5',cui)) END),valor+igv AS total,CONCAT(numero_serie,'-',numero_correlativo) FROM acc._5 WHERE _5.tipo_comprobante=1 AND observaciones NOT LIKE '%ANULADA' AND numero_documento IN ('20611957476') AND periodo_tributario=202408 AND valor+igv>1999.99 ORDER BY numero_documento;"
 
+catalogo = pd.read_sql('SELECT * FROM catalogo', salessystem)
 
+pre_detalle =pd.read_sql('SELECT * FROM pre_detalle ORDER BY fecha_emision DESC LIMIT 200', warehouse)
+
+detalle_completo = pd.merge(pre_detalle, catalogo, on='descripcion', how='left')
 
 """SELECT fecha,periodo_mensual,tipo_operacion,cantidad_presentacion  FROM acc.iqbf ORDER BY fecha,tipo_operacion;
 
