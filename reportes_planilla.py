@@ -41,6 +41,6 @@ for archivo_zip in os.listdir(carpeta_zip):
                             df['ruc'] = ruc
                             reportes_planilla = pd.concat([reportes_planilla, df]).reset_index(drop=True)
 
-print(reportes_planilla)
+reportes_planilla.to_excel('test_planillas.xlsx')
 
 
