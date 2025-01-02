@@ -177,4 +177,7 @@ def tofacturas(proveedores: list = None, fecha: datetime = None, pedidos: list =
 
 # TODO ORDENAR DE PROVEEDORES CON MENOS FACTURAS A PROVEEDORES CON MAS FACTURAS, ORGANIZAR MEJOR LOS DATOS DE LA GUIA PARA QUE SE MUESTREN MAS
 # TODO PENDIENTE IMPLEMENTAR PAGO EN MAS DE 1 CUOTA
-tofacturas(pedidos=['C134DB421', 'R134DADE3'])  #
+tofacturas(
+    proveedores=['ENFOCATE', 'ESPINO', 'GREJULCA', 'INBOX', 'INVSONIC', 'JMV', 'PARJU', 'SILVER', 'SONICSERV',
+                 'TEXTILES'],
+    fecha=datetime(2024, 12, 31))  #
