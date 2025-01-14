@@ -19,6 +19,8 @@ pre_detalle =pd.read_sql('SELECT * FROM pre_detalle ORDER BY fecha_emision DESC 
 
 detalle_completo = pd.merge(pre_detalle, catalogo, on='descripcion', how='left')
 
+entidades = pd.read_sql('SELECT * FROM acc.entities ORDER BY ruc ASC', warehouse)
+
 """SELECT fecha,periodo_mensual,tipo_operacion,cantidad_presentacion  FROM acc.iqbf ORDER BY fecha,tipo_operacion;
 
 SELECT
