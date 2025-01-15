@@ -3,8 +3,8 @@ import pyarrow
 from sqlalchemy import create_engine
 
 salessystem = create_engine(
-    'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-    ':3306/salessystem')
+    'mysql+pymysql://root:Giu72656770@104.154.92.48'
+    ':3306/sales-system')
 
 warehouse = create_engine(
     'postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
@@ -19,7 +19,7 @@ pre_detalle =pd.read_sql('SELECT * FROM pre_detalle ORDER BY fecha_emision DESC 
 
 detalle_completo = pd.merge(pre_detalle, catalogo, on='descripcion', how='left')
 
-entidades = pd.read_sql('SELECT * FROM acc.entities ORDER BY ruc ASC', warehouse)
+entidades = pd.read_sql('SELECT * FROM priv.entities ORDER BY ruc ASC', warehouse)
 
 """SELECT fecha,periodo_mensual,tipo_operacion,cantidad_presentacion  FROM acc.iqbf ORDER BY fecha,tipo_operacion;
 
