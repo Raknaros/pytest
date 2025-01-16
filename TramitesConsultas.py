@@ -93,7 +93,7 @@ def login_tramites_consultas(driver, credenciales):
         wait.until(EC.frame_to_be_available_and_switch_to_it((By.NAME, "ifrVCE")))
         try:
             # Look for the modal dialog
-            WebDriverWait(driver, 1.5)
+            wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "modal-dialog")))
             temp_dialog = driver.find_element(By.CLASS_NAME, "modal-dialog")
             temp_dialog.find_element(By.ID, "btnFinalizarValidacionDatos").click()
             driver.find_element(By.ID, "btnCerrar").click()
