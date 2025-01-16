@@ -18,9 +18,9 @@ salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202411"
+periodo = "202412"
 
-directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosnoviembre'
+directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosdiciembre'
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
@@ -29,10 +29,11 @@ facturas_noanuladas = pd.read_sql(
     "SELECT ruc AS proveedor,numero_serie AS serie, numero_correlativo AS correlativo, numero_documento AS adquiriente, tipo_documento_referencia, numero_documento_referencia FROM facturas_noanuladas WHERE periodo_tributario = " + periodo + " ORDER BY adquiriente, proveedor, correlativo",
     dtype={'proveedor': str, 'adquiriente': str, 'correlativo': str, 'numero_documento_referencia': str}, con=warehouse)
 
+
 facturas_noanuladas['guia'] = np.where(
     (facturas_noanuladas['tipo_documento_referencia'] == 9) &
     (facturas_noanuladas['numero_documento_referencia'].str[:4] == 'EG07'),
-    facturas_noanuladas['numero_documento_referencia'].str.split('-').str[1].str.replace('|', '').astype(int).astype(
+    facturas_noanuladas['numero_documento_referencia'].str.split('-').str[1].str.replace('|', '').fillna(0).astype(int).astype(
         str),
     None
 )
@@ -48,7 +49,7 @@ lista_filtrada = facturas_noanuladas[~facturas_noanuladas['adquiriente'].isin(pr
 adquirientes = lista_filtrada['adquiriente'].unique()
 
 lista = pd.merge(lista_filtrada, customers, on='adquiriente', how='left')
-
+"""
 for adquiriente in adquirientes:
     merger = PdfWriter()
     #Filtrar el Dataframe por adquiriente
@@ -73,6 +74,7 @@ for adquiriente in adquirientes:
             merger.append(os.path.join(directorio, factura))
         else:
             print(f'Falta la factura {row['serie']}-{row['correlativo']} de {row['proveedor']}')
+
 
         if row['guia'] is not None and row['guia'] != 'None' and not pd.isna(row['guia']):
             guia = fnmatch.filter(archivos, f'{row['proveedor']}-09-EG07-{row['guia']}*')
@@ -99,5 +101,4 @@ for contacto in customers['related_user'].unique().dropna():
             if pedido:
                 print(f'{periodo}_{row['adquiriente']}_{row['alias']}')
                 zip_file.write(os.path.join(carpeta_pdf, pedido[0]))
-"""
-#PENDIENTE AGRUPAR POR related_user
+

@@ -9,10 +9,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
+from sqlalchemy import update, text
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from Querys import entidades
+from Querys import entidades, warehouse
 
 options = Options()
 options.add_experimental_option("detach", True)
@@ -88,22 +89,22 @@ def login_tramites_consultas(driver, credenciales):
     driver.find_element(By.ID, "btnAceptar").click()  # aceptar
 
     try:
-        print("Tercer try")
+        print(credenciales[0])
         wait = WebDriverWait(driver, 3)  # Timeout in seconds
         wait.until(EC.frame_to_be_available_and_switch_to_it((By.NAME, "ifrVCE")))
         try:
             # Look for the modal dialog
-            wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "modal-dialog")))
+            wait.until(EC.element_to_be_clickable((By.ID, "btnFinalizarValidacionDatos")))
             temp_dialog = driver.find_element(By.CLASS_NAME, "modal-dialog")
             temp_dialog.find_element(By.ID, "btnFinalizarValidacionDatos").click()
             driver.find_element(By.ID, "btnCerrar").click()
             driver.switch_to.default_content()  # Switch back to the parent frame
-            print("No fallo segundo try")
+            print("VALIDACION DE CONTACTO PENDIENTE")
         except Exception as e:
-            print("Primer catch")
+            print("BUZON POR REVISAR")
             driver.find_element(By.ID, "btnCerrar").click()
             driver.switch_to.default_content()
-            print("No fallo primer catch")
+            print("AVISO DE BUZON CERRADO")
     except TimeoutException:
         # If the frame is not available within the timeout, switch back to parent frame
         driver.switch_to.default_content()
@@ -113,21 +114,32 @@ def login_tramites_consultas(driver, credenciales):
         # Optionally, you might want to click on some service option here,
         # but it's commented out in your Java code
         # driver.find_element(By.ID, "divOpcionServicio2").click()
-        print("General exception occurred")
+        print("AUTENTICACION CORRECTA")
 
     return driver
 
 
 # Note: You need to define or import `set_credentials` function and `Entities` class or object for this to work
-
 new_driver = tramites_consultas(driver=driver)
+provisional = [['10726501306', 'USANKYUL', 'liroalort'],]
 entidades['ruc'] = entidades['ruc'].astype(str)
-for credencial in entidades[['ruc', 'usuario_sol', 'clave_sol']].values.tolist():
+entidades = entidades[(entidades['activo']) &
+                      (~entidades['observaciones'].fillna('').str.contains('FALLA AUTENTICA', case=False))]
+if any(any(sublista) for sublista in provisional):
+    credenciales = provisional
+else:
+    credenciales = entidades[['ruc', 'usuario_sol', 'clave_sol']].values.tolist()
+print(len(entidades))
+for credencial in credenciales:
     try:
         login_tramites_consultas(driver=new_driver, credenciales=credencial)
-        driver.find_element(By.ID,"btnSalir").click()
+        driver.find_element(By.ID, "btnSalir").click()
     except Exception as e:
         if "falla" in driver.find_element(By.CLASS_NAME, "col-md-12").text.lower():
             driver.find_element(By.ID, "btnVolver").click()
-            #data_methods.update_problema_autenticacion(entidad.ruc)
-
+            with warehouse.connect() as connection:
+                query = text(
+                    "UPDATE priv.entities SET observaciones = CONCAT(observaciones, '|FALLA AUTENTICACION') WHERE ruc = :ruc")
+                connection.execute(query, {"ruc": str(credencial[0])})
+                connection.commit()
+            print('FALLA DE AUTENTICACION REGISTRADA')

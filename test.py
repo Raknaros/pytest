@@ -1,17 +1,20 @@
-def test_func(a):
-    b = a + 5
-    return b
+from apscheduler.schedulers.blocking import BlockingScheduler
+from time import sleep
 
 
-def test_func2(c):
-    d = c + 10
-    return d
+def job():
+    print("I'm running")
+    sleep(2)  # Simula una tarea que toma tiempo
 
 
-def test_func3():
-    f = 25
+scheduler = BlockingScheduler()
 
-    return print(test_func2(test_func(f)))
+# Configura el ejecutor de hilos, si no lo especificas, usa uno por defecto con 10 hilos
+scheduler.add_executor('threadpool', max_workers=20)
 
-test_func3()
+# Añade trabajos al scheduler
+scheduler.add_job(job, 'interval', seconds=3, id='job1')
+scheduler.add_job(job, 'interval', seconds=3, id='job2')
 
+# Comienza la ejecución del scheduler
+scheduler.start()

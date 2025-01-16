@@ -1,6 +1,6 @@
 import pandas as pd
 import pyarrow
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 
 salessystem = create_engine(
     'mysql+pymysql://root:Giu72656770@104.154.92.48'

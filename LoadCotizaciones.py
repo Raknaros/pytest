@@ -30,6 +30,8 @@ def load_cotizaciones(ruta: str):
                  'cuota3', 'vencimiento4', 'cuota4', 'moneda', 'unid_medida', 'traslado', 'lugar_entrega', 'placa',
                  'conductor', 'datos_adicionales'])
 
+
+
     # Iterar sobre todas las hojas del libro
     for sheet_name in workbook.sheetnames:
         # Seleccionar la hoja actual
@@ -53,21 +55,6 @@ def load_cotizaciones(ruta: str):
         # Unir verticalmente al dataframe cotizaciones solo si ningun valor de la columna cuo es nulo
         if not df['cuo'].isnull().any():
             cotizaciones = pd.concat([cotizaciones, df], ignore_index=True, axis=0)
-
-    #VERIFICAR CONSECUENCIA DE FECHAS DE VENCIMIENTO
-    for index, value in cotizaciones['vencimiento4'].items():
-        if pd.notnull(value) | pd.notna(value):
-            if pd.isnull(cotizaciones.loc[index, 'vencimiento3']) | pd.isna(cotizaciones.loc[index, 'vencimiento3']):
-                cotizaciones.loc[index, 'vencimiento3'] = cotizaciones.loc[index, 'vencimiento4']
-                cotizaciones.loc[index, 'vencimiento4'] = pd.NaT
-        elif pd.notnull(cotizaciones.loc[index, 'vencimiento3']) | pd.notna(cotizaciones.loc[index, 'vencimiento3']):
-            if pd.isnull(cotizaciones.loc[index, 'vencimiento2']) | pd.isna(cotizaciones.loc[index, 'vencimiento2']):
-                cotizaciones.loc[index, 'vencimiento2'] = cotizaciones.loc[index, 'vencimiento3']
-                cotizaciones.loc[index, 'vencimiento3'] = pd.NaT
-        elif pd.notnull(cotizaciones.loc[index, 'vencimiento2']) | pd.notna(cotizaciones.loc[index, 'vencimiento2']):
-            if pd.isnull(cotizaciones.loc[index, 'vencimiento']) | pd.isna(cotizaciones.loc[index, 'vencimiento']):
-                cotizaciones.loc[index, 'vencimiento'] = cotizaciones.loc[index, 'vencimiento2']
-                cotizaciones.loc[index, 'vencimiento2'] = pd.NaT
 
     # Rellenar vacios en traslado con fecha de emision
     cotizaciones['traslado'] = cotizaciones['traslado'].infer_objects(copy=False).fillna(cotizaciones['emision'])
@@ -121,11 +108,11 @@ def load_cotizaciones(ruta: str):
                                                                                            include_groups=False)
                           .drop(['cantidad', 'peso_articulo'], axis=1))
 
-    print(facturas['cod_pedido'].unique())
-    #return print(facturas.to_sql('facturas', engine, if_exists='append', index=False),
-    #             remision_remitente.to_sql('remision_remitente', engine, if_exists='append', index=False))
+    return print(facturas.to_sql('facturas', engine, if_exists='append', index=False),
+                 remision_remitente.to_sql('remision_remitente', engine, if_exists='append', index=False))  ##
 
 
-load_cotizaciones('C:/Users/Raknaros/Downloads/pedidos_20241129.xlsx')
+load_cotizaciones('D:/salessystem_db/pedidos_20241205.xlsx')
+
 
 #TODO ANULAR INGRESO SI SE REPITE EL CUI, COLOCAR ESTADO DE PEDIDO "EN PROCESO" SI SE SUBE EL CUADRO CON EL COD DE PEDIDO
