@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
-      <change afterPath="$PROJECT_DIR$/test_contabilidad.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AgruparPedidos.py" beforeDir="false" afterPath="$PROJECT_DIR$/AgruparPedidos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoadCotizaciones.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadCotizaciones.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Querys.py" beforeDir="false" afterPath="$PROJECT_DIR$/Querys.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TramitesConsultas.py" beforeDir="false" afterPath="$PROJECT_DIR$/TramitesConsultas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_contabilidad.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_contabilidad.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -296,6 +290,9 @@
       <workItem from="1736654824569" duration="2100000" />
       <workItem from="1736803061381" duration="7029000" />
       <workItem from="1737018321169" duration="5963000" />
+      <workItem from="1737024364254" duration="23000" />
+      <workItem from="1737065387151" duration="1761000" />
+      <workItem from="1737165017742" duration="5110000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
@@ -537,7 +534,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735791083333</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1737024376960</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1737024376960</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
