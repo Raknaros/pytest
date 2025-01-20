@@ -7,8 +7,9 @@ pd.set_option('display.max_rows', None)
 
 
 def load_bancarizar(ruta: str):
-    engine = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-                           ':3306/salessystem')
+    engine = create_engine(
+        'mysql+pymysql://root:Giu72656770@104.154.92.48'
+        ':3306/sales-system')
 
     bancarizar = pd.read_excel(ruta + '/importar.xlsx', sheet_name='bancarizar', date_format='%d/%m/%Y',
                                parse_dates=[2, ], dtype={'observaciones': str}
