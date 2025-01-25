@@ -143,3 +143,41 @@ for credencial in credenciales:
                 connection.execute(query, {"ruc": str(credencial[0])})
                 connection.commit()
             print('FALLA DE AUTENTICACION REGISTRADA')
+
+
+"""id=nivel1_10 MI RUC Y OTROS REGISTROS
+id="nivel2_10_5" T-REGISTRO
+id="nivel3_10_5_3" Registro de Trabaj., Pension., Pers. en forma
+id="nivel4_10_5_3_1_3" Consultas y reports
+
+id="iframeApplication" FRAME
+id="adescarga" Descarga de Información del Prestador de Servicios
+id="selTipDes"	ELEGIR QUE SE QUIERE DESCARGAR
+<option value="4">TR3: Datos de identificación (IDE)</option>
+<option value="5">TR4: Dirección (DIR)</option>
+<option value="6">TR5: Datos laborales del trabajador (TRA)</option>
+<option value="7">TR6: Datos de seguridad social y adicionales (SSA)</option>
+<option value="8">TR7: Pensionistas (PEN)</option>
+<option value="9">TR8: Personal en formación (PFL)</option>
+<option value="10">TR9: Personal de terceros (TER)</option>
+<option value="15">TR10: Datos de la situación educativa - Pendientes (SEP)</option>
+<option value="14">TR11: Datos de la situación educativa - Todos (SET)</option>
+<option value="16">TR12: Datos de trabajadores con inconsistencias en el Régimen Pensionario (RPI)</option>
+<option value="17">TR13: Datos de la última afiliación sindical de cada trabajador (AST)</option>
+<option value="11">Registros inconsistentes y/o incompletos</option>
+
+id="btnRegistrar" REGISTRAR EL PEDIDO DE DESCARGA DEL REPORTE
+
+id="dlgPanel_XX1"	MODAL QUE APARECE AL REGISTRAR EL PEDIDO
+class="btn btn-success btn-ok" BOTTON ACEPTAR
+//*[@id="dlgPanel_XX1"]/div[2]/div/div[2]/button XPATH DEL BOTON
+
+
+id="nivel1_12" Mis declaraciones informativas
+id="nivel2_12_8" Consulto mis declaraciones y pagos
+id="nivel3_12_8_1" Declaraciones y pagos
+id="nivel4_12_8_1_1_2" Consulta general
+id="iframeApplication" FRAME
+
+
+id="nivel4_12_8_1_1_4" Consulta y descarga de pedidos de declaracion"""

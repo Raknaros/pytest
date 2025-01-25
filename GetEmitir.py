@@ -11,8 +11,8 @@ pd.set_option('display.max_rows', None)
 
 def tofacturas(proveedores: list = None, fecha: datetime = None, pedidos: list = None):
     salessystem = create_engine(
-        'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-        ':3306/salessystem')
+    'mysql+pymysql://root:Giu72656770@104.154.92.48'
+    ':3306/sales-system')
     lista_facturas = pd.read_sql("SELECT * FROM lista_facturas", con=salessystem,
                                  parse_dates=['emision', 'vencimiento', 'vencimiento2', 'vencimiento3', 'vencimiento4'])
     if pedidos is None:
@@ -178,5 +178,5 @@ def tofacturas(proveedores: list = None, fecha: datetime = None, pedidos: list =
 # TODO ORDENAR DE PROVEEDORES CON MENOS FACTURAS A PROVEEDORES CON MAS FACTURAS, ORGANIZAR MEJOR LOS DATOS DE LA GUIA PARA QUE SE MUESTREN MAS
 # TODO PENDIENTE IMPLEMENTAR PAGO EN MAS DE 1 CUOTA
 tofacturas(
-    proveedores=['GREJULCA', 'PARJU'],
-    fecha=datetime(2025, 1, 5))  #
+    proveedores=['ENFOCATE', 'PARJU', 'ESPINO', 'GREJULCA', 'INBOX', 'INVSONIC', 'SILVER', 'SONICSERV'],
+    fecha=datetime(2025, 2, 1))  #
