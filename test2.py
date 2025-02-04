@@ -1,15 +1,12 @@
 import zipfile
 import os
 import pandas as pd
+from Querys import pedidos
 
 # Ruta de la carpeta que contiene los archivos zip
-carpeta_zip = 'C:/Users/Raknaros/Downloads/reportes_planilla'
-reportes_planilla = None
-# Iterar sobre los archivos en la carpeta
-for archivo_zip in os.listdir(carpeta_zip):
-    # Verificar si el archivo es un zip
-    if archivo_zip.endswith('.zip'):
-        print(archivo_zip[:11])
+
+print(pedidos.loc[pedidos['estado'] == 'EN PROCESO'][
+                                               'adquiriente'].tolist())
 #TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
 
 

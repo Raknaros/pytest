@@ -21,6 +21,8 @@ detalle_completo = pd.merge(pre_detalle, catalogo, on='descripcion', how='left')
 
 entidades = pd.read_sql('SELECT * FROM priv.entities ORDER BY ruc ASC', warehouse)
 
+pedidos = pd.read_sql('SELECT id, cod_pedido, fecha_pedido, periodo, (CASE WHEN customers.alias IS NULL THEN a.adquiriente ELSE customers.alias END) AS adquiriente, a.adquiriente AS ruc,importe_total, rubro, promedio_factura, contado_credito, bancariza, notas, estado, punto_entrega FROM pedidos AS a LEFT JOIN customers ON customers.ruc=a.adquiriente ORDER BY id', salessystem)
+
 """SELECT fecha,periodo_mensual,tipo_operacion,cantidad_presentacion  FROM acc.iqbf ORDER BY fecha,tipo_operacion;
 
 SELECT

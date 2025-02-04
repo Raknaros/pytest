@@ -20,7 +20,7 @@ extension = '.pdf'
 archivos_encontrados = analizar_archivos(directorio, extension)
 for archivo in archivos_encontrados:
     print(archivo)
-
+"""
 def mover_archivos(archivos_encontrados, directorio_base, palabras_clave):
     for archivo in archivos_encontrados:
         for palabra in palabras_clave:
@@ -40,12 +40,9 @@ def mover_archivos(archivos_encontrados, directorio_base, palabras_clave):
                 else:
                     shutil.move(archivo, directorio_destino)
                 break
-
-# Ejemplo de uso
-directorio = '/path/al/directorio'
-extension = '.pdf'
+"""
 palabras_clave = ['tipo1', 'tipo2', 'tipo3']
 directorio_base = '/path/al/directorio/destino'
 
-archivos_encontrados = analizar_archivos(directorio, extension)
-mover_archivos(archivos_encontrados, directorio_base, palabras_clave)
+#archivos_encontrados = analizar_archivos(directorio, extension)
+#mover_archivos(archivos_encontrados, directorio_base, palabras_clave)

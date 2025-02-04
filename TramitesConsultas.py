@@ -1,11 +1,12 @@
 import time
 
 from selenium import webdriver
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
@@ -74,12 +75,11 @@ def tramites_consultas(driver):
         # Switch to the second popup
         driver.switch_to.window(second_popup_handle)
 
+        driver.maximize_window()
+
     return driver
 
 
-# Maximize window again (although it might already be maximized)
-#driver.maximize_window()
-#-----------------------------------------------------
 def login_tramites_consultas(driver, credenciales):
     time.sleep(2)
 
@@ -87,41 +87,89 @@ def login_tramites_consultas(driver, credenciales):
     driver.find_element(By.ID, "txtUsuario", ).send_keys(credenciales[1])  # ingresar usuario
     driver.find_element(By.ID, "txtContrasena").send_keys(credenciales[2])  # ingresar contrasena
     driver.find_element(By.ID, "btnAceptar").click()  # aceptar
-
+    print(credenciales[0])
+    wait = WebDriverWait(driver, 3)  # Timeout in seconds
+    print(1)
+    wait.until(EC.frame_to_be_available_and_switch_to_it((By.NAME, "ifrVCE")))
+    print(2)
     try:
-        print(credenciales[0])
-        wait = WebDriverWait(driver, 3)  # Timeout in seconds
-        wait.until(EC.frame_to_be_available_and_switch_to_it((By.NAME, "ifrVCE")))
-        try:
-            # Look for the modal dialog
-            wait.until(EC.element_to_be_clickable((By.ID, "btnFinalizarValidacionDatos")))
-            temp_dialog = driver.find_element(By.CLASS_NAME, "modal-dialog")
-            temp_dialog.find_element(By.ID, "btnFinalizarValidacionDatos").click()
-            driver.find_element(By.ID, "btnCerrar").click()
-            driver.switch_to.default_content()  # Switch back to the parent frame
-            print("VALIDACION DE CONTACTO PENDIENTE")
-        except Exception as e:
-            print("BUZON POR REVISAR")
-            driver.find_element(By.ID, "btnCerrar").click()
-            driver.switch_to.default_content()
-            print("AVISO DE BUZON CERRADO")
+        # Look for the modal dialog
+        print(3)
+        wait.until(EC.element_to_be_clickable((By.ID, "btnFinalizarValidacionDatos")))
+        print(4)
+        temp_dialog = driver.find_element(By.CLASS_NAME, "modal-dialog")
+        print(5)
+        temp_dialog.find_element(By.ID, "btnFinalizarValidacionDatos").click()
+        print(6)
+        driver.find_element(By.ID, "btnCerrar").click()
+        print("VALIDACION DE CONTACTO PENDIENTE")
     except TimeoutException:
-        # If the frame is not available within the timeout, switch back to parent frame
-        driver.switch_to.default_content()
-        print("Timeout exception occurred")
-    except Exception as e:
+        print("No hay dialogo de validacion")
+        # Check for mailbox message (second element)
+        try:
+            print("Esperando mensaje de buzon...")
+            driver.find_element(By.ID, "btnCerrar").click()  # Adjust selector if necessary
+            print("BUZON POR REVISAR")
+        except TimeoutException:
+            print("No hay mensaje de buzon")
+
+    finally:
         driver.switch_to.default_content()
         # Optionally, you might want to click on some service option here,
         # but it's commented out in your Java code
-        # driver.find_element(By.ID, "divOpcionServicio2").click()
+        #driver.find_element(By.ID, "divOpcionServicio2").click()
         print("AUTENTICACION CORRECTA")
-
     return driver
 
 
-# Note: You need to define or import `set_credentials` function and `Entities` class or object for this to work
+
+def reporte_tregistro(driver, reporte: str = 'IDE'):
+    print(1)
+    valores = {
+        'DIR': '5',
+        'TRA': '6',
+        'SSA': '7',
+        'PEN': '8',
+        'PFL': '9',
+        'TER': '10',
+        'SEP': '15',
+        'SET': '14',
+        'RPI': '16',
+        'AST': '17',
+        'ERROR': '11'
+    }
+    driver.find_element(By.ID, "divOpcionServicio2").click() #Empresas
+    print(1)
+    driver.find_element(By.ID, "nivel1_10").click()  #Mi RUC y otros registros
+    print(1)
+    driver.find_element(By.ID, "nivel2_10_5").click()  #T-Registro
+    print(1)
+    driver.find_element(By.ID, "nivel3_10_5_3").click()  #Registro de Trabaj., Pension., Pers. en forma
+    print(1)
+    driver.find_element(By.ID, "nivel4_10_5_3_1_3").click()  #Consultas y reportes
+    print(1)
+    wait = WebDriverWait(driver, 3)  # Timeout in seconds
+    print(1)
+    wait.until(EC.frame_to_be_available_and_switch_to_it((By.NAME, "iframeApplication")))
+    print(1)
+    driver.find_element(By.ID, "adescarga").click()  #Descarga de Información del Prestador de Servicios
+    print(1)
+    select = Select(driver.find_element(By.ID, 'selTipDes'))  #Lista de reportes a elegir para descargar
+    print(1)
+    select.select_by_value(valores.get(reporte))
+    print(1)
+    driver.find_element(By.ID, "btnRegistrar").click() #Registrar el pedido de descarga
+    print(1)
+    wait.until(
+        EC.presence_of_element_located((By.ID, "dlgPanel_XX1"))
+    )
+    button = driver.find_element(By.CSS_SELECTOR, ".btn.btn-success.btn-ok")
+    print(1)
+    button.click()
+
+#EJECUCION DEL FLUJO
 new_driver = tramites_consultas(driver=driver)
-provisional = [['10726501306', 'USANKYUL', 'liroalort'],]
+provisional = [['20613333593', '45676334', 'Julito2024@'], ]
 entidades['ruc'] = entidades['ruc'].astype(str)
 entidades = entidades[(entidades['activo']) &
                       (~entidades['observaciones'].fillna('').str.contains('FALLA AUTENTICA', case=False))]
@@ -129,12 +177,14 @@ if any(any(sublista) for sublista in provisional):
     credenciales = provisional
 else:
     credenciales = entidades[['ruc', 'usuario_sol', 'clave_sol']].values.tolist()
-print(len(entidades))
+
 for credencial in credenciales:
     try:
-        login_tramites_consultas(driver=new_driver, credenciales=credencial)
-        driver.find_element(By.ID, "btnSalir").click()
+        driver = login_tramites_consultas(new_driver, credencial)
+        reporte_tregistro(driver)
+
     except Exception as e:
+        print('ERROR EN EL LOGIN')
         if "falla" in driver.find_element(By.CLASS_NAME, "col-md-12").text.lower():
             driver.find_element(By.ID, "btnVolver").click()
             with warehouse.connect() as connection:
@@ -143,16 +193,17 @@ for credencial in credenciales:
                 connection.execute(query, {"ruc": str(credencial[0])})
                 connection.commit()
             print('FALLA DE AUTENTICACION REGISTRADA')
+    finally:
+        driver.find_element(By.ID, "btnSalir").click()
 
 
-"""id=nivel1_10 MI RUC Y OTROS REGISTROS
-id="nivel2_10_5" T-REGISTRO
-id="nivel3_10_5_3" Registro de Trabaj., Pension., Pers. en forma
-id="nivel4_10_5_3_1_3" Consultas y reports
 
-id="iframeApplication" FRAME
-id="adescarga" Descarga de Información del Prestador de Servicios
-id="selTipDes"	ELEGIR QUE SE QUIERE DESCARGAR
+
+
+"""
+
+id="adescarga" 
+id="selTipDes"	
 <option value="4">TR3: Datos de identificación (IDE)</option>
 <option value="5">TR4: Dirección (DIR)</option>
 <option value="6">TR5: Datos laborales del trabajador (TRA)</option>
@@ -166,7 +217,7 @@ id="selTipDes"	ELEGIR QUE SE QUIERE DESCARGAR
 <option value="17">TR13: Datos de la última afiliación sindical de cada trabajador (AST)</option>
 <option value="11">Registros inconsistentes y/o incompletos</option>
 
-id="btnRegistrar" REGISTRAR EL PEDIDO DE DESCARGA DEL REPORTE
+id="btnRegistrar" 
 
 id="dlgPanel_XX1"	MODAL QUE APARECE AL REGISTRAR EL PEDIDO
 class="btn btn-success btn-ok" BOTTON ACEPTAR
