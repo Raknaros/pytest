@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrdenarArchivos.py" beforeDir="false" afterPath="$PROJECT_DIR$/OrdenarArchivos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Querys.py" beforeDir="false" afterPath="$PROJECT_DIR$/Querys.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test2.py" beforeDir="false" afterPath="$PROJECT_DIR$/test2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +85,7 @@
     ]
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.GetEmitir">
     <configuration name="GetEmitir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pytest" />
       <option name="ENV_FILES" value="" />
@@ -301,7 +298,7 @@
       <workItem from="1738615037165" duration="2615000" />
       <workItem from="1738621955314" duration="2286000" />
       <workItem from="1738701809175" duration="61000" />
-      <workItem from="1738709690327" duration="8209000" />
+      <workItem from="1738709690327" duration="8525000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
@@ -567,7 +564,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738701819854</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1738722600553</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1738722600553</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
