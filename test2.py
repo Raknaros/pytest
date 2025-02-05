@@ -1,12 +1,17 @@
 import zipfile
 import os
 import pandas as pd
-from Querys import pedidos
 
-# Ruta de la carpeta que contiene los archivos zip
+from Querys import ventas
 
-print(pedidos.loc[pedidos['estado'] == 'EN PROCESO'][
-                                               'adquiriente'].tolist())
+ventas_periodo = ventas[ventas['periodo_tributario'] == 202501]
+
+ventas_periodo['nombre_xml'] = ventas_periodo.apply(lambda row: 'FACTURA' + row['numero_serie'] + '-' + str(row['numero_correlativo']) + str(row['ruc']) + '.xml', axis=1)
+
+
+print(ventas_periodo['nombre_xml'].tolist())
+
+
 #TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
 
 
