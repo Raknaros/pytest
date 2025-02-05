@@ -1,7 +1,9 @@
+import os
+import xml.etree.ElementTree as ET
 from apscheduler.schedulers.blocking import BlockingScheduler
 from time import sleep
 
-
+"""
 def job():
     print("I'm running")
     sleep(2)  # Simula una tarea que toma tiempo
@@ -18,3 +20,21 @@ scheduler.add_job(job, 'interval', seconds=3, id='job2')
 
 # Comienza la ejecución del scheduler
 scheduler.start()
+"""
+
+# Directorio donde están los archivos XML
+directorio = 'E:/TODOS LOS XML'
+
+# Itera sobre los archivos en el directorio
+for archivo in os.listdir(directorio):
+    # Verifica si el archivo es un archivo XML
+    if archivo.endswith('.xml'):
+        # Lee el contenido del archivo XML
+        with open(os.path.join(directorio, archivo), 'r') as f:
+            primera_linea = f.readline()
+            # Obtiene los primeros 50 caracteres de la primera línea
+            primeros_50_caracteres = primera_linea[:50]
+            print(f'Archivo: {archivo}')
+            print(f'Primeros 50 caracteres: {primeros_50_caracteres}')
+            print('---')
+

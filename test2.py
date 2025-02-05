@@ -11,6 +11,8 @@ ventas_periodo['nombre_xml'] = ventas_periodo.apply(lambda row: 'FACTURA' + row[
 
 print(ventas_periodo['nombre_xml'].tolist())
 
+for a in ventas_periodo['nombre_xml'].tolist():
+    os.remove('E:/TODOS LOS XML/'+a)
 
 #TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
 
