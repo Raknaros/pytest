@@ -13,14 +13,14 @@ pd.set_option('display.max_rows', None)
 warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
                           ':5432/warehouse')
 
-salessystem = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-                            ':3306/salessystem')
+salessystem = create_engine('mysql+pymysql://root:Giu72656770@104.154.92.48'
+                            ':3306/sales-system')
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202412"
+periodo = "202501"
 
-directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosdiciembre'
+directorio = 'C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosenero'
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
@@ -49,7 +49,7 @@ lista_filtrada = facturas_noanuladas[~facturas_noanuladas['adquiriente'].isin(pr
 adquirientes = lista_filtrada['adquiriente'].unique()
 
 lista = pd.merge(lista_filtrada, customers, on='adquiriente', how='left')
-"""
+
 for adquiriente in adquirientes:
     merger = PdfWriter()
     #Filtrar el Dataframe por adquiriente
@@ -85,6 +85,7 @@ for adquiriente in adquirientes:
 
     merger.write(f'{periodo}_{adquiriente}_{lista_adquiriente['alias'].iloc[0]}.pdf')
     merger.close()
+    
 """
 # Carpeta que contiene los archivos PDF
 carpeta_pdf = os.getcwd()
@@ -101,4 +102,4 @@ for contacto in customers['related_user'].unique().dropna():
             if pedido:
                 print(f'{periodo}_{row['adquiriente']}_{row['alias']}')
                 zip_file.write(os.path.join(carpeta_pdf, pedido[0]))
-
+"""

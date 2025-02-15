@@ -2,8 +2,10 @@ import zipfile
 import os
 import pandas as pd
 
-from Querys import ventas
+from Querys import ventas, salessystem, warehouse
 
+"""
+RETIRAR LOS XML QUE YA ESTAN ANALIZADOS Y SUBIDOS A LA BASE DE DATOS
 ventas_periodo = ventas[ventas['periodo_tributario'] == 202501]
 
 ventas_periodo['nombre_xml'] = ventas_periodo.apply(lambda row: 'FACTURA' + row['numero_serie'] + '-' + str(row['numero_correlativo']) + str(row['ruc']) + '.xml', axis=1)
@@ -13,6 +15,28 @@ print(ventas_periodo['nombre_xml'].tolist())
 
 for a in ventas_periodo['nombre_xml'].tolist():
     os.remove('E:/TODOS LOS XML/'+a)
+"""
+#VERIFICAR FACTURAS BANCARIZADAS POR PROVEEDOR
+#VERIFICAR PERIODO DE LAS FACTURAS BANCARIZADAS POR PROVEEDOR
+#VERIFICAR ADQUIRIENTES DE LAS FACTURAS BANCARIZADAS
+#VERIFICAR PEDIDOS DE ESOS PROVEEDORES BANCARIZADOS
+#VERIFICAR OTROS PEDIDOS
+#EMITIR LOS MANIFIESTAMENTE PENDIENTES Y URGENTES
+#VERIFICAR LOS OTROS PEDIDOS
+bancarizadas = pd.read_sql("SELECT proveedor, documento_relacionado FROM v_bcp ORDER BY proveedor", salessystem)
+
+entidades = pd.read_sql("SELECT alias, ruc FROM proveedores ORDER BY ruc", salessystem)
+
+pedidos = pd.read_sql("SELECT cod_pedido, ruc, periodo FROM pedidos", salessystem)
+
+facturas = pd.read_sql("SELECT ruc, periodo_tributario, numero_documento FROM acc._5", warehouse)
+
+
+
+
+
+
+
 
 #TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
 
