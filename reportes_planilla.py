@@ -1,10 +1,13 @@
 import zipfile
 import os
 import pandas as pd
-
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
 # Ruta de la carpeta que contiene los archivos zip
 carpeta_zip = 'C:/Users/Raknaros/Downloads/reportes_planilla'
 reportes_planilla = None
+"""
 # Iterar sobre los archivos en la carpeta
 for archivo_zip in os.listdir(carpeta_zip):
     # Verificar si el archivo es un zip
@@ -42,5 +45,16 @@ for archivo_zip in os.listdir(carpeta_zip):
                             reportes_planilla = pd.concat([reportes_planilla, df]).reset_index(drop=True)
 
 reportes_planilla.to_excel('test_planillas.xlsx')
+1 trabajador, 2 pensionista, 4 personal de terceros, 5 personal en formacion
+cui=hex(ruc)+hex(categoria&tipo_documento&numero_documento)
+"""
+reporte = 'C:/Users/Raknaros/Downloads/test_planillas.xlsx'
+reporte_df = pd.read_excel(reporte, parse_dates=['   Fec. Inicio   '], dtype={'numero_documento':object})#
+reporte_df.drop(columns=['Column1'], inplace=True)
+reporte_df.columns = ['tipo_documento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_inicio', 'tipo_trabajador', 'regimen_laboral', 'cat_ocu', 'ocupacion', 'nivel_educativo', 'discapacidad', 'sindicalizado', 'reg_acumulativo', 'maxima', 'horario_nocturno', 'situacion_especial', 'establecimiento', 'tipo_contrato', 'tipo_pago', 'periodicidad', 'entidad_financiera', 'nro_cuenta', 'remuneracion', 'situacion', 'reporte', 'ruc']
+reporte_df['reporte'] = reporte_df['reporte'].replace({'TRA': '1', 'OTRO': 10})
+reporte_df['tipo_documento'] = reporte_df['tipo_documento'].replace({'L.E / DNI': '01', 'OTRO': 10})
+reporte_df['cui'] = reporte_df.apply(lambda row: str(hex(row['ruc']) + str(int(row['reporte'] + row['tipo_documento'] + str(row['numero_documento']))))[2:], axis=1)
+datos_identificacion = reporte_df[['ruc', 'tipo_documento', 'numero_documento']]
 
-
+print(reporte_df.head(5))
