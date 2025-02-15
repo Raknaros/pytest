@@ -46,15 +46,17 @@ for archivo_zip in os.listdir(carpeta_zip):
 
 reportes_planilla.to_excel('test_planillas.xlsx')
 1 trabajador, 2 pensionista, 4 personal de terceros, 5 personal en formacion
-cui=hex(ruc)+hex(categoria&tipo_documento&numero_documento)
+
 """
 reporte = 'C:/Users/Raknaros/Downloads/test_planillas.xlsx'
-reporte_df = pd.read_excel(reporte, parse_dates=['   Fec. Inicio   '], dtype={'numero_documento':object})#
+reporte_df = pd.read_excel(reporte, parse_dates=['   Fec. Inicio   '], dtype={'    Número    ': str})#
 reporte_df.drop(columns=['Column1'], inplace=True)
-reporte_df.columns = ['tipo_documento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_inicio', 'tipo_trabajador', 'regimen_laboral', 'cat_ocu', 'ocupacion', 'nivel_educativo', 'discapacidad', 'sindicalizado', 'reg_acumulativo', 'maxima', 'horario_nocturno', 'situacion_especial', 'establecimiento', 'tipo_contrato', 'tipo_pago', 'periodicidad', 'entidad_financiera', 'nro_cuenta', 'remuneracion', 'situacion', 'reporte', 'ruc']
+reporte_df.columns = ['tipo_documento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'fecha_inicio', 'tipo_trabajador', 'regimen_laboral', 'cat_ocu', 'ocupacion', 'nivel_educativo', 'discapacidad', 'sindicalizado', 'regimen_alt', 'jornada_maxima', 'horario_nocturno', 'situacion_especial', 'establecimiento', 'tipo_contrato', 'tipo_pago', 'periodicidad', 'entidad_financiera', 'nro_cuenta', 'remuneracion', 'situacion', 'reporte', 'ruc']
 reporte_df['reporte'] = reporte_df['reporte'].replace({'TRA': '1', 'OTRO': 10})
 reporte_df['tipo_documento'] = reporte_df['tipo_documento'].replace({'L.E / DNI': '01', 'OTRO': 10})
-reporte_df['cui'] = reporte_df.apply(lambda row: str(hex(row['ruc']) + str(int(row['reporte'] + row['tipo_documento'] + str(row['numero_documento']))))[2:], axis=1)
-datos_identificacion = reporte_df[['ruc', 'tipo_documento', 'numero_documento']]
-
-print(reporte_df.head(5))
+reporte_df['cui'] = reporte_df.apply(lambda row: str(hex(row['ruc']) + str(hex(int(row['reporte'] + row['tipo_documento'] + str(row['numero_documento']))))[2:])[2:].upper(), axis=1)
+datos_identificacion = reporte_df[['ruc', 'tipo_documento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'cui']]
+trabajador = reporte_df[['fecha_inicio', 'tipo_trabajador', 'regimen_laboral', 'cat_ocu', 'ocupacion', 'nivel_educativo', 'discapacidad', 'sindicalizado', 'regimen_alt', 'jornada_maxima', 'horario_nocturno', 'situacion_especial', 'establecimiento', 'tipo_contrato', 'tipo_pago', 'periodicidad', 'entidad_financiera', 'nro_cuenta', 'remuneracion', 'situacion']]
+trabajador['cui_relacionado'] = reporte_df['cui']
+datos_identificacion.to_sql('ide', if_exists='append', index=False, schema='payroll')
+trabajador.to_sql(table='tra', if_exists='append', index=False, schema='payroll')
