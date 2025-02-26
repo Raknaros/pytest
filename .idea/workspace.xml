@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
+      <change afterPath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reportes_planilla.py" beforeDir="false" afterPath="$PROJECT_DIR$/reportes_planilla.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +16,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jupyter Notebook" />
         <option value="Python Script" />
+        <option value="Jupyter Notebook" />
       </list>
     </option>
   </component>
@@ -302,7 +302,11 @@
       <workItem from="1738709690327" duration="8525000" />
       <workItem from="1738811600781" duration="3640000" />
       <workItem from="1738942166003" duration="4455000" />
-      <workItem from="1739637078373" duration="2292000" />
+      <workItem from="1739637078373" duration="2908000" />
+      <workItem from="1739815036106" duration="87000" />
+      <workItem from="1740004520952" duration="81000" />
+      <workItem from="1740520711208" duration="587000" />
+      <workItem from="1740577339575" duration="10948000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
@@ -600,7 +604,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739630534946</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1739641897255</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1739641897255</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
