@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
-      <change afterPath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +86,7 @@
     ]
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.GetEmitir">
     <configuration name="GetEmitir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pytest" />
       <option name="ENV_FILES" value="" />
@@ -306,7 +306,8 @@
       <workItem from="1739815036106" duration="87000" />
       <workItem from="1740004520952" duration="81000" />
       <workItem from="1740520711208" duration="587000" />
-      <workItem from="1740577339575" duration="10948000" />
+      <workItem from="1740577339575" duration="11018000" />
+      <workItem from="1740604273323" duration="8274000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
@@ -612,7 +613,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739641897255</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1740601508296</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1740601508296</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
