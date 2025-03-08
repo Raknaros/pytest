@@ -37,4 +37,14 @@ for archivo in os.listdir(directorio):
             print(f'Archivo: {archivo}')
             print(f'Primeros 50 caracteres: {primeros_50_caracteres}')
             print('---')
+            # Carga el archivo XML
+            tree = ET.parse('archivo.xml')
+            root = tree.getroot()
 
+            # Extrae los datos de la factura
+            factura = {}
+            factura['numero'] = root.find('.//{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}ID').text
+            factura['fecha'] = root.find('.//{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}IssueDate').text
+            factura['proveedor'] = root.find(
+                './/{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}SupplierParty').find(
+                './/{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Name').text
