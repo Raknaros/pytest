@@ -6,7 +6,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
-def load_bancarizar(ruta: str):
+def load_bancarizar(ruta: str, banco):
     engine = create_engine(
         'mysql+pymysql://root:Giu72656770@104.154.92.48'
         ':3306/sales-system')
@@ -19,8 +19,11 @@ def load_bancarizar(ruta: str):
     for column in str_columns:
         if bancarizar[column].notna().any():
             bancarizar[column] = bancarizar[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
+    if banco == 'bcp':
+        return print(bancarizar.to_sql('v_bcp', engine, if_exists='append', index=False))
+    elif banco == 'ibk':
+        bancarizar = bancarizar.set_axis(['adquiriente', 'proveedor', 'fecha', 'importe', 'factura', 'observaciones'], axis=1)
+        return print(bancarizar.to_sql('v_ibk', engine, if_exists='append', index=False))
 
-    return print(bancarizar.to_sql('v_bcp', engine, if_exists='append', index=False))
 
-
-load_bancarizar('D:/OneDrive/facturacion')
+load_bancarizar('D:/OneDrive/facturacion', banco='ibk')
