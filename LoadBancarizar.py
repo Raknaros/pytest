@@ -6,10 +6,12 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
-def load_bancarizar(ruta: str, banco):
+def load_bancarizar(ruta: str):
     engine = create_engine(
         'mysql+pymysql://root:Giu72656770@104.154.92.48'
         ':3306/sales-system')
+
+    lista_ibk = ['INVSONIC', 'PARJU', 'SONICSERV', '', '', '']
 
     bancarizar = pd.read_excel(ruta + '/importar.xlsx', sheet_name='bancarizar', date_format='%d/%m/%Y',
                                parse_dates=[2, ], dtype={'observaciones': str}
@@ -19,11 +21,16 @@ def load_bancarizar(ruta: str, banco):
     for column in str_columns:
         if bancarizar[column].notna().any():
             bancarizar[column] = bancarizar[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
-    if banco == 'bcp':
+
+    ibk = bancarizar[bancarizar['adquiriente'].isin(lista_ibk)]
+    bcp = bancarizar[~bancarizar['adquiriente'].isin(lista_ibk)]
+
+    if not bcp.empty:
         return print(bancarizar.to_sql('v_bcp', engine, if_exists='append', index=False))
-    elif banco == 'ibk':
-        bancarizar = bancarizar.set_axis(['adquiriente', 'proveedor', 'fecha', 'importe', 'factura', 'observaciones'], axis=1)
+    elif not ibk.empty:
+        bancarizar = bancarizar.set_axis(['adquiriente', 'proveedor', 'fecha', 'importe', 'factura', 'observaciones'],
+                                         axis=1)
         return print(bancarizar.to_sql('v_ibk', engine, if_exists='append', index=False))
 
 
-load_bancarizar('D:/OneDrive/facturacion', banco='ibk')
+load_bancarizar('D:/OneDrive/facturacion')
