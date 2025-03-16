@@ -11,7 +11,7 @@ def load_bancarizar(ruta: str):
         'mysql+pymysql://root:Giu72656770@104.154.92.48'
         ':3306/sales-system')
 
-    lista_ibk = ['INVSONIC', 'PARJU', 'SONICSERV', '', '', '']
+    lista_ibk = ['INVSONIC', 'PARJU', 'SONICSERV']
 
     bancarizar = pd.read_excel(ruta + '/importar.xlsx', sheet_name='bancarizar', date_format='%d/%m/%Y',
                                parse_dates=[2, ], dtype={'observaciones': str}
@@ -22,15 +22,15 @@ def load_bancarizar(ruta: str):
         if bancarizar[column].notna().any():
             bancarizar[column] = bancarizar[column].apply(lambda x: x.strip().upper() if pd.notna(x) else x)
 
-    ibk = bancarizar[bancarizar['adquiriente'].isin(lista_ibk)]
-    bcp = bancarizar[~bancarizar['adquiriente'].isin(lista_ibk)]
+    ibk = bancarizar[bancarizar['proveedor'].isin(lista_ibk)]
+    bcp = bancarizar[~bancarizar['proveedor'].isin(lista_ibk)]
 
-    if not bcp.empty:
-        return print(bancarizar.to_sql('v_bcp', engine, if_exists='append', index=False))
-    elif not ibk.empty:
-        bancarizar = bancarizar.set_axis(['adquiriente', 'proveedor', 'fecha', 'importe', 'factura', 'observaciones'],
+    #if not bcp.empty:
+    #    print(bcp.to_sql('v_bcp', engine, if_exists='append', index=False))
+    if not ibk.empty:
+        ibk = ibk.set_axis(['adquiriente', 'proveedor', 'fecha', 'importe', 'factura', 'observaciones'],
                                          axis=1)
-        return print(bancarizar.to_sql('v_ibk', engine, if_exists='append', index=False))
+        print(ibk.to_sql('v_ibk', engine, if_exists='append', index=False))
 
 
 load_bancarizar('D:/OneDrive/facturacion')
