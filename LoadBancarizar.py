@@ -11,7 +11,7 @@ def load_bancarizar(ruta: str):
         'mysql+pymysql://root:Giu72656770@104.154.92.48'
         ':3306/sales-system')
 
-    lista_ibk = ['INVSONIC', 'PARJU', 'SONICSERV', 'THB', 'ENFOCATE', 'JMV', 'TEXTILES', 'INGCACH', 'INGCELIZ', 'SILVER', 'ELITE', 'ESPINO', 'ENFOCATE', 'SILVER']
+    lista_ibk = ['INVSONIC', 'PARJU', 'SONICSERV', 'THB', 'ENFOCATE', 'JMV', 'TEXTILES', 'INGCACH', 'INGCELIZ', 'SILVER', 'ELITE', 'ESPINO', 'ENFOCATE', 'SILVER', 'GREJULCA']
 
     bancarizar = pd.read_excel(ruta + '/importar.xlsx', sheet_name='bancarizar', date_format='%d/%m/%Y',
                                parse_dates=[2, ], dtype={'observaciones': str}
