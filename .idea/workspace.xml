@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AgruparPedidos.py" beforeDir="false" afterPath="$PROJECT_DIR$/AgruparPedidos.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoadBancarizar.py" beforeDir="false" afterPath="$PROJECT_DIR$/LoadBancarizar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MetaFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/MetaFacturacion.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +89,7 @@
     ]
   }
 }</component>
-  <component name="RunManager" selected="Python.GetEmitir">
+  <component name="RunManager">
     <configuration name="GetEmitir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pytest" />
       <option name="ENV_FILES" value="" />
@@ -332,6 +332,8 @@
       <workItem from="1743622828097" duration="12188000" />
       <workItem from="1743955957626" duration="15519000" />
       <workItem from="1744141731818" duration="2357000" />
+      <workItem from="1744291560754" duration="3506000" />
+      <workItem from="1744308978248" duration="9385000" />
     </task>
     <task id="LOCAL-00001" summary="to_sql pending">
       <option name="closed" value="true" />
