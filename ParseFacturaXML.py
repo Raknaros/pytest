@@ -60,7 +60,7 @@ def parse_invoice(xml_file_path):
         if supplier is not None:
             invoice_data['supplier'] = {
                 'ruc': safe_find_text(supplier, './/cbc:ID', NAMESPACES),
-                'name': safe_find_text(supplier, './/cbc:Name', NAMESPACES),
+                'name': safe_find_text(supplier, './/cbc:RegistrationName', NAMESPACES),
                 'address': {
                     'street': safe_find_text(supplier, './/cac:PostalAddress/cbc:StreetName', NAMESPACES),
                     'city': safe_find_text(supplier, './/cac:PostalAddress/cbc:CityName', NAMESPACES),

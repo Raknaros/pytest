@@ -10,7 +10,11 @@ def parse_ubl_invoice(xml_file):
     namespaces = {
         'cbc': 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
         'cac': 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
-        '': 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'
+        '': 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
+        'ext': 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2',
+        'sac': 'urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1',
+        'ds': 'http://www.w3.org/2000/09/xmldsig#',
+        'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
     }
 
     # Extraer información básica
