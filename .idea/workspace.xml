@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MetaFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/MetaFacturacion.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +60,6 @@
     &quot;Python.LoadPedidos.executor&quot;: &quot;Run&quot;,
     &quot;Python.LoadProveedores.executor&quot;: &quot;Run&quot;,
     &quot;Python.OrdenarArchivos.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ParseFacturaXML.executor&quot;: &quot;Run&quot;,
     &quot;Python.ReadPDFFactura.executor&quot;: &quot;Run&quot;,
     &quot;Python.TramitesConsultas.executor&quot;: &quot;Run&quot;,
     &quot;Python.VentasToFacturas.executor&quot;: &quot;Run&quot;,
@@ -88,7 +87,7 @@
     ]
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.GetEmitir">
     <configuration name="GetEmitir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pytest" />
       <option name="ENV_FILES" value="" />
@@ -330,8 +329,22 @@
       <workItem from="1743601441479" duration="13193000" />
       <workItem from="1743622828097" duration="3988000" />
       <workItem from="1744232141404" duration="7246000" />
-      <workItem from="1744596640227" duration="2316000" />
-      <workItem from="1744600277330" duration="2020000" />
+    </task>
+    <task id="LOCAL-00001" summary="to_sql pending">
+      <option name="closed" value="true" />
+      <created>1713418768542</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713418768542</updated>
+    </task>
+    <task id="LOCAL-00002" summary="to_sql ready">
+      <option name="closed" value="true" />
+      <created>1713507357344</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1713507357344</updated>
     </task>
     <task id="LOCAL-00003" summary="LoadPDT621 and vouchers">
       <option name="closed" value="true" />
@@ -709,23 +722,7 @@
       <option name="project" value="LOCAL" />
       <updated>1744241383449</updated>
     </task>
-    <task id="LOCAL-00050" summary="Pedidos y facturas rdy">
-      <option name="closed" value="true" />
-      <created>1744415476217</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1744415476218</updated>
-    </task>
-    <task id="LOCAL-00051" summary="Pedidos y facturas rdy">
-      <option name="closed" value="true" />
-      <created>1744598968120</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1744598968120</updated>
-    </task>
-    <option name="localTasksCounter" value="52" />
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -755,7 +752,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="Pedidos y facturas rdy" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pytest$ParseFacturaXML.coverage" NAME="ParseFacturaXML Coverage Results" MODIFIED="1744597922734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$GetPreCuadros.coverage" NAME="GetPreCuadros Coverage Results" MODIFIED="1725243217429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$test.coverage" NAME="test Coverage Results" MODIFIED="1737018589895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadPedidos.coverage" NAME="LoadPedidos Coverage Results" MODIFIED="1724971851816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
