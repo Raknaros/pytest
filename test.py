@@ -4,6 +4,7 @@ import os
 import zipfile
 from io import BytesIO
 
+
 def parse_ubl_invoice(xml_content):
     # Parsear el XML desde una cadena
     root = ET.fromstring(xml_content)
@@ -36,8 +37,10 @@ def parse_ubl_invoice(xml_content):
     despatch_ref = root.find('.//cac:DespatchDocumentReference', namespaces)
     despatch_data = {
         'despatch_document_id': despatch_ref.find('cbc:ID', namespaces).text if despatch_ref is not None else "",
-        'despatch_document_type_code': despatch_ref.find('cbc:DocumentTypeCode', namespaces).text if despatch_ref is not None else "",
-        'despatch_document_type': despatch_ref.find('cbc:DocumentType', namespaces).text if despatch_ref is not None else ""
+        'despatch_document_type_code': despatch_ref.find('cbc:DocumentTypeCode',
+                                                         namespaces).text if despatch_ref is not None else "",
+        'despatch_document_type': despatch_ref.find('cbc:DocumentType',
+                                                    namespaces).text if despatch_ref is not None else ""
     }
 
     # Emisor (AccountingSupplierParty)
@@ -62,7 +65,8 @@ def parse_ubl_invoice(xml_content):
             'supplier_country_subentity_code': supplier_address.find('cbc:CountrySubentityCode', namespaces).text or "",
             'supplier_district': supplier_address.find('cbc:District', namespaces).text or "",
             'supplier_address_line': supplier_address.find('.//cac:AddressLine/cbc:Line', namespaces).text or "",
-            'supplier_country_code': supplier_address.find('.//cac:Country/cbc:IdentificationCode', namespaces).text or ""
+            'supplier_country_code': supplier_address.find('.//cac:Country/cbc:IdentificationCode',
+                                                           namespaces).text or ""
         })
 
     # Cliente (AccountingCustomerParty)
@@ -87,7 +91,8 @@ def parse_ubl_invoice(xml_content):
             'customer_country_subentity_code': customer_address.find('cbc:CountrySubentityCode', namespaces).text or "",
             'customer_district': customer_address.find('cbc:District', namespaces).text or "",
             'customer_address_line': customer_address.find('.//cac:AddressLine/cbc:Line', namespaces).text or "",
-            'customer_country_code': customer_address.find('.//cac:Country/cbc:IdentificationCode', namespaces).text or ""
+            'customer_country_code': customer_address.find('.//cac:Country/cbc:IdentificationCode',
+                                                           namespaces).text or ""
         })
 
     # Comprador (BuyerCustomerParty)
@@ -178,11 +183,14 @@ def parse_ubl_invoice(xml_content):
             'item_tax_subtotal_taxable_amount': item_tax_subtotal.find('cbc:TaxableAmount', namespaces).text or "",
             'item_tax_subtotal_tax_amount': item_tax_subtotal.find('cbc:TaxAmount', namespaces).text or "",
             'item_tax_category_id': item_tax_subtotal.find('.//cac:TaxCategory/cbc:ID', namespaces).text or "",
-            'item_tax_category_percent': item_tax_subtotal.find('.//cac:TaxCategory/cbc:Percent', namespaces).text or "",
-            'item_tax_exemption_reason_code': item_tax_subtotal.find('.//cac:TaxCategory/cbc:TaxExemptionReasonCode', namespaces).text or "",
+            'item_tax_category_percent': item_tax_subtotal.find('.//cac:TaxCategory/cbc:Percent',
+                                                                namespaces).text or "",
+            'item_tax_exemption_reason_code': item_tax_subtotal.find('.//cac:TaxCategory/cbc:TaxExemptionReasonCode',
+                                                                     namespaces).text or "",
             'item_tax_scheme_id': item_tax_subtotal.find('.//cac:TaxScheme/cbc:ID', namespaces).text or "",
             'item_tax_scheme_name': item_tax_subtotal.find('.//cac:TaxScheme/cbc:Name', namespaces).text or "",
-            'item_tax_scheme_type_code': item_tax_subtotal.find('.//cac:TaxScheme/cbc:TaxTypeCode', namespaces).text or ""
+            'item_tax_scheme_type_code': item_tax_subtotal.find('.//cac:TaxScheme/cbc:TaxTypeCode',
+                                                                namespaces).text or ""
         })
 
         # Descripción del ítem
@@ -212,6 +220,7 @@ def parse_ubl_invoice(xml_content):
         rows.append(row)
 
     return rows
+
 
 def process_xml_folder(folder_path):
     all_rows = []
@@ -254,6 +263,7 @@ def process_xml_folder(folder_path):
         print("No se encontraron datos para procesar.")
         return pd.DataFrame()
 
+
 # Configuración
 folder_path = 'C:/Users/Raknaros/Desktop/xmlprueba'  # Reemplaza con la ruta a tu carpeta
 output_file = 'facturas.csv'  # Archivo de salida
@@ -284,6 +294,3 @@ scheduler.add_job(job, 'interval', seconds=3, id='job2')
 # Comienza la ejecución del scheduler
 scheduler.start()
 """
-
-
-

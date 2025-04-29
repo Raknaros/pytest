@@ -8,8 +8,8 @@ pd.set_option('display.max_rows', None)
 
 def load_bancarizar(ruta: str):
     engine = create_engine(
-        'mysql+pymysql://root:Giu72656770@104.154.92.48'
-        ':3306/sales-system')
+        'mysql+pymysql://admin:Giu12FF8DB*@salessystem.crkwsaygg8b2.us-east-2.rds.amazonaws.com'
+        ':3306/salessystem')
 
     lista_bcp = []
 
