@@ -13,14 +13,14 @@ pd.set_option('display.max_rows', None)
 warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
                           ':5432/warehouse')
 
-salessystem = create_engine('mysql+pymysql://root:Giu72656770@104.154.92.48'
-                            ':3306/sales-system')
+salessystem = create_engine('mysql+pymysql://admin:Giu12FF8DB*@salessystem.crkwsaygg8b2.us-east-2.rds.amazonaws.com'
+                            ':3306/salessystem')
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202503"
+periodo = "202504"
 
-directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosmarzo')
+directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosabril')
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
