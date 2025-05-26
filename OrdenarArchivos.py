@@ -52,12 +52,12 @@ def analizar_archivos(directorio, extension):
     for root, dirs, files in os.walk(directorio):
         for file in files:
             for inicio in inicios_sunat:
-                if file.endswith(extension):
+                if file.endswith(extension): #cambiar a si comienza en
                     archivos_encontrados.append(os.path.join(root, file))
                 if file.endswith('.zip'):
                     zip_file = zipfile.ZipFile(os.path.join(root, file))
                     for zip_info in zip_file.infolist():
-                        if zip_info.filename.endswith(extension):
+                        if zip_info.filename.endswith(extension): #cambiar a si comienza en
                             archivos_encontrados.append(os.path.join(root, file) + ':' + zip_info.filename)
     return archivos_encontrados
 
