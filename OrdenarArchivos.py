@@ -1,3 +1,4 @@
+import io
 import os
 import shutil
 import zipfile
@@ -71,75 +72,53 @@ def analizar_archivos(directorio):
 
 
 
-# Función principal
-def analizar_archivos(directorio):
-    encontrados = []
+def analizar_zip(zip_file, path_origen, archivos_encontrados):
+    for zip_info in zip_file.infolist():
+        if zip_info.is_dir():
+            continue
 
-    for root, _, files in os.walk(directorio):
+        filename = os.path.basename(zip_info.filename)
+
+        # Coincidencia por prefijo o patrón estructurado
+        if any(filename.startswith(prefijo) for prefijo in inicios_sunat) or \
+           any(patron.match(filename) for patron in patrones_estructurados.values()):
+            archivos_encontrados.append(f"{path_origen}:{zip_info.filename}")
+
+        # Si hay otro ZIP dentro, procesarlo recursivamente
+        if filename.endswith(".zip"):
+            if any(p.match(filename) for p in patrones_estructurados.values()):
+                continue
+            with zip_file.open(zip_info) as nested_file:
+                nested_bytes = nested_file.read()
+                with zipfile.ZipFile(io.BytesIO(nested_bytes)) as nested_zip:
+                    nested_path = f"{path_origen}:{zip_info.filename}"
+                    analizar_zip(nested_zip, nested_path, archivos_encontrados)
+
+
+def analizar_archivos(directorio):
+    archivos_encontrados = []
+
+    for root, dirs, files in os.walk(directorio):
         for file in files:
             ruta_completa = os.path.join(root, file)
 
-            # Si el nombre del archivo comienza con un prefijo
-            if any(file.startswith(prefijo) for prefijo in inicios_sunat) or any(
-                    patron.match(file) for patron in patrones_estructurados.values()
-            ):
-                encontrados.append(ruta_completa)
+            # Archivos en disco
+            if any(file.startswith(prefijo) for prefijo in inicios_sunat) or \
+               any(patron.match(file) for patron in patrones_estructurados.values()):
+                archivos_encontrados.append(ruta_completa)
 
-            # Si es un .zip, abrir y analizar su contenido
-            if file.lower().endswith(".zip"):
-                encontrados.extend(
-                    analizar_zip_recursivo(ruta_completa, ruta_completa)
-                )
+            # ZIPs en disco
+            if file.endswith(".zip"):
+                if any(p.match(file) for p in patrones_estructurados.values()):
+                    continue
+                try:
+                    with zipfile.ZipFile(ruta_completa) as zip_file:
+                        analizar_zip(zip_file, ruta_completa, archivos_encontrados)
+                except zipfile.BadZipFile:
+                    print(f"⚠️ Archivo ZIP inválido: {ruta_completa}")
+                    continue
 
-    return encontrados
-
-# Analiza un .zip, incluso si hay zip anidados
-def analizar_zip_recursivo(ruta_zip, ruta_externa):
-    encontrados = []
-    try:
-        with zipfile.ZipFile(ruta_zip) as z:
-            for info in z.infolist():
-                nombre = info.filename
-
-                # Si el archivo interno coincide con prefijo
-                if any(nombre.startswith(prefijo) for prefijo in inicios_sunat) or any(
-                        patron.match(os.path.basename(nombre)) for patron in patrones_estructurados.values()
-                ):
-                    encontrados.append(f"{ruta_externa}:{nombre}")
-
-                # Si hay otro zip adentro, leerlo recursivamente
-                if nombre.lower().endswith(".zip"):
-                    with z.open(info) as nested:
-                        nested_zip = zipfile.ZipFile(BytesIO(nested.read()))
-                        encontrados.extend(
-                            analizar_zip_anidado(nested_zip, f"{ruta_externa}:{nombre}")
-                        )
-
-    except zipfile.BadZipFile:
-        print(f"Archivo ZIP dañado: {ruta_zip}")
-    except Exception as e:
-        print(f"Error al analizar {ruta_zip}: {e}")
-
-    return encontrados
-
-def analizar_zip_anidado(z, ruta_externa):
-    encontrados = []
-    for info in z.infolist():
-        nombre = info.filename
-
-        if any(nombre.startswith(prefijo) for prefijo in inicios_sunat) or any(
-                patron.match(os.path.basename(nombre)) for patron in patrones_estructurados.values()
-        ):
-            encontrados.append(f"{ruta_externa}:{nombre}")
-
-        if nombre.lower().endswith(".zip"):
-            with z.open(info) as nested:
-                nested_zip = zipfile.ZipFile(BytesIO(nested.read()))
-                encontrados.extend(
-                    analizar_zip_anidado(nested_zip, f"{ruta_externa}:{nombre}")
-                )
-
-    return encontrados
+    return archivos_encontrados
 
 # EJEMPLO DE USO
 directorio = r"C:\Users\Raknaros\Desktop\pdf_sunat"
