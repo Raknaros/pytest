@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/AnalisisFacturacion.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MetaFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/MetaFacturacion.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OrdenarArchivos.py" beforeDir="false" afterPath="$PROJECT_DIR$/OrdenarArchivos.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +22,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -89,7 +85,7 @@
     ]
   }
 }</component>
-  <component name="RunManager" selected="Python.GetEmitir">
+  <component name="RunManager">
     <configuration name="GetEmitir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pytest" />
       <option name="ENV_FILES" value="" />
@@ -341,15 +337,8 @@
       <workItem from="1748965480413" duration="3447000" />
       <workItem from="1748982861809" duration="7420000" />
       <workItem from="1749040889809" duration="8491000" />
-      <workItem from="1749512270904" duration="1126000" />
-    </task>
-    <task id="LOCAL-00004" summary="Others loaders pending">
-      <option name="closed" value="true" />
-      <created>1714229726144</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1714229726145</updated>
+      <workItem from="1749512270904" duration="1405000" />
+      <workItem from="1749593964337" duration="4391000" />
     </task>
     <task id="LOCAL-00005" summary="F0621 road to finish">
       <option name="closed" value="true" />
@@ -735,7 +724,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748995752114</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1749570317646</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1749570317646</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -149,6 +149,38 @@ def mover_archivos(archivos_encontrados, directorio_base, palabras_clave):
                 break
 
 
+def agrupar_archivos_en_zip(lista_rutas, salida_zip):
+    with zipfile.ZipFile(salida_zip, 'w', zipfile.ZIP_DEFLATED) as zip_salida:
+        for ruta in lista_rutas:
+            partes = ruta.split(':')
+            archivo_base = partes[0]
+
+            # Si es solo un archivo suelto (no está dentro de ZIPs)
+            if len(partes) == 1:
+                nombre_destino = os.path.basename(archivo_base)
+                zip_salida.write(archivo_base, arcname=nombre_destino)
+                continue
+
+            # Caso ZIP o ZIP anidado
+            with open(archivo_base, 'rb') as f:
+                data = f.read()
+            buffer = io.BytesIO(data)
+
+            # Abrimos sucesivos niveles de ZIP
+            zip_actual = zipfile.ZipFile(buffer)
+            for i, parte in enumerate(partes[1:]):
+                if i == len(partes[1:]) - 1:
+                    # Es el archivo final a extraer
+                    with zip_actual.open(parte) as archivo_final:
+                        contenido = archivo_final.read()
+                        nombre_destino = parte.replace('/', '_')
+                        zip_salida.writestr(nombre_destino, contenido)
+                else:
+                    # Es un ZIP intermedio
+                    with zip_actual.open(parte) as zip_intermedio:
+                        nested_bytes = zip_intermedio.read()
+                        zip_actual = zipfile.ZipFile(io.BytesIO(nested_bytes))
+
 """
 # Ejemplo de uso
 directorio = '/path/al/directorio'
