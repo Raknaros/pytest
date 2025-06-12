@@ -24,7 +24,23 @@ RECIBO POR HONORARIOS PDF = 'RHE{ruc}{numero_serie}{numero_correlativo}'
 GUIA DE REMISION REMITENTE PDF = '{ruc}-{tipo_documento}-{numero_serie}-{numero_correlativo}'
 REPORTE PLANILLA T REGISTRO ZIP = '{ruc}_{codigo_reporte}_{DDMMYYYY}
 DETALLE DECLARACIONES Y PAGOS EXCEL = 'DetalleDeclaraciones_{ruc}_%PORDEFINIR%'
-
+DETALLE DECLARACIONES Y PAGOS: DetalleDeclaraciones_(\d{11})_(\d{14})
+FICHA RUC: reporteec_ficharuc_\d{11}_\d{14}\.pdf$
+INGRESO COMO RECAUDACION: ridetrac_\d{11}_\d{13}_\d{14}\.pdf$
+LIBERACION DE FONDOS: rilf_\d{11}_\d{13}_\d{14}_\d{9}\.pdf$
+MULTA: rmgen_\d{11}_\d{13}_\d{14}_\d{9}\.pdf$
+NOTIFICACION: constancia_\d{14}_\{20}_\d{13}_\d{9}\.pdf$
+COACTIVA: rvalores_\d{11}_\d{13}_\d{14}_\d{9}\.pdf$
+BAJA DE OFICIO: bod_\d{6}_\d{{11}_\d{4}\.pdf$
+FACTURA PDF: PDF-DOC-([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$
+BOLETA PDF:
+BOLETA XML:
+NOTA CREDITO PDF:
+NOTA CREDITO XML:
+NOTA DEBITO PDF:
+NOTA DEBITO XML:
+RECIBO PDF:
+RECIBO XML:
 """
 
 #UBICAR TODOS LOS ARCHIVOS QUE COMIENCEN CON ALGUNA FRASE IDENTIFICADA Y COLOCARLOS EN UNA LISTA
