@@ -24,23 +24,7 @@ RECIBO POR HONORARIOS PDF = 'RHE{ruc}{numero_serie}{numero_correlativo}'
 GUIA DE REMISION REMITENTE PDF = '{ruc}-{tipo_documento}-{numero_serie}-{numero_correlativo}'
 REPORTE PLANILLA T REGISTRO ZIP = '{ruc}_{codigo_reporte}_{DDMMYYYY}
 DETALLE DECLARACIONES Y PAGOS EXCEL = 'DetalleDeclaraciones_{ruc}_%PORDEFINIR%'
-DETALLE DECLARACIONES Y PAGOS: DetalleDeclaraciones_(\d{11})_(\d{14})
-FICHA RUC: reporteec_ficharuc_\d{11}_\d{14}\.pdf$
-INGRESO COMO RECAUDACION: ridetrac_\d{11}_\d{13}_\d{14}\.pdf$
-LIBERACION DE FONDOS: rilf_\d{11}_\d{13}_\d{14}_\d{9}\.pdf$
-MULTA: rmgen_\d{11}_\d{13}_\d{14}_\d{9}\.pdf$
-NOTIFICACION: constancia_\d{14}_\{20}_\d{13}_\d{9}\.pdf$
-COACTIVA: rvalores_\d{11}_\d{13}_\d{14}_\d{9}\.pdf$
-BAJA DE OFICIO: bod_\d{6}_\d{{11}_\d{4}\.pdf$
-FACTURA PDF: PDF-DOC-([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$
-BOLETA PDF:
-BOLETA XML:
-NOTA CREDITO PDF:
-NOTA CREDITO XML:
-NOTA DEBITO PDF:
-NOTA DEBITO XML:
-RECIBO PDF:
-RECIBO XML:
+
 """
 
 #UBICAR TODOS LOS ARCHIVOS QUE COMIENCEN CON ALGUNA FRASE IDENTIFICADA Y COLOCARLOS EN UNA LISTA
@@ -67,6 +51,24 @@ inicios_sunat = ['reporteec_ficharuc_',
 patrones_estructurados = {
     "patron_guia_remision": re.compile(r"^(\d{11})-09-([A-Z0-9]{4})-(\d{1,8})\.(pdf|xml)$", re.IGNORECASE),
     "reporte_planilla_zip": re.compile(r"^\d{11}_[A-Z]+_\d{8}\.zip$", re.IGNORECASE),
+    "declaraciones_pagos": re.compile(r"^DetalleDeclaraciones_(\d{11})_(\d{14})\.xlsx$", re.IGNORECASE),
+    "ficha_ruc": re.compile(r"^reporteec_ficharuc_(\d{11})_(\d{14})\.pdf$", re.IGNORECASE),
+    "ingreso_recaudacion": re.compile(r"^ridetrac_(\d{11})_(\d{13})_(\d{14})\.pdf$", re.IGNORECASE),
+    "liberacion_fondos": re.compile(r"^rilf_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
+    "multa": re.compile(r"^rmgen_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
+    "notificacion": re.compile(r"^constancia_(\d{14})_(\{20})_(\d{13})_(\d{9})\.pdf$", re.IGNORECASE),
+    "coactiva": re.compile(r"^rvalores_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
+    "baja_oficio": re.compile(r"^bod_(\d{6})_(\d{{11})_(\d{4})\.pdf$", re.IGNORECASE),
+    "factura_pdf": re.compile(r"^PDF-DOC-([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
+    "factura_xml": re.compile(r"^FACTURA([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
+    "boleta_pdf": re.compile(r"^PDF-BOLETA([A-Z0-9]{4})-(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
+    "boleta_xml": re.compile(r"^BOLETA([A-Z0-9]{4})-(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
+    "credito_pdf": re.compile(r"^PDF-NOTA_CREDITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
+    "credito_xml": re.compile(r"^NOTA_CREDITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
+    "debito_pdf": re.compile(r"^PDF-NOTA_DEBITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
+    "debito_xml": re.compile(r"^NOTA_DEBITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
+    "recibo_pdf": re.compile(r"^RHE(\d{11})(\d{4})(\d{1,8})\.pdf$", re.IGNORECASE),
+    "recibo_xml": re.compile(r"^RHE(\d{11})(\d{1,8})\.xml$", re.IGNORECASE),
 }
 
 """
@@ -96,8 +98,7 @@ def analizar_zip(zip_file, path_origen, archivos_encontrados):
         filename = os.path.basename(zip_info.filename)
 
         # Coincidencia por prefijo o patrón estructurado
-        if any(filename.startswith(prefijo) for prefijo in inicios_sunat) or \
-           any(patron.match(filename) for patron in patrones_estructurados.values()):
+        if any(patron.match(filename) for patron in patrones_estructurados.values()):
             archivos_encontrados.append(f"{path_origen}:{zip_info.filename}")
 
         # Si hay otro ZIP dentro, procesarlo recursivamente
@@ -119,8 +120,7 @@ def analizar_archivos(directorio):
             ruta_completa = os.path.join(root, file)
 
             # Archivos en disco
-            if any(file.startswith(prefijo) for prefijo in inicios_sunat) or \
-               any(patron.match(file) for patron in patrones_estructurados.values()):
+            if any(patron.match(file) for patron in patrones_estructurados.values()):
                 archivos_encontrados.append(ruta_completa)
 
             # ZIPs en disco

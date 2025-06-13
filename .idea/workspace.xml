@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy" />
+    <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrdenarArchivos.py" beforeDir="false" afterPath="$PROJECT_DIR$/OrdenarArchivos.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -337,22 +340,10 @@
       <workItem from="1749040889809" duration="8491000" />
       <workItem from="1749512270904" duration="1405000" />
       <workItem from="1749593964337" duration="5058000" />
-    </task>
-    <task id="LOCAL-00006" summary="F0621 finished">
-      <option name="closed" value="true" />
-      <created>1714365638264</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1714365638265</updated>
-    </task>
-    <task id="LOCAL-00007" summary="LoadBancarizar finished">
-      <option name="closed" value="true" />
-      <created>1714970872267</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1714970872267</updated>
+      <workItem from="1749687436078" duration="83000" />
+      <workItem from="1749696714362" duration="1959000" />
+      <workItem from="1749779072188" duration="35000" />
+      <workItem from="1749901070740" duration="5438000" />
     </task>
     <task id="LOCAL-00008" summary="pedidos, cotizacion y export format pending">
       <option name="closed" value="true" />
@@ -730,7 +721,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749687372377</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1749687485804</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1749687485804</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Pedidos y facturas rdy">
+      <option name="closed" value="true" />
+      <created>1749772927624</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1749772927624</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
