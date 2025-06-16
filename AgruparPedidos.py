@@ -18,9 +18,9 @@ salessystem = create_engine('mysql+pymysql://admin:Giu12FF8DB*@salessystem.crkws
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202504"
+periodo = "202505"
 
-directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\pdfpedidosabril')
+directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\2025\\pdfpedidosmayo')
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
