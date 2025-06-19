@@ -1,10 +1,11 @@
 from google import genai
-from google.genai import types # Necesitas importar 'types' para algunas configuraciones
+from google.genai import types  # Necesitas importar 'types' para algunas configuraciones
 
 # Configura tu cliente con la API Key
 # Asegúrate de reemplazar 'YOUR_API_KEY' con tu clave API real.
 # Es buena práctica NO incrustar la API key directamente en el código de producción.
-client = genai.Client(api_key='AIzaSyDZsCcRSGBmkGK0-Yo_5QeJ4HJuNrpoaTM') # O tu API key real: 'AIzaSyDZsCcRSGBmkGK0-Yo_5QeJ4HJuNrpoaTM'
+client = genai.Client(
+    api_key='AIzaSyDZsCcRSGBmkGK0-Yo_5QeJ4HJuNrpoaTM')  # O tu API key real: 'AIzaSyDZsCcRSGBmkGK0-Yo_5QeJ4HJuNrpoaTM'
 
 # Define el modelo a usar
 # Para el modelo 'flash' (que mencionaste como 'gemini-2.5-flash'),
@@ -34,7 +35,10 @@ while True:
         # para que tenga contexto.
         response = client.models.generate_content(
             model=model_name,
-            contents=history # Pasamos todo el historial aquí
+            contents=history,  # Pasamos todo el historial aquí
+            config=types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(thinking_budget=0)  # Disables thinking
+            )
         )
 
         # Accede al texto de la respuesta.
