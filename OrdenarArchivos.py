@@ -7,87 +7,37 @@ import re
 
 import paramiko
 
-"""
-
-FICHA RUC = 'reporteec_ficharuc_{ruc}_{YYYYMMDDHHMMSS}'9_8_11_14=42
-RESOLUCION DE INTENDENCIA (INGRESO COMO RECAUDACION) = 'ridetrac_{ruc}_{numero_resolucion}_{YYYYMMDDHHMMSS}_%PORDEFINIR%'8_11_13_14_9=59
-RESOLUCION DE INTENDENCIA (LIBERACION DE FONDOS) = 'rilf_{ruc}_{numero_resolucion}_{YYYYMMDDHHMMSS}_%PORDEFINIR%'4_11_13_14_9=55
-RESOLUCION DE MULTA = 'rmgen_{ruc}_{numero_resolucion}_{YYYYMMDDHHMMSS}_%PORDEFINIR%'5_11_3-3-7_14_9=58
-CONSTANCIA DE NOTIFICACION = 'constancia_{YYYYMMDDHHMMSS}_%PORDEFINIR%_{numero_resolucion}_%PORDEFINIR%}'10_14_20_13_9=70
-RESOLUCION COACTIVA = 'rvalores_{ruc}_{numero_resolucion}_{YYYYMMDDHHMMSS}_%PORDEFINIR%'8_11_X_14_9=46
-COMUNICACION DE BAJA DE INSCRIPCION DE OFICIO DEFINITIVA (formulario 2660) = 'bod_%PORDEFINIR%_{ruc}_{numero_formulario}'3_6_11_4=27
-FACTURA PDF = 'PDF-DOC-{numero_serie}-{numero_correlativo}{ruc}'=3-3-4-X-11=
-FACTURA XML = 'FACTURA{numero_serie}-{numero_correlativo}{ruc}'
-BOLETA DE VENTA PDF = 'PDF-BOLETA{numero_serie}-{numero_correlativo}{ruc}'
-NOTA DE CREDITO PDF = 'PDF-NOTA_CREDITO{numero_serio}{numero_correlativo}{ruc}'
-RECIBO POR HONORARIOS PDF = 'RHE{ruc}{numero_serie}{numero_correlativo}'
-GUIA DE REMISION REMITENTE PDF = '{ruc}-{tipo_documento}-{numero_serie}-{numero_correlativo}'
-REPORTE PLANILLA T REGISTRO ZIP = '{ruc}_{codigo_reporte}_{DDMMYYYY}
-DETALLE DECLARACIONES Y PAGOS EXCEL = 'DetalleDeclaraciones_{ruc}_%PORDEFINIR%'
-
-"""
-
 #UBICAR TODOS LOS ARCHIVOS QUE COMIENCEN CON ALGUNA FRASE IDENTIFICADA Y COLOCARLOS EN UNA LISTA
 #OBTENER EL RUC DE TODOS LOS DOCUMENTOS Y VERIFICAR CUALES AUN NO TIENEN CARPERA Y/O REGISTRO EN ENTIDADES O RELACIONADOS
 #CREAR LAS CARPETAS FALTANTES (RUC, PERIODO, COMPRAS, VENTAS, RESOLUCIONES, ETC)
 #SI ES RESOLUCION, ENVIAR A RESOLUCIONES
 #SI ES REPORTE, ENVIAR A REPORTES
 #MOVER TODOS DE UBICACION A LA UBICACION CONVENIENTE(CENTRAL-SERVER, EC2 O A ESTA LAPTOP
-inicios_sunat = ['reporteec_ficharuc_',
-                 'ridetrac_',
-                 'rilf_',
-                 'rmgen_',
-                 'constancia_',
-                 'rvalores_',
-                 'bod_',
-                 'PDF-DOC',
-                 'FACTURA',
-                 'PDF-BOLETA',
-                 'PDF-NOTA_CREDITO',
-                 'RHE',
-                 'DetalleDeclaraciones'
-                 ]
+
 # Patrones regex para los nombres estructurados
 patrones_estructurados = {
     "patron_guia_remision": re.compile(r"^(\d{11})-09-([A-Z0-9]{4})-(\d{1,8})\.(pdf|xml)$", re.IGNORECASE),
     "reporte_planilla_zip": re.compile(r"^\d{11}_[A-Z]+_\d{8}\.zip$", re.IGNORECASE),
     "declaraciones_pagos": re.compile(r"^DetalleDeclaraciones_(\d{11})_(\d{14})\.xlsx$", re.IGNORECASE),
     "ficha_ruc": re.compile(r"^reporteec_ficharuc_(\d{11})_(\d{14})\.pdf$", re.IGNORECASE),
-    "ingreso_recaudacion": re.compile(r"^ridetrac_(\d{11})_(\d{13})_(\d{14})\.pdf$", re.IGNORECASE),
+    "ingreso_recaudacion": re.compile(r"^ridetrac_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
     "liberacion_fondos": re.compile(r"^rilf_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
-    "multa": re.compile(r"^rmgen_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
-    "notificacion": re.compile(r"^constancia_(\d{14})_(\{20})_(\d{13})_(\d{9})\.pdf$", re.IGNORECASE),
-    "coactiva": re.compile(r"^rvalores_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
-    "baja_oficio": re.compile(r"^bod_(\d{6})_(\d{{11})_(\d{4})\.pdf$", re.IGNORECASE),
-    "factura_pdf": re.compile(r"^PDF-DOC-([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
-    "factura_xml": re.compile(r"^FACTURA([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
+    "multa": re.compile(r"^rmgen_(\d{11})_(\d{3})-(\d{3})-(\d{7})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
+    "notificacion": re.compile(r"^constancia_(\d{14})_(\d{20})_(\d{13})_(\d{9})\.pdf$", re.IGNORECASE),
+    "valores": re.compile(r"^rvalores_(\d{11})_([A-Z0-9]{12,17})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
+    "coactiva": re.compile(r"^recgen_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.pdf$", re.IGNORECASE),
+    "baja_oficio": re.compile(r"^bod_(\d{6})_(\d{11})_(\d{4})\.pdf$", re.IGNORECASE),
+    "factura_pdf": re.compile(r"^PDF-DOC-([A-Z0-9]{4})-?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
+    "factura_xml": re.compile(r"^FACTURA([A-Z0-9]{4})-?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
     "boleta_pdf": re.compile(r"^PDF-BOLETA([A-Z0-9]{4})-(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
     "boleta_xml": re.compile(r"^BOLETA([A-Z0-9]{4})-(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
     "credito_pdf": re.compile(r"^PDF-NOTA_CREDITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
     "credito_xml": re.compile(r"^NOTA_CREDITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
     "debito_pdf": re.compile(r"^PDF-NOTA_DEBITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.pdf$", re.IGNORECASE),
     "debito_xml": re.compile(r"^NOTA_DEBITO([A-Z0-9]{4})_?(\d{1,8})(\d{11})\.(zip|xml)$", re.IGNORECASE),
-    "recibo_pdf": re.compile(r"^RHE(\d{11})(\d{4})(\d{1,8})\.pdf$", re.IGNORECASE),
+    "recibo_pdf": re.compile(r"^RHE(\d{11})([A-Z0-9]{4})(\d{1,8})\.pdf$", re.IGNORECASE),
     "recibo_xml": re.compile(r"^RHE(\d{11})(\d{1,8})\.xml$", re.IGNORECASE),
 }
-
-"""
-def analizar_archivos(directorio):
-    archivos_encontrados = []
-    for root, dirs, files in os.walk(directorio):
-        for file in files:
-            for inicio in inicios_sunat:
-                if file.endswith('.zip'):
-                    zip_file = zipfile.ZipFile(os.path.join(root, file))
-                    for zip_info in zip_file.infolist():
-                        if zip_info.filename.startswith(inicio):  #cambiar a si comienza en
-                            archivos_encontrados.append(os.path.join(root, file) + ':' + zip_info.filename)
-                elif file.startswith(inicio):  #cambiar a si comienza en
-                    archivos_encontrados.append(os.path.join(root, file))
-
-    return archivos_encontrados
-"""
-
 
 
 def analizar_zip(zip_file, path_origen, archivos_encontrados):
@@ -136,14 +86,12 @@ def analizar_archivos(directorio):
 
     return archivos_encontrados
 
+
 # EJEMPLO DE USO
 directorio = r"C:\Users\Raknaros\Desktop\pdf_sunat"
 archivos_encontrados = analizar_archivos(directorio)
 
-for a in archivos_encontrados:
-    print(a)
-
-
+"""
 def mover_archivos(archivos_encontrados, directorio_base, palabras_clave):
     for archivo in archivos_encontrados:
         for palabra in palabras_clave:
@@ -163,59 +111,130 @@ def mover_archivos(archivos_encontrados, directorio_base, palabras_clave):
                 else:
                     shutil.move(archivo, directorio_destino)
                 break
+"""
 
 
-def agrupar_archivos_en_zip(lista_rutas, salida_zip):
-    with zipfile.ZipFile(salida_zip, 'w', zipfile.ZIP_DEFLATED) as zip_salida:
-        for ruta in lista_rutas:
-            partes = ruta.split(':')
-            archivo_base = partes[0]
+def parse_zip_path(full_path):
+    """Separa una ruta en archivo físico y rutas internas de ZIPs (separadas por ':')."""
+    full_path = full_path.replace('\\', '/')
+    parts = full_path.split(':')
 
-            # Si es solo un archivo suelto (no está dentro de ZIPs)
-            if len(partes) == 1:
-                nombre_destino = os.path.basename(archivo_base)
-                zip_salida.write(archivo_base, arcname=nombre_destino)
+    if len(parts[0]) == 1 and parts[1].startswith('/'):
+        drive = parts[0]
+        rest = ':'.join(parts[1:]).lstrip('/')
+        rest_parts = rest.split(':')
+        base_path = f"{drive}:/{rest_parts[0]}"
+        inner_paths = rest_parts[1:] if len(rest_parts) > 1 else []
+    else:
+        base_path = parts[0]
+        inner_paths = parts[1:] if len(parts) > 1 else []
+
+    base_path = base_path.replace('/', os.sep)
+    print(f"Procesando ruta: {full_path}")
+    print(f"base_path: {base_path}")
+    print(f"inner_paths: {inner_paths}")
+    return base_path, inner_paths
+
+
+def extract_file_from_zip(zip_path, inner_path):
+    """Extrae un archivo específico de un ZIP (o ZIP anidado)."""
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zf:
+            if len(inner_path) == 1:
+                return zf.read(inner_path[0])
+            nested_zip_data = zf.read(inner_path[0])
+            nested_zip_file = io.BytesIO(nested_zip_data)
+            return extract_file_from_zip(nested_zip_file, inner_path[1:])
+    except zipfile.BadZipFile:
+        print(f"Error: {zip_path} no es un archivo ZIP válido")
+        raise
+    except KeyError:
+        print(f"Error: No se encontró {inner_path[0]} en {zip_path}")
+        raise
+
+
+def verify_zip_integrity(zip_path, expected_files):
+    """Verifica que el ZIP contenga los archivos esperados."""
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zf:
+            zip_contents = zf.namelist()
+            missing = [f for f in expected_files if f not in zip_contents]
+            if missing:
+                print(f"Advertencia: Archivos faltantes en el ZIP: {missing}")
+                return False
+            return True
+    except zipfile.BadZipFile:
+        print(f"Error: {zip_path} no es un ZIP válido")
+        return False
+
+
+def delete_processed_file(file_path):
+    """Borra un archivo del sistema de archivos si existe."""
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"Eliminado: {file_path}")
+        else:
+            print(f"No se pudo eliminar, archivo no encontrado: {file_path}")
+    except Exception as e:
+        print(f"Error al eliminar {file_path}: {e}")
+
+
+def create_final_zip(file_paths, output_zip_path, delete_zip_containers=False):
+    """Crea un ZIP final y elimina los archivos procesados."""
+    # Crear el directorio padre si no existe
+    output_dir = os.path.dirname(output_zip_path)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        print(f"Creado directorio: {output_dir}")
+
+    included_names = set()
+    processed_files = set()
+    expected_files = set()
+
+    with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as final_zip:
+        for full_path in file_paths:
+            base_path, inner_paths = parse_zip_path(full_path)
+            filename = os.path.basename(inner_paths[-1] if inner_paths else base_path)
+
+            if filename in included_names:
+                print(f"Ignorado (ya incluido): {filename} en {full_path}")
                 continue
 
-            # Caso ZIP o ZIP anidado
-            with open(archivo_base, 'rb') as f:
-                data = f.read()
-            buffer = io.BytesIO(data)
-
-            # Abrimos sucesivos niveles de ZIP
-            zip_actual = zipfile.ZipFile(buffer)
-            for i, parte in enumerate(partes[1:]):
-                if i == len(partes[1:]) - 1:
-                    # Es el archivo final a extraer
-                    with zip_actual.open(parte) as archivo_final:
-                        contenido = archivo_final.read()
-                        nombre_destino = parte.replace('/', '_')
-                        zip_salida.writestr(nombre_destino, contenido)
+            try:
+                if not inner_paths:
+                    if os.path.exists(base_path):
+                        with open(base_path, 'rb') as f:
+                            final_zip.writestr(filename, f.read())
+                        included_names.add(filename)
+                        expected_files.add(filename)
+                        processed_files.add(base_path)
+                        print(f"Agregado: {filename}")
+                    else:
+                        print(f"Archivo no encontrado: {base_path}")
                 else:
-                    # Es un ZIP intermedio
-                    with zip_actual.open(parte) as zip_intermedio:
-                        nested_bytes = zip_intermedio.read()
-                        zip_actual = zipfile.ZipFile(io.BytesIO(nested_bytes))
+                    zip_path = base_path
+                    if os.path.exists(zip_path):
+                        file_data = extract_file_from_zip(zip_path, inner_paths)
+                        final_zip.writestr(filename, file_data)
+                        included_names.add(filename)
+                        expected_files.add(filename)
+                        if delete_zip_containers:
+                            processed_files.add(zip_path)
+                        print(f"Agregado desde ZIP: {filename}")
+                    else:
+                        print(f"ZIP no encontrado: {zip_path}")
+            except Exception as e:
+                print(f"Error procesando {full_path}: {e}")
 
-"""
-# Ejemplo de uso
-directorio = '/path/al/directorio'
-extension = '.pdf'
-palabras_clave = ['tipo1', 'tipo2', 'tipo3']
-directorio_base = '/path/al/directorio/destino'
-
-archivos_encontrados = analizar_archivos(directorio, extension)
-mover_archivos(archivos_encontrados, directorio_base, palabras_clave)
-
-
-def transferir_archivo(archivo_local, archivo_remoto, host, user, password):
-    transport = paramiko.Transport((host, 22))
-    transport.connect(username=user, password=password)
-    sftp = paramiko.SFTPClient.from_transport(transport)
-    sftp.put(archivo_local, archivo_remoto)
-    transport.close()
+    # Verificar la integridad del ZIP
+    if verify_zip_integrity(output_zip_path, expected_files):
+        for file_path in processed_files:
+            delete_processed_file(file_path)
+    else:
+        print("No se eliminaron archivos debido a problemas con el ZIP final")
 
 
-# Ejemplo de uso:
-transferir_archivo('archivo.txt', '/home/usuario/Documentos/archivo.txt', '192.168.1.100', 'usuario', 'contraseña')
-"""
+output_zip_path = r"C:\Users\Raknaros\Desktop\pdf_sunat\archivos_comprimidos.zip"
+
+create_final_zip(archivos_encontrados, output_zip_path, delete_zip_containers=False)
