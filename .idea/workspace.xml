@@ -5,15 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f312360-a4ba-45a2-8b19-551552823aa6" name="Changes" comment="Pedidos y facturas rdy">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PrintTickets.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QueBarbaroDB.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SIREToWarehouse.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MetaContabilidad.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/MetaContabilidad.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MetaFacturacion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/MetaFacturacion.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AITest.py" beforeDir="false" afterPath="$PROJECT_DIR$/GoogleAITest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,52 +45,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.AgruparPedidos.executor": "Run",
-    "Python.GetEmitir.executor": "Run",
-    "Python.GetPreCuadros.executor": "Run",
-    "Python.LoadBancarizar.executor": "Run",
-    "Python.LoadCotizaciones.executor": "Run",
-    "Python.LoadCustomers.executor": "Run",
-    "Python.LoadF0621.executor": "Run",
-    "Python.LoadF0710.executor": "Run",
-    "Python.LoadIQBF.executor": "Run",
-    "Python.LoadPedidos.executor": "Run",
-    "Python.LoadProveedores.executor": "Run",
-    "Python.OrdenarArchivos.executor": "Run",
-    "Python.PrintTickets.executor": "Run",
-    "Python.QueBarbaroDB.executor": "Run",
-    "Python.ReadPDFFactura.executor": "Run",
-    "Python.SIREToWarehouse.executor": "Run",
-    "Python.TramitesConsultas.executor": "Run",
-    "Python.VentasToFacturas.executor": "Run",
-    "Python.bingx.executor": "Run",
-    "Python.reportes_planilla.executor": "Run",
-    "Python.test.executor": "Run",
-    "Python.test2.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "database.data.extractors.current.export.id": "Excel (xlsx)",
-    "database.data.extractors.current.id": "Tab-separated (TSV)_id",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/Raknaros/Desktop",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.AITest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.AgruparPedidos.executor&quot;: &quot;Run&quot;,
+    &quot;Python.GetEmitir.executor&quot;: &quot;Run&quot;,
+    &quot;Python.GetPreCuadros.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadBancarizar.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadCotizaciones.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadCustomers.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadF0621.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadF0710.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadIQBF.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadPedidos.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LoadProveedores.executor&quot;: &quot;Run&quot;,
+    &quot;Python.OrdenarArchivos.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ReadPDFFactura.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TramitesConsultas.executor&quot;: &quot;Run&quot;,
+    &quot;Python.VentasToFacturas.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bingx.executor&quot;: &quot;Run&quot;,
+    &quot;Python.reportes_planilla.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test2.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Raknaros/Desktop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
-  <component name="RunManager">
+}</component>
+  <component name="RunManager" selected="Python.GetEmitir">
     <configuration name="GetEmitir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pytest" />
       <option name="ENV_FILES" value="" />
@@ -154,8 +144,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
-        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
       </set>
     </attachedChunks>
   </component>
@@ -352,24 +342,9 @@
       <workItem from="1749512270904" duration="1405000" />
       <workItem from="1749593964337" duration="5058000" />
       <workItem from="1749687436078" duration="83000" />
-      <workItem from="1749696714362" duration="1959000" />
-      <workItem from="1749779072188" duration="35000" />
-      <workItem from="1749901070740" duration="8497000" />
-      <workItem from="1750130589706" duration="1325000" />
-      <workItem from="1750207207777" duration="63000" />
-      <workItem from="1750260336446" duration="1992000" />
-      <workItem from="1750433254587" duration="598000" />
-      <workItem from="1750557902794" duration="53000" />
-      <workItem from="1750614154196" duration="11625000" />
-      <workItem from="1750798136693" duration="11945000" />
-      <workItem from="1751073781831" duration="1332000" />
-      <workItem from="1751075648463" duration="152000" />
-      <workItem from="1751317071454" duration="3674000" />
-      <workItem from="1751404242137" duration="49000" />
-      <workItem from="1752019329390" duration="4631000" />
-      <workItem from="1752076859824" duration="12572000" />
-      <workItem from="1753411723541" duration="2591000" />
-      <workItem from="1753575920611" duration="11322000" />
+      <workItem from="1749696714362" duration="1932000" />
+      <workItem from="1750127018037" duration="7221000" />
+      <workItem from="1750396192983" duration="631000" />
     </task>
     <task id="LOCAL-00010" summary="pedidos, cotizacion y export format pending">
       <option name="closed" value="true" />
@@ -741,27 +716,27 @@
     </task>
     <task id="LOCAL-00056" summary="Pedidos y facturas rdy">
       <option name="closed" value="true" />
-      <created>1749772927624</created>
+      <created>1750107365661</created>
       <option name="number" value="00056" />
       <option name="presentableId" value="LOCAL-00056" />
       <option name="project" value="LOCAL" />
-      <updated>1749772927624</updated>
+      <updated>1750107365661</updated>
     </task>
     <task id="LOCAL-00057" summary="Pedidos y facturas rdy">
       <option name="closed" value="true" />
-      <created>1749947461685</created>
+      <created>1750301366861</created>
       <option name="number" value="00057" />
       <option name="presentableId" value="LOCAL-00057" />
       <option name="project" value="LOCAL" />
-      <updated>1749947461687</updated>
+      <updated>1750301366861</updated>
     </task>
     <task id="LOCAL-00058" summary="Pedidos y facturas rdy">
       <option name="closed" value="true" />
-      <created>1750865206624</created>
+      <created>1750301558076</created>
       <option name="number" value="00058" />
       <option name="presentableId" value="LOCAL-00058" />
       <option name="project" value="LOCAL" />
-      <updated>1750865206624</updated>
+      <updated>1750301558076</updated>
     </task>
     <option name="localTasksCounter" value="59" />
     <servers />
@@ -793,10 +768,9 @@
     <option name="LAST_COMMIT_MESSAGE" value="Pedidos y facturas rdy" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pytest$QueBarbaroDB.coverage" NAME="QueBarbaroDB Coverage Results" MODIFIED="1752120199486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pytest$AITest.coverage" NAME="AITest Coverage Results" MODIFIED="1750300901155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$GetPreCuadros.coverage" NAME="GetPreCuadros Coverage Results" MODIFIED="1725243217429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$test.coverage" NAME="test Coverage Results" MODIFIED="1744351059064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pytest$SIREToWarehouse.coverage" NAME="SIREToWarehouse Coverage Results" MODIFIED="1753592576868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadPedidos.coverage" NAME="LoadPedidos Coverage Results" MODIFIED="1724971851816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadBancarizar.coverage" NAME="LoadBancarizar Coverage Results" MODIFIED="1745862579284" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadCotizaciones.coverage" NAME="LoadCotizaciones Coverage Results" MODIFIED="1734032388811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -805,8 +779,7 @@
     <SUITE FILE_PATH="coverage/pytest$TramitesConsultas.coverage" NAME="TramitesConsultas Coverage Results" MODIFIED="1737016843745" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadF0621.coverage" NAME="LoadF0621 Coverage Results" MODIFIED="1714365012865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$test2.coverage" NAME="test2 Coverage Results" MODIFIED="1738711802580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pytest$PrintTickets.coverage" NAME="PrintTickets Coverage Results" MODIFIED="1752024317677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pytest$OrdenarArchivos.coverage" NAME="OrdenarArchivos Coverage Results" MODIFIED="1750825547739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pytest$OrdenarArchivos.coverage" NAME="OrdenarArchivos Coverage Results" MODIFIED="1749050209017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$LoadCustomers.coverage" NAME="LoadCustomers Coverage Results" MODIFIED="1717730048822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$GetEmitir.coverage" NAME="GetEmitir Coverage Results" MODIFIED="1737819964574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest$VentasToFacturas.coverage" NAME="VentasToFacturas Coverage Results" MODIFIED="1718434577913" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

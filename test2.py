@@ -1,8 +1,35 @@
-import zipfile
-import os
-import pandas as pd
+import warnings
 
-from Querys import ventas, salessystem, warehouse
+def funcion_obsoleta(parametro):
+    warnings.warn(
+        "La función 'funcion_obsoleta' está deprecada y será eliminada en la versión 2.0. Usa 'nueva_funcion' en su lugar.",
+        DeprecationWarning,
+        stacklevel=2 # Esto muestra la línea donde se llamó a la función obsoleta
+    )
+    return parametro * 2
+
+def nueva_funcion(parametro):
+    return parametro * 2
+
+# Por defecto, DeprecationWarning está oculto en Python 3.x
+# Para ver DeprecationWarning, puedes ejecutar Python con el flag -Wd:
+# python -Wd tu_script.py
+
+# O configurar el filtro de advertencias en el código:
+warnings.simplefilter("always", DeprecationWarning) # Muestra siempre DeprecationWarning
+
+print("Resultado 1:", funcion_obsoleta(5))
+print("Resultado 2:", nueva_funcion(5))
+
+# Otro ejemplo de advertencia de usuario
+def procesar_datos(data):
+    if not isinstance(data, list):
+        warnings.warn("Los datos deberían ser una lista para un procesamiento óptimo.", UserWarning)
+    return len(data)
+
+print("Datos procesados:", procesar_datos("hola"))
+print("Datos procesados:", procesar_datos([1, 2, 3]))
+
 
 """
 RETIRAR LOS XML QUE YA ESTAN ANALIZADOS Y SUBIDOS A LA BASE DE DATOS
@@ -23,20 +50,6 @@ for a in ventas_periodo['nombre_xml'].tolist():
 #VERIFICAR OTROS PEDIDOS
 #EMITIR LOS MANIFIESTAMENTE PENDIENTES Y URGENTES
 #VERIFICAR LOS OTROS PEDIDOS
-bancarizadas = pd.read_sql("SELECT proveedor, documento_relacionado FROM v_bcp ORDER BY proveedor", salessystem)
-
-entidades = pd.read_sql("SELECT alias, ruc FROM proveedores ORDER BY ruc", salessystem)
-
-pedidos = pd.read_sql("SELECT cod_pedido, ruc, periodo FROM pedidos", salessystem)
-
-facturas = pd.read_sql("SELECT ruc, periodo_tributario, numero_documento FROM acc._5", warehouse)
-
-
-
-
-
-
-
 
 #TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
 
