@@ -6,15 +6,21 @@ import numpy as np
 import pypdf
 from pypdf import PdfWriter
 import fnmatch
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
-warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
-                          ':5432/warehouse')
+# Conexión a Warehouse (Contabilidad)
+warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSEE_NAME')}"
+warehouse = create_engine(warehouse_url)
 
-salessystem = create_engine('mysql+pymysql://admin:Giu12FF8DB*@salessystem.crkwsaygg8b2.us-east-2.rds.amazonaws.com'
-                            ':3306/salessystem')
+# Conexión a SalesSystem (Facturación)
+salessystem_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
+salessystem = create_engine(salessystem_url)
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 

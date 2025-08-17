@@ -3,14 +3,29 @@ from datetime import date
 from time import sleep
 from sqlalchemy import create_engine
 import numpy as np
+from dotenv import load_dotenv
+import os
+
+# Cargar variables de entorno
+load_dotenv()
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
 def get_precuadros():
-    engine = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-                           ':3306/salessystem')
+    try:
+        # Construir la URL de conexión desde variables de entorno
+        db_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
+        engine = create_engine(db_url)
+        
+        # Validar la conexión
+        with engine.connect() as conn:
+            pass
+            
+    except Exception as e:
+        print(f"Error al conectar a la base de datos: {str(e)}")
+        return None
 
     pedidos = pd.read_sql(
         "SELECT cod_pedido, periodo, (SELECT alias FROM customers WHERE ruc = adquiriente) as alias, contado_credito, importe_total, promedio_factura"

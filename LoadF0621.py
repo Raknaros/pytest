@@ -2,6 +2,10 @@ import pandas as pd
 import os
 from sqlalchemy import create_engine
 import zipfile
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -17,8 +21,18 @@ def load_f0621(carpeta: str):
                  '_176', '_165', '_185', '_187', '_188', '_353', '_351', '_352', '_347', '_342', '_343', '_344', '_302',
                  '_303', '_304', '_326', '_327', '_305', '_328', '_317', '_319', '_324', 'notas'
                  ])
-    engine = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
-                           ':5432/warehouse')
+    try:
+        # Construir la URL de conexión desde variables de entorno
+        db_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSEE_NAME')}"
+        engine = create_engine(db_url)
+        
+        # Validar la conexión
+        with engine.connect() as conn:
+            pass
+            
+    except Exception as e:
+        print(f"Error al conectar a la base de datos: {str(e)}")
+        return None
     for i in list(filter(lambda x: (x[12:16] == '0621'), os.listdir(carpeta))):
         with (zipfile.ZipFile(carpeta + '/' + i, 'r') as zipf):
             with zipf.open(i[28:36] + i[0:11] + 'pdt621_casillas.csv') as archivo_csv:

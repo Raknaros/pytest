@@ -1,18 +1,31 @@
 from datetime import datetime, timedelta
-
 import pandas as pd
 import os
 from sqlalchemy import create_engine
 import numpy as np
+from dotenv import load_dotenv
 
+# Cargar variables de entorno
+load_dotenv()
+
+# Configuración de pandas
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
-def tofacturas(proveedores: list = None, fecha: datetime = None, pedidos: list = None):
-    salessystem = create_engine(
-    'mysql+pymysql://root:Giu72656770@104.154.92.48'
-    ':3306/sales-system')
+def tofacturas(proveedores: list = [], fecha: datetime = datetime.now(), pedidos: list = []):
+    try:
+        # Construir la URL de conexión desde variables de entorno
+        db_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
+        salessystem = create_engine(db_url)
+        
+        # Validar la conexión
+        with salessystem.connect() as conn:
+            pass
+            
+    except Exception as e:
+        print(f"Error al conectar a la base de datos: {str(e)}")
+        return None
     lista_facturas = pd.read_sql("SELECT * FROM lista_facturas", con=salessystem,
                                  parse_dates=['emision', 'vencimiento', 'vencimiento2', 'vencimiento3', 'vencimiento4'])
     if pedidos is None:

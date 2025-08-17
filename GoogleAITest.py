@@ -1,19 +1,16 @@
 from google import genai
-from google.genai import types  # Necesitas importar 'types' para algunas configuraciones
+from google.genai import types
+from dotenv import load_dotenv
+import os
 
-# Configura tu cliente con la API Key
-# Asegúrate de reemplazar 'YOUR_API_KEY' con tu clave API real.
-# Es buena práctica NO incrustar la API key directamente en el código de producción.
-client = genai.Client(
-    api_key='AIzaSyDZsCcRSGBmkGK0-Yo_5QeJ4HJuNrpoaTM')  # O tu API key real: 'AIzaSyDZsCcRSGBmkGK0-Yo_5QeJ4HJuNrpoaTM'
+# Cargar variables de entorno
+load_dotenv()
 
-# Define el modelo a usar
-# Para el modelo 'flash' (que mencionaste como 'gemini-2.5-flash'),
-# la API de google-genai generalmente usa nombres como 'gemini-1.5-flash'.
-# Si el modelo específico 'gemini-2.5-flash' es una vista previa y
-# no funciona, 'gemini-1.5-flash' o 'gemini-pro' son buenas alternativas.
-# Usaremos 'gemini-1.5-flash' como ejemplo.
-model_name = "gemini-2.5-flash"
+# Configura el cliente con la API Key desde variables de entorno
+client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
+
+# Define el modelo a usar desde variables de entorno
+model_name = os.getenv('GOOGLE_AI_MODEL')
 
 print(f"¡Hola! Soy Gemini ({model_name}). Comencemos a conversar. Escribe 'salir' para terminar.")
 

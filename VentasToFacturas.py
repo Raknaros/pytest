@@ -1,23 +1,36 @@
 from time import sleep
-
 import pandas as pd
 import os
 from sqlalchemy import create_engine
 import numpy as np
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
 def tofacturas(periodo: str):
-    #Engine de conexion a base de datos salessystem
-    salessystem = create_engine(
-        'mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-        ':3306/salessystem')
-
-    #Engine de conexion a base de datos warehouse
-    warehouse = create_engine('postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
-                              ':5432/warehouse')
+    try:
+        # Conexión a SalesSystem (Facturación)
+        salessystem_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
+        salessystem = create_engine(salessystem_url)
+        
+        # Conexión a Warehouse (Contabilidad)
+        warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSEE_NAME')}"
+        warehouse = create_engine(warehouse_url)
+        
+        # Validar las conexiones
+        with salessystem.connect() as conn_sales:
+            pass
+        with warehouse.connect() as conn_warehouse:
+            pass
+            
+    except Exception as e:
+        print(f"Error al conectar a las bases de datos: {str(e)}")
+        return None
 
     #Consultar vista facturas_salessystem de warehouse segun periodo indicado
     ventas = pd.read_sql('SELECT * FROM facturas_salessystem WHERE periodo_tributario =' + periodo, warehouse,

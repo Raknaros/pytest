@@ -1,14 +1,30 @@
 import pandas as pd
 import pyarrow
 from sqlalchemy import create_engine, MetaData
+from dotenv import load_dotenv
+import os
 
-salessystem = create_engine(
-    'mysql+pymysql://root:Giu72656770@104.154.92.48'
-    ':3306/sales-system')
+# Cargar variables de entorno
+load_dotenv()
 
-warehouse = create_engine(
-    'postgresql://admindb:72656770@datawarehouse.cgvmexzrrsgs.us-east-1.rds.amazonaws.com'
-    ':5432/warehouse')
+try:
+    # Conexión a SalesSystem (Facturación)
+    salessystem_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
+    salessystem = create_engine(salessystem_url)
+    
+    # Conexión a Warehouse (Contabilidad)
+    warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSEE_NAME')}"
+    warehouse = create_engine(warehouse_url)
+    
+    # Validar las conexiones
+    with salessystem.connect() as conn_sales:
+        pass
+    with warehouse.connect() as conn_warehouse:
+        pass
+        
+except Exception as e:
+    print(f"Error al conectar a las bases de datos: {str(e)}")
+    raise
 
 
 bancarizar_emitidos = "SELECT numero_documento,ruc,(CASE  WHEN (SELECT fecha_cuota1 FROM acc._7 WHERE cui_relacionado=concat('5',cui)) IS null THEN fecha_emision ELSE (SELECT fecha_cuota1 FROM acc._7 WHERE cui_relacionado=concat('5',cui)) END),valor+igv AS total,CONCAT(numero_serie,'-',numero_correlativo) FROM acc._5 WHERE _5.tipo_comprobante=1 AND observaciones NOT LIKE '%ANULADA' AND numero_documento IN ('20611957476') AND periodo_tributario=202408 AND valor+igv>1999.99 ORDER BY numero_documento;"

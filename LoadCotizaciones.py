@@ -1,12 +1,14 @@
 import math
-
 import pandas as pd
 import os
 from pathlib import Path
-
 from openpyxl.reader.excel import load_workbook
 from sqlalchemy import create_engine
 import numpy as np
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -14,9 +16,18 @@ pd.set_option('future.no_silent_downcasting', True)
 
 
 def load_cotizaciones(ruta: str):
-    # Cargar engine de conexion de salessystem database
-    engine = create_engine('mysql+pymysql://admin:Giu72656770@sales-system.c988owwqmmkd.us-east-1.rds.amazonaws.com'
-                           ':3306/salessystem')
+    try:
+        # Construir la URL de conexión desde variables de entorno
+        db_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
+        engine = create_engine(db_url)
+        
+        # Validar la conexión
+        with engine.connect() as conn:
+            pass
+            
+    except Exception as e:
+        print(f"Error al conectar a la base de datos: {str(e)}")
+        return None
 
     # Determinar ruta del libro
     workbook_path = Path(ruta)
