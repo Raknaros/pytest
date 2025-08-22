@@ -67,7 +67,7 @@ def procesar_zip_a_db(ruta_zip, db_params, tabla_db):
             suma_agrupada = columna_15.groupby(proporcion).sum()
             suma_010 = suma_agrupada.get(0.10, 0)
             suma_018 = suma_agrupada.get(0.18, 0)
-
+###TOMAR EN CUENTA CUANDO EL COMPROBANTE ES TIPO 30 TIENE UN IGV MENOR A 1%, ESTE Y CASOS SIMILARES
             print("\n--- Resumen de la Carga ---")
             print(f"Total de registros procesados: {total_registros}")
             print(f"Entidad: {valor_columna_2}")
@@ -97,7 +97,7 @@ def procesar_zip_a_db(ruta_zip, db_params, tabla_db):
 # --- Ejemplo de Uso ---
 if __name__ == '__main__':
     # Ruta al archivo ZIP que quieres procesar
-    ruta_del_zip = 'C:/Users/Raknaros/Downloads/20606283858-20250718-225604-propuesta.zip'
+    ruta_del_zip = 'C:/Users/Raknaros/Downloads/10779181575-20250819-192553-propuesta.zip'
 
     load_dotenv()
     # Parámetros de conexión a tu base de datos PostgreSQL
