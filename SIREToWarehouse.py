@@ -97,7 +97,7 @@ def procesar_zip_a_db(ruta_zip, db_params, tabla_db):
 # --- Ejemplo de Uso ---
 if __name__ == '__main__':
     # Ruta al archivo ZIP que quieres procesar
-    ruta_del_zip = 'C:/Users/Raknaros/Downloads/10779181575-20250819-192553-propuesta.zip'
+    ruta_del_zip = 'C:/Users/Raknaros/Downloads/10779181575-20250916-101324-propuesta.zip'
 
     load_dotenv()
     # Parámetros de conexión a tu base de datos PostgreSQL

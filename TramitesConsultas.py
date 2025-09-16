@@ -181,7 +181,7 @@ else:
 for credencial in credenciales:
     try:
         driver = login_tramites_consultas(new_driver, credencial)
-        reporte_tregistro(driver)
+
 
     except Exception as e:
         print('ERROR EN EL LOGIN')
