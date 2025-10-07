@@ -7,12 +7,13 @@ from dotenv import load_dotenv
 load_dotenv()
 db_connection_str = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
 cod_pedido_a_buscar = 'R134FECF4'
+proveedor = 'IMPULSAOE'
 nombre_tabla = 'facturas'  # <-- ASEGÚRATE DE PONER EL NOMBRE REAL DE TU TABLA AQUÍ
 
 # --- LÓGICA ---
 # 1. Conectar y obtener TODOS los datos para el pedido completo
 db_engine = create_engine(db_connection_str)
-sql_query = f"SELECT * FROM {nombre_tabla} WHERE cod_pedido = '{cod_pedido_a_buscar}';"
+sql_query = f"SELECT * FROM {nombre_tabla} WHERE cod_pedido = '{cod_pedido_a_buscar}' AND alias='{proveedor}';"
 df_pedido_completo = pd.read_sql(sql_query, db_engine)
 
 # Lista para almacenar los resultados finales de cada factura
