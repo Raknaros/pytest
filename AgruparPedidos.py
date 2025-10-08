@@ -24,9 +24,9 @@ salessystem = create_engine(salessystem_url)
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202506"
+periodo = "202509"
 
-directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\2025\\pdfpedidosjunio')
+directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\2025\\pdfpedidossetiembre')
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]

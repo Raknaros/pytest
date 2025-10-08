@@ -48,7 +48,6 @@ df = df[['RUC', 'Periodo', 'CAR SUNAT', 'Fecha de emisión', 'Fecha Vcto/Pago', 
 df = df.rename(columns={
     'RUC': 'ruc',
     'Periodo': 'periodo_tributario',
-    'CAR SUNAT': 'observaciones',
     'Fecha de emisión': 'fecha_emision',
     'Fecha Vcto/Pago': 'fecha_vencimiento',
     'Tipo CP/Doc.': 'tipo_comprobante',
@@ -65,7 +64,7 @@ df = df.rename(columns={
     'Valor Adq. NG': 'no_gravadas',
     'ISC': 'isc',
     'ICBPER': 'icbp',
-    'Otros Trib/ Cargos': 'otros',
+    'Otros Trib/ Cargos': 'otros_cargos',
     'Moneda': 'tipo_moneda',
     'Tipo CP Modificado': 'tipo_comprobante_modificado',
     'Serie CP Modificado': 'numero_serie_modificado',
@@ -73,16 +72,43 @@ df = df.rename(columns={
     'Detracción': 'tasa_detraccion',
 })
 
+columnas_de_fecha = ['fecha_emision', 'fecha_vencimiento']
+
+for columna in columnas_de_fecha:
+    if columna in df.columns:
+        print(f"Convirtiendo la columna '{columna}' a formato de fecha SQL...")
+        # pd.to_datetime lee la fecha en el formato original 'dd/mm/yyyy'
+        # .dt.strftime la convierte al formato de texto 'yyyy-mm-dd'
+        df[columna] = pd.to_datetime(
+            df[columna],
+            format='%d/%m/%Y',
+            errors='coerce' # Si una fecha es inválida, se convierte en NaT (Not a Time)
+        ).dt.strftime('%Y-%m-%d')
+    else:
+        print(f"Advertencia: La columna de fecha '{columna}' no fue encontrada.")
+
+
+# Convertir texto a números, manejando errores
+df['isc'] = pd.to_numeric(df['isc'], errors='coerce').fillna(0)
+df['icbp'] = pd.to_numeric(df['icbp'], errors='coerce').fillna(0)
+
+# --- Modificar/Crear columnas ---
+# Unir dos columnas en una nueva (ejemplo hipotético)
+df['observaciones'] = ' SIRE:' + df['CAR SUNAT']
+
+# Reemplaza 'nombre_de_tu_columna' con el nombre real de la columna
+df.loc[df['tasa_detraccion'] == 'D', 'tasa_detraccion'] = 0
+
 # Usamos .copy() para evitar warnings de Pandas
 df_transformado = df.copy()
 
 # 1. PREPARACIÓN: Asegurarse de que TODAS las columnas de valor sean numéricas
 columnas_valor = [
-    'Base imponible 1', 'IGV 1',
-    'Base imponible 2', 'IGV 2',
-    'Base imponible 3', 'IGV 3',
-    'Valor no gravado',
-    'Otros cargos'  # <-- AÑADIMOS la columna de otros cargos
+    'bi_gravadas', 'igv_gravadas',
+    'bi_gravadas_nogravadas', 'igv_gravadas_nogravadas',
+    'bi_nogravadas', 'igv_nogravadas',
+    'no_gravadas',
+    'otros_cargos'  # <-- AÑADIMOS la columna de otros cargos
 ]
 
 for col in columnas_valor:
@@ -93,14 +119,14 @@ for col in columnas_valor:
 
 # 2. DEFINIR CONDICIONES (sin cambios)
 cond_destino_5 = (
-                         (df_transformado['Base imponible 1'] > 0) |
-                         (df_transformado['Base imponible 2'] > 0) |
-                         (df_transformado['Base imponible 3'] > 0)
-                 ) & (df_transformado['Valor no gravado'] > 0)
-cond_destino_1 = (df_transformado['Base imponible 1'] > 0)
-cond_destino_2 = (df_transformado['Base imponible 2'] > 0)
-cond_destino_3 = (df_transformado['Base imponible 3'] > 0)
-cond_destino_4 = (df_transformado['Valor no gravado'] > 0)
+                         (df_transformado['bi_gravadas'] > 0) |
+                         (df_transformado['bi_gravadas_nogravadas'] > 0) |
+                         (df_transformado['bi_nogravadas'] > 0)
+                 ) & (df_transformado['no_gravadas'] > 0)
+cond_destino_1 = (df_transformado['bi_gravadas'] > 0)
+cond_destino_2 = (df_transformado['bi_gravadas_nogravadas'] > 0)
+cond_destino_3 = (df_transformado['bi_nogravadas'] > 0)
+cond_destino_4 = (df_transformado['no_gravadas'] > 0)
 
 condiciones = [
     cond_destino_5, cond_destino_1, cond_destino_2,
@@ -113,68 +139,75 @@ resultados_destino = [5, 1, 2, 3, 4]
 
 # Resultados para la columna 'valor'
 resultados_valor = [
-    df_transformado['Base imponible 1'] + df_transformado['Base imponible 2'] + df_transformado['Base imponible 3'],
+    df_transformado['bi_gravadas'] + df_transformado['bi_gravadas_nogravadas'] + df_transformado['bi_nogravadas'],
     # Destino 5
-    df_transformado['Base imponible 1'],  # Destino 1
-    df_transformado['Base imponible 2'],  # Destino 2
-    df_transformado['Base imponible 3'],  # Destino 3
-    df_transformado['Valor no gravado']  # Destino 4
+    df_transformado['bi_gravadas'],  # Destino 1
+    df_transformado['bi_gravadas_nogravadas'],  # Destino 2
+    df_transformado['bi_nogravadas'],  # Destino 3
+    df_transformado['no_gravadas']  # Destino 4
 ]
 
 # Resultados para la columna 'igv'
 resultados_igv = [
-    df_transformado['IGV 1'] + df_transformado['IGV 2'] + df_transformado['IGV 3'],  # Destino 5
-    df_transformado['IGV 1'],  # Destino 1
-    df_transformado['IGV 2'],  # Destino 2
-    df_transformado['IGV 3'],  # Destino 3
+    df_transformado['igv_gravadas'] + df_transformado['igv_gravadas_nogravadas'] + df_transformado['igv_nogravadas'],
+    # Destino 5
+    df_transformado['igv_gravadas'],  # Destino 1
+    df_transformado['igv_gravadas_nogravadas'],  # Destino 2
+    df_transformado['igv_nogravadas'],  # Destino 3
     0  # Destino 4
 ]
 
 # Resultados para la columna 'otros' (CON LA LÓGICA DE SUMA)
 resultados_otros = [
-    df_transformado['Otros cargos'] + df_transformado['Valor no gravado'],  # <-- CAMBIO CLAVE: Sumamos los valores
-    df_transformado['Otros cargos'],  # Si es destino 1, 2, 3 o 4, mantenemos los otros cargos originales
-    df_transformado['Otros cargos'],
-    df_transformado['Otros cargos'],
-    df_transformado['Otros cargos']
+    df_transformado['otros_cargos'] + df_transformado['no_gravadas'],  # <-- CAMBIO CLAVE: Sumamos los valores
+    df_transformado['otros_cargos'],  # Si es destino 1, 2, 3 o 4, mantenemos los otros cargos originales
+    df_transformado['otros_cargos'],
+    df_transformado['otros_cargos'],
+    df_transformado['otros_cargos']
 ]
 
 # 4. APLICAR LAS REGLAS con np.select
 df_transformado['destino'] = np.select(condiciones, [5, 1, 2, 3, 4], default=0)
 df_transformado['valor'] = np.select(condiciones, resultados_valor, default=0)
 df_transformado['igv'] = np.select(condiciones, resultados_igv, default=0)
-df_transformado['otros'] = np.select(condiciones, resultados_otros, default=0)
+df_transformado['valor'] = (
+        df_transformado['bi_gravadas'] +
+        df_transformado['bi_gravadas_nogravadas'] +
+        df_transformado['bi_nogravadas']
+)
+df_transformado['igv'] = (
+        df_transformado['igv_gravadas'] +
+        df_transformado['igv_gravadas_nogravadas'] +
+        df_transformado['igv_nogravadas']
+)
+# Sobreescribimos el valor para el caso de destino 4
+df_transformado.loc[df_transformado['destino'] == 4, 'valor'] = df_transformado['no_gravadas']
 
+df_transformado['otros_cargos'] = np.select(condiciones, resultados_otros, default=df_transformado['otros_cargos'])
 
-# --- Cambiar tipos de datos ---
-# Convertir texto a fechas (ajusta el formato si es necesario)
-df['periodo_tributario'] = pd.to_datetime(df['periodo_tributario'], format='%Y%m')
-# Convertir texto a números, manejando errores
-df['igv'] = pd.to_numeric(df['igv'], errors='coerce').fillna(0)
-df['isc'] = pd.to_numeric(df['isc'], errors='coerce').fillna(0)
-df['icbp'] = pd.to_numeric(df['icbp'], errors='coerce').fillna(0)
-df['otros'] = pd.to_numeric(df['otros'], errors='coerce').fillna(0)
+# 5. CREAR EL DATAFRAME FINAL
+columnas_identificadoras = ['ruc', 'periodo_tributario', 'observaciones', 'fecha_emision', 'fecha_vencimiento',
+                            'tipo_comprobante', 'numero_serie', 'numero_correlativo', 'tipo_documento',
+                            'numero_documento', 'isc', 'icbp', 'tipo_moneda', 'tipo_comprobante_modificado',
+                            'numero_serie_modificado', 'numero_correlativo_modificado',
+                            'tasa_detraccion', ]  # <-- Ajusta esto a tus columnas
+columnas_finales = columnas_identificadoras + ['valor', 'igv', 'otros_cargos', 'destino']
 
-# --- Modificar/Crear columnas ---
-# Unir dos columnas en una nueva (ejemplo hipotético)
-# df['info_completa'] = df['columna_A'] + ' - ' + df['columna_B']
+df_final = df_transformado[columnas_finales]
 
-# Asegurar el formato con 2 decimales
-# df['igv'] = df['igv'].round(2)
-
-print(df)
+print(df_final)
 from sqlalchemy import create_engine
 
-"""
+
 # Crea el motor de conexión (usando tus variables de .env)
-db_url = "postgresql://usuario:contraseña@host:puerto/basededatos"
+db_url = "postgresql://admindb:Giu72656770@192.168.18.143:5432/warehouse"
 engine = create_engine(db_url)
 
 # Carga los datos del DataFrame en la tabla 'acc._5'
 # 'if_exists='append'' añade los nuevos registros sin borrar los existentes.
 # 'index=False' evita que se inserte una columna de índice de Pandas.
-df.to_sql('_5', engine, schema='acc', if_exists='append', index=False)
-"""
+df_final.to_sql('_5', engine, schema='acc', if_exists='append', index=False)
+
 """
 def procesar_zip_a_db(ruta_zip, db_params, tabla_db):
 
