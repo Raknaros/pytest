@@ -23,11 +23,9 @@ def configurar_entorno():
     )
     s3_bucket = os.getenv('AWS_S3_BUCKET_NAME')
 
-    # Configuración de Microsoft
+    # Configuración de Microsoft (usando device flow como en test_onedrive.py)
     ms_config = {
-        "client_id": os.getenv('MS_CLIENT_ID'),
-        "client_secret": os.getenv('MS_CLIENT_SECRET'),
-        "refresh_token": os.getenv('MS_REFRESH_TOKEN'),
+        "client_id": os.getenv('ONEDRIVE_CLIENT_ID') or os.getenv('MS_CLIENT_ID'),
         "authority": "https://login.microsoftonline.com/common",
         "scopes": ['Files.ReadWrite.All']
     }
@@ -36,52 +34,54 @@ def configurar_entorno():
 
 
 def get_graph_token(config):
-    """Obtiene un access token de Microsoft Graph usando el refresh token."""
-    app = msal.ConfidentialClientApplication(
+    """Obtiene un access token de Microsoft Graph usando device flow."""
+    app = msal.PublicClientApplication(
         client_id=config["client_id"],
-        authority=config["authority"],
-        client_credential=config["client_secret"]
+        authority=config["authority"]
     )
-    result = app.acquire_token_by_refresh_token(config["refresh_token"], scopes=config["scopes"])
+    flow = app.initiate_device_flow(scopes=config["scopes"])
+    if "user_code" not in flow:
+        raise ValueError("Fallo al crear el flujo de dispositivo.", flow.get("error_description"))
+
+    print(flow["message"])
+    result = app.acquire_token_by_device_flow(flow)
     if "access_token" in result:
         return result["access_token"]
     else:
         raise Exception(f"No se pudo obtener el access token: {result.get('error_description')}")
 
 
-def listar_archivos_onedrive(token, carpeta_raiz="AbacoBot"):
+def listar_archivos_onedrive_recursivo(token, folder_path="AbacoBot"):
     """
-    Busca RECURSIVAMENTE todos los archivos dentro de una carpeta específica
-    en OneDrive.
+    Lista RECURSIVAMENTE todos los archivos dentro de una carpeta específica
+    en OneDrive usando el endpoint de children.
     """
-    # El endpoint de búsqueda. Filtramos por la ruta de la carpeta raíz.
-    # El : al final de la ruta es importante.
-    endpoint = f"https://graph.microsoft.com/v1.0/me/drive/root/search(q='')?$select=name,id,@microsoft.graph.downloadUrl&filter=startsWith(parentReference/path, '/drive/root:/{carpeta_raiz}')"
-
     headers = {'Authorization': 'Bearer ' + token}
     archivos_totales = []
 
-    print(f"Buscando todos los archivos dentro de la carpeta '{carpeta_raiz}' en OneDrive...")
-
-    while endpoint:
+    def recurse(current_path):
+        endpoint = f"https://graph.microsoft.com/v1.0/me/drive/root:/{current_path}:/children"
         try:
             response = requests.get(endpoint, headers=headers)
             response.raise_for_status()
             data = response.json()
 
-            # Añadimos los archivos de esta "página" a nuestra lista total
-            archivos_totales.extend(data.get('value', []))
-
-            # Microsoft Graph pagina los resultados. Si hay más archivos,
-            # nos dará una URL para la siguiente página.
-            endpoint = data.get('@odata.nextLink')
+            for item in data.get('value', []):
+                if 'folder' in item:
+                    # Es una carpeta, recursar
+                    sub_path = f"{current_path}/{item['name']}"
+                    recurse(sub_path)
+                else:
+                    # Es un archivo, añadir a la lista
+                    archivos_totales.append(item)
 
         except requests.exceptions.RequestException as e:
-            print(f"❌ Error al llamar a la API de Graph: {e}")
+            print(f"❌ Error al listar {current_path}: {e}")
             if e.response:
-                print(f"Detalles del error: {e.response.json()}")
-            return []  # Devolvemos una lista vacía en caso de error
+                print(f"Detalles: {e.response.json()}")
 
+    print(f"Buscando todos los archivos dentro de la carpeta '{folder_path}' en OneDrive...")
+    recurse(folder_path)
     return archivos_totales
 
 
@@ -127,10 +127,16 @@ def procesar_archivos():
     reporte = []
 
     try:
+        print("Iniciando configuración del entorno...")
         s3_client, s3_bucket, ms_config = configurar_entorno()
-        ms_token = get_graph_token(ms_config)
-        archivos_onedrive = listar_archivos_onedrive(ms_token)
+        print("Configuración del entorno exitosa.")
 
+        print("Obteniendo token de Microsoft Graph...")
+        ms_token = get_graph_token(ms_config)
+        print("Token obtenido exitosamente.")
+
+        print("Listando archivos en OneDrive...")
+        archivos_onedrive = listar_archivos_onedrive_recursivo(ms_token)
         print(f"Se encontraron {len(archivos_onedrive)} archivos en total en OneDrive.")
 
         # --- CAMBIO 1: Filtrar primero los archivos que contienen un RUC ---
@@ -157,21 +163,28 @@ def procesar_archivos():
             # La 'key' en S3 es la ruta completa: RUC/nombre_de_archivo.ext
             s3_key = f"{ruc}/{nombre}"
 
+            print(f"Verificando existencia en S3 para {s3_key}...")
             if verificar_si_archivo_existe_s3(s3_client, s3_bucket, s3_key):
                 reporte.append({'archivo': nombre, 'ruc_encontrado': ruc, 'estado': 'Duplicado en S3'})
+                print(f"Archivo {nombre} ya existe en S3.")
             else:
                 try:
                     download_url = archivo_info.get('@microsoft.graph.downloadUrl')
                     if not download_url:
                         raise Exception("No se encontró URL de descarga.")
 
+                    print(f"Copiando {nombre} de OneDrive a S3...")
                     copiar_archivo_de_onedrive_a_s3(s3_client, s3_bucket, s3_key, download_url)
                     reporte.append({'archivo': nombre, 'ruc_encontrado': ruc, 'estado': 'Copiado a S3'})
+                    print(f"Archivo {nombre} copiado exitosamente.")
                 except Exception as e:
                     reporte.append({'archivo': nombre, 'ruc_encontrado': ruc, 'estado': f'Error al copiar: {e}'})
+                    print(f"Error al copiar {nombre}: {e}")
 
     except Exception as e:
         print(f"❌ Ocurrió un error general: {e}")
+        import traceback
+        traceback.print_exc()
         return
 
     # --- CAMBIO 3: Generar reporte en TXT con timestamp ---
