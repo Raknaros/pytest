@@ -8,6 +8,27 @@ from dotenv import load_dotenv
 from io import BytesIO
 from datetime import datetime
 
+# Patrones regex para los nombres estructurados de archivos SUNAT
+PATRONES_ESTRUCTURADOS = {
+    "guia_remision": (re.compile(r"^(\d{11})-09-([A-Z0-9]{4})-(\d{1,8})\.(pdf|xml)$", re.IGNORECASE), ["ruc", "serie", "correlativo", "ext"]),
+    "reporte_planilla_zip": (re.compile(r"^(\d{11})_[A-Z]+_(\d{8})\.(zip)$", re.IGNORECASE), ["ruc", "periodo", "ext"]),
+    "declaraciones_pagos": (re.compile(r"^DetalleDeclaraciones_(\d{11})_(\d{14})\.(xlsx)$", re.IGNORECASE), ["ruc", "timestamp", "ext"]),
+    "ficha_ruc": (re.compile(r"^reporteec_ficharuc_(\d{11})_(\d{14})\.(pdf)$", re.IGNORECASE), ["ruc", "timestamp", "ext"]),
+    "ingreso_recaudacion": (re.compile(r"^ridetrac_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.(pdf)$", re.IGNORECASE), ["ruc", "num_operacion", "timestamp", "id", "ext"]),
+    "liberacion_fondos": (re.compile(r"^rilf_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.(pdf)$", re.IGNORECASE), ["ruc", "num_operacion", "timestamp", "id", "ext"]),
+    "multa": (re.compile(r"^rmgen_(\d{11})_(\d{3})-(\d{3})-(\d{7})_(\d{14})_(\d{9})\.(pdf)$", re.IGNORECASE), ["ruc", "cod1", "cod2", "num_multa", "timestamp", "id", "ext"]),
+    "notificacion": (re.compile(r"^constancia_(\d{14})_(\d{20})_(\d{13})_(\d{9})\.(pdf)$", re.IGNORECASE), ["timestamp", "id_notif", "num_operacion", "id", "ext"]),
+    "valores": (re.compile(r"^rvalores_(\d{11})_([A-Z0-9]{12,17})_(\d{14})_(\d{9})\.(pdf)$", re.IGNORECASE), ["ruc", "num_valor", "timestamp", "id", "ext"]),
+    "coactiva": (re.compile(r"^recgen_(\d{11})_(\d{13})_(\d{14})_(\d{9})\.(pdf)$", re.IGNORECASE), ["ruc", "num_expediente", "timestamp", "id", "ext"]),
+    "baja_oficio": (re.compile(r"^bod_(\d{6})_(\d{11})_(\d{4})\.(pdf)$", re.IGNORECASE), ["id_baja", "ruc", "periodo", "ext"]),
+    "factura": (re.compile(r"^(?:\d{11}-)?(01)-([A-Z0-9]{4})-(\d{1,8})\.(xml|zip|pdf)$", re.IGNORECASE), ["tipo_doc", "serie", "correlativo", "ext"]),
+    "boleta": (re.compile(r"^(?:\d{11}-)?(03)-([A-Z0-9]{4})-(\d{1,8})\.(xml|zip|pdf)$", re.IGNORECASE), ["tipo_doc", "serie", "correlativo", "ext"]),
+    "nota_credito": (re.compile(r"^(?:\d{11}-)?(07)-([A-Z0-9]{4})-(\d{1,8})\.(xml|zip|pdf)$", re.IGNORECASE), ["tipo_doc", "serie", "correlativo", "ext"]),
+    "nota_debito": (re.compile(r"^(?:\d{11}-)?(08)-([A-Z0-9]{4})-(\d{1,8})\.(xml|zip|pdf)$", re.IGNORECASE), ["tipo_doc", "serie", "correlativo", "ext"]),
+    "recibo_honorarios": (re.compile(r"^(?:\d{11}-)?(RHE)-([A-Z0-9]{4})-(\d{1,8})\.(xml|pdf)$", re.IGNORECASE), ["tipo_doc", "serie", "correlativo", "ext"]),
+    "pdf_doc": (re.compile(r"^PDF-DOC-([A-Z0-9]{4})(\d{1,8})(\d{11})\.(pdf|xml|zip)$", re.IGNORECASE), ["serie", "correlativo", "ruc", "ext"]),
+}
+
 
 
 # --- 1. CONFIGURACIÓN Y CLIENTES ---
@@ -23,28 +44,46 @@ def configurar_entorno():
     )
     s3_bucket = os.getenv('AWS_S3_BUCKET_NAME')
 
-    # Configuración de Microsoft (usando device flow como en test_onedrive.py)
+    # Configuración de Microsoft
+    refresh_token = os.getenv('MS_REFRESH_TOKEN')
     ms_config = {
         "client_id": os.getenv('ONEDRIVE_CLIENT_ID') or os.getenv('MS_CLIENT_ID'),
+        "client_secret": os.getenv('MS_CLIENT_SECRET'),
+        "refresh_token": refresh_token,
         "authority": "https://login.microsoftonline.com/common",
-        "scopes": ['Files.ReadWrite.All']
+        "scopes": ['Files.ReadWrite.All'],
+        "use_refresh": bool(refresh_token)  # True si hay refresh token
     }
 
     return s3_client, s3_bucket, ms_config
 
 
 def get_graph_token(config):
-    """Obtiene un access token de Microsoft Graph usando device flow."""
-    app = msal.PublicClientApplication(
-        client_id=config["client_id"],
-        authority=config["authority"]
-    )
-    flow = app.initiate_device_flow(scopes=config["scopes"])
-    if "user_code" not in flow:
-        raise ValueError("Fallo al crear el flujo de dispositivo.", flow.get("error_description"))
+    """Obtiene un access token de Microsoft Graph."""
+    if config.get("use_refresh"):
+        # Usar refresh token
+        app = msal.ConfidentialClientApplication(
+            client_id=config["client_id"],
+            authority=config["authority"],
+            client_credential=config["client_secret"]
+        )
+        result = app.acquire_token_by_refresh_token(config["refresh_token"], scopes=config["scopes"])
+    else:
+        # Usar device flow
+        app = msal.PublicClientApplication(
+            client_id=config["client_id"],
+            authority=config["authority"]
+        )
+        flow = app.initiate_device_flow(scopes=config["scopes"])
+        if "user_code" not in flow:
+            raise ValueError("Fallo al crear el flujo de dispositivo.", flow.get("error_description"))
 
-    print(flow["message"])
-    result = app.acquire_token_by_device_flow(flow)
+        print(flow["message"])
+        result = app.acquire_token_by_device_flow(flow)
+        # Imprimir el refresh token para configuración en .env
+        if "access_token" in result and "refresh_token" in result:
+            print(f"\n--- REFRESH TOKEN PARA .ENV ---\nMS_REFRESH_TOKEN={result['refresh_token']}\n-------------------------------\n")
+
     if "access_token" in result:
         return result["access_token"]
     else:
@@ -88,10 +127,18 @@ def listar_archivos_onedrive_recursivo(token, folder_path="AbacoBot"):
 # --- 2. LÓGICA DE PROCESAMIENTO ---
 
 def extraer_ruc_de_nombre(nombre_archivo: str) -> str | None:
-    """Busca un RUC de 11 dígitos que empiece con 10, 15 o 20 en un string."""
-    # Expresión regular para encontrar el RUC
-    match = re.search(r'\b(10|15|20)\d{9}\b', nombre_archivo)
-    return match.group(0) if match else None
+    """Extrae el RUC usando patrones estructurados de SUNAT."""
+    for patron, grupos in PATRONES_ESTRUCTURADOS.values():
+        match = patron.match(nombre_archivo)
+        if match:
+            # Encontrar el índice de "ruc" en la lista de grupos
+            if "ruc" in grupos:
+                idx = grupos.index("ruc") + 1  # Grupos empiezan en 1
+                ruc = match.group(idx)
+                # Validar que sea 11 dígitos y empiece con 10, 15 o 20
+                if re.match(r'^(10|15|20)\d{9}$', ruc):
+                    return ruc
+    return None
 
 
 def verificar_si_archivo_existe_s3(s3_client, bucket, key):
