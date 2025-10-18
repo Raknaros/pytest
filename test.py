@@ -1,10 +1,90 @@
-import xml.etree.ElementTree as ET
-import pandas as pd
 import os
-import zipfile
-from io import BytesIO
+from dotenv import load_dotenv
+from hyperliquid.exchange import Exchange
+from hyperliquid.utils import constants
+from eth_account import Account  # <-- 1. Importa la clase Account
+
+load_dotenv()
+# Configura tus credenciales
+address = os.getenv("HL_WALLET_ADDRESS")
+private_key_str = os.getenv("HL_API_WALLET_PRIVATE_KEY") # <-- Renombra a str
+
+if not address or not private_key_str:
+    raise ValueError("Configura HL_WALLET_ADDRESS y HL_API_WALLET_PRIVATE_KEY en tus variables de entorno.")
+
+# --- INICIO DE LA CORRECCIÓN ---
+
+# 2. Asegúrate de que la clave NO tenga el prefijo "0x"
+#    La función from_key lo espera como bytes crudos o un string hex sin 0x
+if private_key_str.startswith("0x"):
+    private_key_str = private_key_str[2:]
+
+# 3. Crea el objeto wallet (Account) a partir del string de la clave
+try:
+    wallet = Account.from_key(private_key_str)
+except Exception as e:
+    print(f"Error al crear la wallet desde la private key: {e}")
+    print("Asegúrate de que HL_API_WALLET_PRIVATE_KEY sea una clave privada hexadecimal válida.")
+    raise
+
+# (Opcional pero recomendado) Verifica que la clave y la dirección coincidan
+if wallet.address.lower() != address.lower():
+    print(f"¡Advertencia! La clave privada genera una dirección ({wallet.address})")
+    print(f"que no coincide con tu HL_WALLET_ADDRESS ({address}).")
+    # Descomenta la siguiente línea si quieres que esto sea un error fatal
+    # raise ValueError("La clave privada no corresponde a la dirección de la wallet.")
+
+# --- FIN DE LA CORRECCIÓN ---
 
 
+# Inicializa el cliente de Exchange (usa MAINNET_API_URL para producción, o TESTNET para pruebas)
+base_url = constants.MAINNET_API_URL  # Cambia a constants.TESTNET_API_URL si es test
+
+# 4. Pasa el *objeto wallet*, no el string de la clave privada
+exchange = Exchange(address, base_url, None, wallet)
+
+# Parámetros de la orden (cambia estos valores según tu trade)
+coin = "BTC"  # Asset, ej. "BTC", "ETH", etc.
+is_buy = True  # True para compra (long), False para venta (short)
+sz = 0.0001  # Tamaño de la posición (en unidades del asset)
+limit_px = 60000.0  # Precio limit para la entry order
+
+# Calcula precios para TP y SL (asumiendo porcentaje)
+tp_percentage = 0.003  # 0.3% de ganancia
+sl_percentage = 0.005  # 0.5% de pérdida
+if is_buy:
+    tp_trigger_px = limit_px * (1 + tp_percentage)  # TP por encima del entry
+    sl_trigger_px = limit_px * (1 - sl_percentage)  # SL por debajo del entry
+    tp_sl_buy = False  # Para cerrar long, vendes
+else:
+    tp_trigger_px = limit_px * (1 - tp_percentage)  # TP por debajo para short
+    sl_trigger_px = limit_px * (1 + sl_percentage)  # SL por encima para short
+    tp_sl_buy = True  # Para cerrar short, compras
+
+# 1. Coloca la limit order de entry
+print("Colocando orden de entrada...")
+entry_order_type = {"limit": {"tif": "Gtc"}}  # Good til canceled
+entry_result = exchange.order(coin, is_buy, sz, limit_px, entry_order_type, reduce_only=False)
+print("Resultado de la limit order de entry:", entry_result)
+
+# ... (El resto de tu código de TP/SL sigue igual)
+
+# Nota: Espera a que la entry se llene antes de colocar TP/SL (en un bot real, monitorea con info.user_state o websockets).
+# Para simplicidad, asumimos que se coloca después.
+
+# 2. Coloca el Take Profit (TP) como trigger market (con slippage ~10%)
+tp_order_type = {"trigger": {"isMarket": True, "triggerPx": tp_trigger_px, "tpsl": "tp"}}
+tp_limit_px = tp_trigger_px * (1.01 if is_buy else 0.99)  # Precio limit agresivo para slippage (ajusta)
+tp_result = exchange.order(coin, tp_sl_buy, sz, tp_limit_px, tp_order_type, reduce_only=True)
+print("Resultado del Take Profit:", tp_result)
+
+# 3. Coloca el Stop Loss (SL) como trigger market
+sl_order_type = {"trigger": {"isMarket": True, "triggerPx": sl_trigger_px, "tpsl": "sl"}}
+sl_limit_px = sl_trigger_px * (0.99 if is_buy else 1.01)  # Precio limit agresivo para slippage
+sl_result = exchange.order(coin, tp_sl_buy, sz, sl_limit_px, sl_order_type, reduce_only=True)
+print("Resultado del Stop Loss:", sl_result)
+
+"""
 def parse_ubl_invoice(xml_content):
     # Parsear el XML desde una cadena
     root = ET.fromstring(xml_content)
@@ -276,21 +356,4 @@ if not df.empty:
     print(f"Total de filas: {len(df)}")
 else:
     print("No se generó ningún DataFrame.")
-"""
-def job():
-    print("I'm running")
-    sleep(2)  # Simula una tarea que toma tiempo
-
-
-scheduler = BlockingScheduler()
-
-# Configura el ejecutor de hilos, si no lo especificas, usa uno por defecto con 10 hilos
-scheduler.add_executor('threadpool', max_workers=20)
-
-# Añade trabajos al scheduler
-scheduler.add_job(job, 'interval', seconds=3, id='job1')
-scheduler.add_job(job, 'interval', seconds=3, id='job2')
-
-# Comienza la ejecución del scheduler
-scheduler.start()
 """

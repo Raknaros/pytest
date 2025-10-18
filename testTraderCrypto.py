@@ -6,6 +6,7 @@ from hyperliquid.info import Info
 from hyperliquid.exchange import Exchange
 from hyperliquid.utils import constants
 from eth_account import Account
+from decimal import Decimal, ROUND_HALF_UP
 
 # --- Cargar Variables de Entorno ---
 load_dotenv()
@@ -13,139 +14,230 @@ HL_WALLET_ADDRESS = os.getenv("HL_WALLET_ADDRESS")
 HL_API_WALLET_PRIVATE_KEY = os.getenv("HL_API_WALLET_PRIVATE_KEY")
 
 
-# --- Función para redondear al tick_size correcto ---
 def round_to_tick(price, tick_size):
-    """Redondea un precio al múltiplo más cercano del tick_size."""
-    return round(price / tick_size) * tick_size
+    price_decimal = Decimal(str(price))
+    tick_decimal = Decimal(str(tick_size))
+    if tick_decimal == 0: return price_decimal
+    rounded_price = (price_decimal / tick_decimal).quantize(Decimal('1'), rounding=ROUND_HALF_UP) * tick_decimal
+    return rounded_price
 
 
-# --- Función para manejar respuestas de la API (Robusta) ---
+def get_tick_size(info, coin):
+    """Obtiene el tick size real del activo desde la API"""
+    try:
+        meta = info.meta()
+        universe = meta.get('universe', [])
+
+        for asset in universe:
+            if asset.get('name') == coin:
+                # Intentar primero tickSize directo
+                tick_size = asset.get('tickSize')
+                if tick_size is not None:
+                    return Decimal(str(tick_size))
+                # Si no, usar pxDecimals si existe
+                px_decimals = asset.get('pxDecimals')
+                if px_decimals is not None:
+                    return Decimal('10') ** (-int(px_decimals))
+                # Si no, usar szDecimals como fallback (aunque es para size)
+                sz_decimals = asset.get('szDecimals')
+                if sz_decimals is not None:
+                    return Decimal('10') ** (-int(sz_decimals))
+
+        print(f"⚠️ No se encontró tick size para {coin}, usando valor por defecto")
+        return Decimal('0.1')  # Valor por defecto conservador para BTC
+    except Exception as e:
+        print(f"⚠️ Error obteniendo tick size: {e}, usando valor por defecto")
+        return Decimal('0.1')
+
+
 def handle_api_response(response, action_name):
-    """Verifica si la respuesta de la API fue exitosa. Si no, imprime el error y detiene el script."""
-    if isinstance(response, dict) and response.get("status") == "ok":
+    if not isinstance(response, dict):
+        print(f"❌ Error inesperado en '{action_name}': La API devolvió -> {response}")
+        sys.exit(1)
+
+    if response.get("status") == "ok":
         print(f"✅ {action_name}: Éxito.")
-
         response_data = response.get("response", {})
-
         if response_data.get("type") == "default":
-            print(f"📄 Respuesta de {action_name}: {response_data}")
+            print(f"📄 Respuesta simple de {action_name}: {response_data}")
             return [{}]
-
         data = response_data.get("data", {})
-        statuses = data.get("statuses", [{}])
-
-        if statuses and isinstance(statuses[0], dict) and "error" in statuses[0]:
-            error_msg = statuses[0]["error"]
-            print(f"❌ Error en la respuesta de '{action_name}': {error_msg}")
+        statuses = data.get("statuses", [])
+        has_error = False
+        for i, status in enumerate(statuses):
+            if isinstance(status, dict) and "error" in status:
+                error_msg = status["error"]
+                print(f"❌ Error en la Orden #{i + 1} del lote '{action_name}': {error_msg}")
+                has_error = True
+        if has_error:
+            print(f"📄 Respuesta completa (CON ERROR): {response}")
             sys.exit(1)
-
         print(f"📄 Respuesta completa de {action_name}: {response}")
         return statuses
 
-    print(f"❌ Error en '{action_name}': La API devolvió -> {response}")
+    error_detail = response.get("error", "No details provided.")
+    if error_detail == "No details provided.":
+        error_detail = response.get("response", "No details provided.")
+    print(f"❌ Error en '{action_name}': La API devolvió status '{response.get('status')}' -> {error_detail}")
     sys.exit(1)
 
 
-# --- Función Principal de Prueba ---
-def place_test_order():
+def place_limit_order_with_tp_sl(coin, is_buy, order_size, limit_price, take_profit_percent, stop_loss_percent, leverage=1):
+    """
+    Coloca una limit order con take profit y stop loss en Hyperliquid.
+
+    Parámetros:
+    - coin: str, símbolo del activo (ej. "BTC")
+    - is_buy: bool, True para long, False para short
+    - order_size: float, tamaño de la orden
+    - limit_price: float, precio límite de entrada
+    - take_profit_percent: float, porcentaje de take profit (ej. 0.5 para 0.5%)
+    - stop_loss_percent: float, porcentaje de stop loss (ej. 0.3 para 0.3%)
+    - leverage: int, apalancamiento (por defecto 1)
+
+    Retorna:
+    - dict con resultados de las órdenes o None si falla
+    """
     if not HL_WALLET_ADDRESS or not HL_API_WALLET_PRIVATE_KEY:
         print("❌ Error: Asegúrate de que las variables de entorno estén en tu archivo .env")
-        return
+        return None
     print("✅ Credenciales cargadas correctamente.")
 
     try:
-        # --- Inicialización Correcta ---
         account = Account.from_key(HL_API_WALLET_PRIVATE_KEY)
         print("🔐 Inicializando conexión...")
         info = Info(constants.MAINNET_API_URL, skip_ws=True)
-        exchange = Exchange(
-            account,
-            base_url=constants.MAINNET_API_URL,
-            vault_address=None
+        exchange = Exchange(account, base_url=constants.MAINNET_API_URL)
+
+        # Obtener tick size dinámicamente
+        tick_size = get_tick_size(info, coin)
+        print(f"ℹ️ Tick Size obtenido de la API para {coin}: {tick_size}")
+
+        # Redondear precios al tick size
+        limit_price_decimal = round_to_tick(Decimal(str(limit_price)), tick_size)
+
+        # Calcular TP y SL basados en el precio de entrada
+        if is_buy:
+            tp_trigger_price_decimal = round_to_tick(
+                limit_price_decimal * (Decimal('1') + Decimal(str(take_profit_percent)) / Decimal('100')), tick_size)
+            sl_trigger_price_decimal = round_to_tick(
+                limit_price_decimal * (Decimal('1') - Decimal(str(stop_loss_percent)) / Decimal('100')), tick_size)
+        else:
+            tp_trigger_price_decimal = round_to_tick(
+                limit_price_decimal * (Decimal('1') - Decimal(str(take_profit_percent)) / Decimal('100')), tick_size)
+            sl_trigger_price_decimal = round_to_tick(
+                limit_price_decimal * (Decimal('1') + Decimal(str(stop_loss_percent)) / Decimal('100')), tick_size)
+
+        # Para TP/SL market: el limit_px debe ser válido según las reglas de Hyperliquid
+        # Para trigger orders, limit_px puede ser None o un precio válido
+        # Intentar con limit_px = None primero (market order pura)
+        take_profit_limit_px_decimal = None
+        stop_loss_limit_px_decimal = None
+
+        print(f"\nCalculando precios redondeados al tick de {tick_size}:")
+        print(f"  Precio de Entrada (Limit): ${float(limit_price_decimal):,.2f}")
+        print(f"  Trigger Take Profit (TP): ${float(tp_trigger_price_decimal):,.2f}")
+        print(f"  Límite TP: Market order (sin slippage)")
+        print(f"  Trigger Stop Loss (SL):   ${float(sl_trigger_price_decimal):,.2f}")
+        print(f"  Límite SL: Market order (sin slippage)")
+
+        # PASO 1: Colocar la limit order de entrada
+        print("\n📌 PASO 1: Colocando orden de ENTRADA (Limit)...")
+
+        entry_response = exchange.order(
+            coin,
+            is_buy,
+            order_size,
+            float(limit_price_decimal),
+            {"limit": {"tif": "Gtc"}},  # Good 'Til Canceled para limit orders
+            reduce_only=False
         )
+        entry_statuses = handle_api_response(entry_response, "Orden de Entrada")
 
-        # --- Definir Parámetros ---
-        COIN = "BTC"
-        LEVERAGE = 2
-        MIN_ORDER_SIZE_BTC = 0.0001
-        TAKE_PROFIT_PERCENT = 0.5
-        STOP_LOSS_PERCENT = 0.3
-        TICK_SIZE = 0.5  # Tick size correcto para BTC
-        print(f"ℹ️ Usando Tick Size (paso de precio) de: ${TICK_SIZE} para {COIN}")
+        # Verificar que la orden se colocó (para limit orders, puede no ejecutarse inmediatamente)
+        if not entry_statuses:
+            print("⚠️ La orden de entrada no se colocó correctamente.")
+            return None
 
-        # --- PASO 1: CONFIGURAR APALANCAMIENTO ---
-        #print(f"\n⚙️ Configurando apalancamiento para {COIN} a {LEVERAGE}x en modo AISLADO...")
-        #leverage_response = exchange.update_leverage(LEVERAGE, COIN, is_cross=False)
-        #handle_api_response(leverage_response, "Configuración de Apalancamiento")
+        print(f"✅ Orden de entrada colocada a ${float(limit_price_decimal):,.2f}")
 
-        # --- PASO 2: CALCULAR Y REDONDEAR PRECIOS ---
-        all_market_data = info.all_mids()
-        current_price = float(all_market_data[COIN])
-        print(f"\n📈 Precio actual de {COIN}: ${current_price:,.2f}")
+        # PASO 2: Esperar un momento para que la orden se registre
+        print("\n⏳ Esperando 2 segundos para confirmar la orden...")
+        time.sleep(2)
 
-        min_order_usd_value = MIN_ORDER_SIZE_BTC * current_price
-        print(f"ℹ️ Tamaño mínimo de orden: {MIN_ORDER_SIZE_BTC} BTC (aprox. ${min_order_usd_value:,.2f})")
+        # PASO 3: Colocar TP y SL como trigger orders individuales (ya que bulk_orders puede fallar)
+        print("\n📌 PASO 2: Colocando órdenes TP/SL...")
 
-        order_size = MIN_ORDER_SIZE_BTC
-
-        # Calculamos los precios como FLOAT, pero redondeados al tick_size
-        entry_price = round_to_tick(current_price * 0.9995, TICK_SIZE)
-        take_profit_price = round_to_tick(entry_price * (1 + TAKE_PROFIT_PERCENT / 100), TICK_SIZE)
-        stop_loss_price = round_to_tick(entry_price * (1 - STOP_LOSS_PERCENT / 100), TICK_SIZE)
-
-        print(f"\nCalculando precios redondeados al tick de {TICK_SIZE}:")
-        print(f"  Precio de Entrada: ${entry_price:,.2f}")
-        print(f"  Take Profit (TP):  ${take_profit_price:,.2f}")
-        print(f"  Stop Loss (SL):    ${stop_loss_price:,.2f}")
-
-        # --- PASO 3: COLOCAR ÓRDENES EN BATCH (Lote) ---
-        print("\n⏳ Preparando lote de órdenes (Principal + TP + SL)...")
-
-        order_requests = [
-            # 1. Orden Principal (Límite, GTC)
-            #    'limit_px' es un FLOAT
+        # Take Profit - Usar triggerPx como limit_px para evitar errores de validación
+        tp_response = exchange.order(
+            coin,
+            not is_buy,  # Invertir dirección para cerrar
+            order_size,
+            float(tp_trigger_price_decimal),  # Usar triggerPx como limit_px
             {
-                "coin": COIN,
-                "is_buy": True,
-                "sz": order_size,
-                "limit_px": entry_price,
-                "order_type": {"limit": {"tif": "Gtc"}},
-                "reduce_only": False
+                "trigger": {
+                    "triggerPx": float(tp_trigger_price_decimal),
+                    "isMarket": True,
+                    "tpsl": "tp"
+                }
             },
+            reduce_only=True
+        )
+        tp_statuses = handle_api_response(tp_response, "Orden Take Profit")
 
-            # 2. Orden Take Profit (Trigger, Reduce-Only)
-            #    NO tiene 'limit_px', 'triggerPx' es un FLOAT
+        # Stop Loss - Usar triggerPx como limit_px para evitar errores de validación
+        sl_response = exchange.order(
+            coin,
+            not is_buy,  # Invertir dirección para cerrar
+            order_size,
+            float(sl_trigger_price_decimal),  # Usar triggerPx como limit_px
             {
-                "coin": COIN,
-                "is_buy": False,
-                "sz": order_size,
-                "limit_px": 0,
-                "order_type": {"trigger": {"triggerPx": take_profit_price, "isMarket": True, "tpsl": "tp"}},
-                "reduce_only": True
+                "trigger": {
+                    "triggerPx": float(sl_trigger_price_decimal),
+                    "isMarket": True,
+                    "tpsl": "sl"
+                }
             },
+            reduce_only=True
+        )
+        sl_statuses = handle_api_response(sl_response, "Orden Stop Loss")
 
-            # 3. Orden Stop Loss (Trigger, Reduce-Only)
-            #    NO tiene 'limit_px', 'triggerPx' es un FLOAT
-            {
-                "coin": COIN,
-                "is_buy": False,
-                "sz": order_size,
-                "limit_px": 0,
-                "order_type": {"trigger": {"triggerPx": stop_loss_price, "isMarket": True, "tpsl": "sl"}},
-                "reduce_only": True
-            }
-        ]
+        print("\n🎉 ¡Órdenes colocadas exitosamente!")
+        print(f"   - Entrada (Limit): ${float(limit_price_decimal):,.2f}")
+        print(f"   - Take Profit: ${float(tp_trigger_price_decimal):,.2f} ({'+' if is_buy else '-'}{take_profit_percent}%)")
+        print(f"   - Stop Loss: ${float(sl_trigger_price_decimal):,.2f} ({'-' if is_buy else '+'}{stop_loss_percent}%)")
+        print("\n⚠️ IMPORTANTE: Las órdenes TP/SL son independientes (no OCO).")
+        print("   Si una se ejecuta, debes cancelar manualmente la otra.")
 
-        # Usar 'bulk_orders' (el nombre de método correcto)
-        batch_response = exchange.bulk_orders(order_requests)
-        handle_api_response(batch_response, "Colocación de Lote de Órdenes")
-
-        print("\n🎉 ¡Prueba completada! Revisa tu cuenta en Hyperliquid para ver las órdenes pendientes.")
+        return {
+            "entry": entry_statuses,
+            "tp": tp_statuses,
+            "sl": sl_statuses
+        }
 
     except Exception as e:
-        print(f"\n❌ Ocurrió un error irrecuperable durante la prueba: {e}")
+        print(f"\n❌ Ocurrió un error irrecuperable: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
 
 
-# --- Ejecutar la Prueba ---
+def place_test_order():
+    # Ejemplo de uso de la nueva función
+    result = place_limit_order_with_tp_sl(
+        coin="BTC",
+        is_buy=True,  # Long
+        order_size=0.0001,
+        limit_price=95000.0,  # Ejemplo de precio límite
+        take_profit_percent=0.5,
+        stop_loss_percent=0.3,
+        leverage=2
+    )
+    if result:
+        print("Resultado:", result)
+    else:
+        print("Fallo en colocar las órdenes.")
+
+
 if __name__ == "__main__":
     place_test_order()
