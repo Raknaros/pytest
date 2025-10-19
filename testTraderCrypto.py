@@ -113,20 +113,22 @@ def place_limit_order_with_tp_sl(coin, is_buy, order_size, limit_price, take_pro
         tick_size = get_tick_size(info, coin)
         print(f"ℹ️ Tick Size obtenido de la API para {coin}: {tick_size}")
 
-        # Redondear precios al tick size
-        limit_price_decimal = round_to_tick(Decimal(str(limit_price)), tick_size)
+        # Para Hyperliquid BTC: siempre redondear a enteros independientemente del tick_size técnico
+        # Esto es un requerimiento específico de la plataforma
+        limit_price_decimal = round(Decimal(str(limit_price)))
 
         # Calcular TP y SL basados en el precio de entrada
+        # Para Hyperliquid BTC: siempre redondear a enteros
         if is_buy:
-            tp_trigger_price_decimal = round_to_tick(
-                limit_price_decimal * (Decimal('1') + Decimal(str(take_profit_percent)) / Decimal('100')), tick_size)
-            sl_trigger_price_decimal = round_to_tick(
-                limit_price_decimal * (Decimal('1') - Decimal(str(stop_loss_percent)) / Decimal('100')), tick_size)
+            tp_trigger_price_decimal = round(
+                float(limit_price_decimal) * (1 + take_profit_percent / 100))
+            sl_trigger_price_decimal = round(
+                float(limit_price_decimal) * (1 - stop_loss_percent / 100))
         else:
-            tp_trigger_price_decimal = round_to_tick(
-                limit_price_decimal * (Decimal('1') - Decimal(str(take_profit_percent)) / Decimal('100')), tick_size)
-            sl_trigger_price_decimal = round_to_tick(
-                limit_price_decimal * (Decimal('1') + Decimal(str(stop_loss_percent)) / Decimal('100')), tick_size)
+            tp_trigger_price_decimal = round(
+                float(limit_price_decimal) * (1 - take_profit_percent / 100))
+            sl_trigger_price_decimal = round(
+                float(limit_price_decimal) * (1 + stop_loss_percent / 100))
 
         # Para TP/SL market: el limit_px debe ser válido según las reglas de Hyperliquid
         # Para trigger orders, limit_px puede ser None o un precio válido
@@ -223,15 +225,49 @@ def place_limit_order_with_tp_sl(coin, is_buy, order_size, limit_price, take_pro
 
 
 def place_test_order():
-    # Ejemplo de uso de la nueva función
+    # Obtener precio actual del mercado
+    account = Account.from_key(HL_API_WALLET_PRIVATE_KEY)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
+
+    coin = "BTC"
+    all_market_data = info.all_mids()
+    current_price = float(all_market_data[coin])
+    print(f"Precio actual de {coin}: ${current_price:,.2f}")
+
+    # Redondear precio actual a 0 decimales para evitar problemas de tick size
+    rounded_current_price = round(current_price)
+    print(f"Precio redondeado a 0 decimales: ${rounded_current_price:,.0f}")
+
+    # Calcular precios dinámicos basados en precio redondeado
+    # Para long: limit_price ligeramente por encima del precio redondeado
+    limit_price = rounded_current_price + 1  # +1 para asegurar que sea por encima
+
+    # Calcular TP y SL con porcentajes razonables para scalping
+    take_profit_percent = 0.5  # 0.5% TP
+    stop_loss_percent = 0.3    # 0.3% SL
+
+    # Calcular precios absolutos de TP/SL
+    tp_price = rounded_current_price * (1 + take_profit_percent / 100)
+    sl_price = rounded_current_price * (1 - stop_loss_percent / 100)
+
+    # Redondear TP/SL a 0 decimales también
+    tp_price_rounded = round(tp_price)
+    sl_price_rounded = round(sl_price)
+
+    print(f"Precios calculados (redondeados a 0 decimales):")
+    print(f"  Limit Price: ${limit_price:,.0f}")
+    print(f"  Take Profit: ${tp_price_rounded:,.0f} (+{take_profit_percent}%)")
+    print(f"  Stop Loss: ${sl_price_rounded:,.0f} (-{stop_loss_percent}%)")
+
+    # Ejemplo de uso de la función con precios dinámicos
     result = place_limit_order_with_tp_sl(
-        coin="BTC",
+        coin=coin,
         is_buy=True,  # Long
         order_size=0.0001,
-        limit_price=95000.0,  # Ejemplo de precio límite
-        take_profit_percent=0.5,
-        stop_loss_percent=0.3,
-        leverage=2
+        limit_price=float(limit_price),
+        take_profit_percent=take_profit_percent,
+        stop_loss_percent=stop_loss_percent,
+        leverage=1  # Leverage conservador para scalping
     )
     if result:
         print("Resultado:", result)
