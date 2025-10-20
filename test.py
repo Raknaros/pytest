@@ -1,88 +1,196 @@
 import os
+import time
+import sys
 from dotenv import load_dotenv
+from hyperliquid.info import Info
 from hyperliquid.exchange import Exchange
 from hyperliquid.utils import constants
-from eth_account import Account  # <-- 1. Importa la clase Account
+from eth_account import Account
+from decimal import Decimal, ROUND_HALF_UP
 
+# --- (Cargar Variables de Entorno) ---
 load_dotenv()
-# Configura tus credenciales
-address = os.getenv("HL_WALLET_ADDRESS")
-private_key_str = os.getenv("HL_API_WALLET_PRIVATE_KEY") # <-- Renombra a str
-
-if not address or not private_key_str:
-    raise ValueError("Configura HL_WALLET_ADDRESS y HL_API_WALLET_PRIVATE_KEY en tus variables de entorno.")
-
-# --- INICIO DE LA CORRECCIÓN ---
-
-# 2. Asegúrate de que la clave NO tenga el prefijo "0x"
-#    La función from_key lo espera como bytes crudos o un string hex sin 0x
-if private_key_str.startswith("0x"):
-    private_key_str = private_key_str[2:]
-
-# 3. Crea el objeto wallet (Account) a partir del string de la clave
-try:
-    wallet = Account.from_key(private_key_str)
-except Exception as e:
-    print(f"Error al crear la wallet desde la private key: {e}")
-    print("Asegúrate de que HL_API_WALLET_PRIVATE_KEY sea una clave privada hexadecimal válida.")
-    raise
-
-# (Opcional pero recomendado) Verifica que la clave y la dirección coincidan
-if wallet.address.lower() != address.lower():
-    print(f"¡Advertencia! La clave privada genera una dirección ({wallet.address})")
-    print(f"que no coincide con tu HL_WALLET_ADDRESS ({address}).")
-    # Descomenta la siguiente línea si quieres que esto sea un error fatal
-    # raise ValueError("La clave privada no corresponde a la dirección de la wallet.")
-
-# --- FIN DE LA CORRECCIÓN ---
+HL_WALLET_ADDRESS = os.getenv("HL_WALLET_ADDRESS")
+HL_API_WALLET_PRIVATE_KEY = os.getenv("HL_API_WALLET_PRIVATE_KEY")
 
 
-# Inicializa el cliente de Exchange (usa MAINNET_API_URL para producción, o TESTNET para pruebas)
-base_url = constants.MAINNET_API_URL  # Cambia a constants.TESTNET_API_URL si es test
+# --- Función round_to_tick ---
+def round_to_tick(price, tick_size):
+    price_decimal = Decimal(str(price))
+    tick_decimal = Decimal(str(tick_size))
+    if tick_decimal == 0: return price_decimal
+    rounded_price = (price_decimal / tick_decimal).quantize(Decimal('1'), rounding=ROUND_HALF_UP) * tick_decimal
+    return rounded_price
 
-# 4. Pasa el *objeto wallet*, no el string de la clave privada
-exchange = Exchange(address, base_url, None, wallet)
 
-# Parámetros de la orden (cambia estos valores según tu trade)
-coin = "BTC"  # Asset, ej. "BTC", "ETH", etc.
-is_buy = True  # True para compra (long), False para venta (short)
-sz = 0.0001  # Tamaño de la posición (en unidades del asset)
-limit_px = 60000.0  # Precio limit para la entry order
+# --- Obtener tick size dinámicamente ---
+def get_tick_size(info, coin):
+    """Obtiene el tick size real del activo desde la API"""
+    try:
+        meta = info.meta()
+        universe = meta.get('universe', [])
 
-# Calcula precios para TP y SL (asumiendo porcentaje)
-tp_percentage = 0.003  # 0.3% de ganancia
-sl_percentage = 0.005  # 0.5% de pérdida
-if is_buy:
-    tp_trigger_px = limit_px * (1 + tp_percentage)  # TP por encima del entry
-    sl_trigger_px = limit_px * (1 - sl_percentage)  # SL por debajo del entry
-    tp_sl_buy = False  # Para cerrar long, vendes
-else:
-    tp_trigger_px = limit_px * (1 - tp_percentage)  # TP por debajo para short
-    sl_trigger_px = limit_px * (1 + sl_percentage)  # SL por encima para short
-    tp_sl_buy = True  # Para cerrar short, compras
+        for asset in universe:
+            if asset.get('name') == coin:
+                tick_size_str = asset.get('szDecimals')
+                if tick_size_str is not None:
+                    tick_size = Decimal('10') ** (-int(tick_size_str))
+                    return tick_size
 
-# 1. Coloca la limit order de entry
-print("Colocando orden de entrada...")
-entry_order_type = {"limit": {"tif": "Gtc"}}  # Good til canceled
-entry_result = exchange.order(coin, is_buy, sz, limit_px, entry_order_type, reduce_only=False)
-print("Resultado de la limit order de entry:", entry_result)
+        print(f"⚠️ No se encontró tick size para {coin}, usando valor por defecto")
+        return Decimal('0.1')
+    except Exception as e:
+        print(f"⚠️ Error obteniendo tick size: {e}, usando valor por defecto")
+        return Decimal('0.1')
 
-# ... (El resto de tu código de TP/SL sigue igual)
 
-# Nota: Espera a que la entry se llene antes de colocar TP/SL (en un bot real, monitorea con info.user_state o websockets).
-# Para simplicidad, asumimos que se coloca después.
+# --- Función handle_api_response ---
+def handle_api_response(response, action_name):
+    if not isinstance(response, dict):
+        print(f"❌ Error inesperado en '{action_name}': La API devolvió -> {response}")
+        sys.exit(1)
 
-# 2. Coloca el Take Profit (TP) como trigger market (con slippage ~10%)
-tp_order_type = {"trigger": {"isMarket": True, "triggerPx": tp_trigger_px, "tpsl": "tp"}}
-tp_limit_px = tp_trigger_px * (1.01 if is_buy else 0.99)  # Precio limit agresivo para slippage (ajusta)
-tp_result = exchange.order(coin, tp_sl_buy, sz, tp_limit_px, tp_order_type, reduce_only=True)
-print("Resultado del Take Profit:", tp_result)
+    if response.get("status") == "ok":
+        print(f"✅ {action_name}: Éxito.")
+        response_data = response.get("response", {})
+        if response_data.get("type") == "default":
+            print(f"📄 Respuesta simple de {action_name}: {response_data}")
+            return [{}]
+        data = response_data.get("data", {})
+        statuses = data.get("statuses", [])
+        has_error = False
+        for i, status in enumerate(statuses):
+            if isinstance(status, dict) and "error" in status:
+                error_msg = status["error"]
+                print(f"❌ Error en la Orden #{i + 1} del lote '{action_name}': {error_msg}")
+                has_error = True
+        if has_error:
+            print(f"📄 Respuesta completa (CON ERROR): {response}")
+            sys.exit(1)
+        print(f"📄 Respuesta completa de {action_name}: {response}")
+        return statuses
 
-# 3. Coloca el Stop Loss (SL) como trigger market
-sl_order_type = {"trigger": {"isMarket": True, "triggerPx": sl_trigger_px, "tpsl": "sl"}}
-sl_limit_px = sl_trigger_px * (0.99 if is_buy else 1.01)  # Precio limit agresivo para slippage
-sl_result = exchange.order(coin, tp_sl_buy, sz, sl_limit_px, sl_order_type, reduce_only=True)
-print("Resultado del Stop Loss:", sl_result)
+    error_detail = response.get("error", "No details provided.")
+    if error_detail == "No details provided.":
+        error_detail = response.get("response", "No details provided.")
+    print(f"❌ Error en '{action_name}': La API devolvió status '{response.get('status')}' -> {error_detail}")
+    sys.exit(1)
+
+
+# --- Función Principal de Prueba ---
+def place_test_order():
+    if not HL_WALLET_ADDRESS or not HL_API_WALLET_PRIVATE_KEY:
+        print("❌ Error: Asegúrate de que las variables de entorno estén en tu archivo .env")
+        return
+    print("✅ Credenciales cargadas correctamente.")
+
+    try:
+        account = Account.from_key(HL_API_WALLET_PRIVATE_KEY)
+        print("🔐 Inicializando conexión...")
+        info = Info(constants.MAINNET_API_URL, skip_ws=True)
+        exchange = Exchange(account, base_url=constants.MAINNET_API_URL)
+
+        COIN = "BTC"
+        LEVERAGE = 2
+        MIN_ORDER_SIZE_BTC = 0.0001
+        TAKE_PROFIT_PERCENT = 0.5
+        STOP_LOSS_PERCENT = 0.3
+
+        # Obtener tick size dinámicamente
+        TICK_SIZE = get_tick_size(info, COIN)
+        print(f"ℹ️ Tick Size obtenido de la API para {COIN}: {TICK_SIZE}")
+
+        all_market_data = info.all_mids()
+        current_price = float(all_market_data[COIN])
+        print(f"\n📈 Precio actual de {COIN}: ${current_price:,.1f}")
+
+        min_order_usd_value = MIN_ORDER_SIZE_BTC * current_price
+        print(f"ℹ️ Tamaño mínimo de orden: {MIN_ORDER_SIZE_BTC} BTC (aprox. ${min_order_usd_value:,.2f})")
+
+        order_size = MIN_ORDER_SIZE_BTC
+
+        # --- Calcular precios usando Decimal ---
+        entry_price_decimal = round_to_tick(Decimal(str(current_price)) * Decimal('0.999'), TICK_SIZE)
+
+        take_profit_trigger_price_decimal = round_to_tick(
+            entry_price_decimal * (Decimal('1') + Decimal(str(TAKE_PROFIT_PERCENT)) / Decimal('100')), TICK_SIZE)
+        stop_loss_trigger_price_decimal = round_to_tick(
+            entry_price_decimal * (Decimal('1') - Decimal(str(STOP_LOSS_PERCENT)) / Decimal('100')), TICK_SIZE)
+
+        # ¡CORRECCIÓN CRÍTICA! Para órdenes trigger market, limit_px debe estar MUY cerca del triggerPx
+        # Slippage muy pequeño (0.1% para TP, 0.2% para SL)
+        take_profit_limit_px_decimal = round_to_tick(
+            take_profit_trigger_price_decimal * Decimal('0.999'), TICK_SIZE)  # 0.1% bajo el trigger
+        stop_loss_limit_px_decimal = round_to_tick(
+            stop_loss_trigger_price_decimal * Decimal('0.998'), TICK_SIZE)  # 0.2% bajo el trigger
+
+        print(f"\nCalculando precios redondeados al tick de {TICK_SIZE}:")
+        print(f"  Precio de Entrada:        ${float(entry_price_decimal):,.2f}")
+        print(f"  Trigger Take Profit (TP): ${float(take_profit_trigger_price_decimal):,.2f}")
+        print(f"  Límite TP (0.1% slippage):${float(take_profit_limit_px_decimal):,.2f}")
+        print(f"  Trigger Stop Loss (SL):   ${float(stop_loss_trigger_price_decimal):,.2f}")
+        print(f"  Límite SL (0.2% slippage):${float(stop_loss_limit_px_decimal):,.2f}")
+
+        print("\n⏳ Preparando lote de órdenes (Principal + TP + SL)...")
+
+        order_requests = [
+            # 1. Orden Principal (Límite, GTC)
+            {
+                "coin": COIN,
+                "is_buy": True,
+                "sz": order_size,
+                "limit_px": float(entry_price_decimal),
+                "order_type": {"limit": {"tif": "Gtc"}},
+                "reduce_only": False
+            },
+            # 2. Orden Take Profit (Trigger, Market con límite de slippage)
+            {
+                "coin": COIN,
+                "is_buy": False,
+                "sz": order_size,
+                "limit_px": float(take_profit_limit_px_decimal),
+                "order_type": {
+                    "trigger": {
+                        "triggerPx": float(take_profit_trigger_price_decimal),
+                        "isMarket": True,
+                        "tpsl": "tp"
+                    }
+                },
+                "reduce_only": True
+            },
+            # 3. Orden Stop Loss (Trigger, Market con límite de slippage)
+            {
+                "coin": COIN,
+                "is_buy": False,
+                "sz": order_size,
+                "limit_px": float(stop_loss_limit_px_decimal),
+                "order_type": {
+                    "trigger": {
+                        "triggerPx": float(stop_loss_trigger_price_decimal),
+                        "isMarket": True,
+                        "tpsl": "sl"
+                    }
+                },
+                "reduce_only": True
+            }
+        ]
+
+        batch_response = exchange.bulk_orders(order_requests)
+        statuses = handle_api_response(batch_response, "Colocación de Lote de Órdenes")
+
+        print("\n🎉 ¡Prueba completada! Las órdenes han sido enviadas.")
+        print("⚠️ IMPORTANTE: Las órdenes TP/SL son independientes y no OCO.")
+        print("   Revisa tu cuenta en Hyperliquid para ver las órdenes pendientes.")
+
+    except Exception as e:
+        print(f"\n❌ Ocurrió un error irrecuperable durante la prueba: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+# --- Ejecutar la Prueba ---
+if __name__ == "__main__":
+    place_test_order()
 
 """
 def parse_ubl_invoice(xml_content):
