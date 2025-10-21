@@ -54,4 +54,4 @@ def load_f0621(carpeta: str):
     return print(set_f0621.to_sql('_9', engine, if_exists='append', index=False, schema='acc'))  #
 
 
-load_f0621('C:/Users/Raknaros/Desktop/temporal/declaraciones')
+load_f0621('C:/Users/Raknaros/Desktop/temporal/0621')
