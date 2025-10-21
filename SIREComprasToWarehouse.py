@@ -259,8 +259,8 @@ class Transformer:
             df['icbp'] = pd.to_numeric(df['icbp'], errors='coerce').round(2)
         if 'isc' in df.columns:
             df['isc'] = pd.to_numeric(df['isc'], errors='coerce').round(2)
-        if 'otros' in df.columns:
-            df['otros'] = pd.to_numeric(df['otros'], errors='coerce').round(2)
+        if 'otros_cargos' in df.columns:
+            df['otros_cargos'] = pd.to_numeric(df['otros_cargos'], errors='coerce').round(2)
 
 
 class Loader:
