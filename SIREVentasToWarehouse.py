@@ -93,6 +93,19 @@ class Transformer:
             after_count = len(df_transformado)
             logging.info(f"Filtro CAR SUNAT: {before_count} -> {after_count} filas")
 
+        # Regla especial para Tipo Doc Identidad y Nro Doc Identidad
+        if 'Tipo Doc Identidad' in df_transformado.columns and 'Nro Doc Identidad' in df_transformado.columns and 'Apellidos Nombres/ Razón Social' in df_transformado.columns:
+            # Si 'Tipo Doc Identidad' es '-', cambiar a '0'
+            tipo_doc_mask = df_transformado['Tipo Doc Identidad'] == '-'
+            df_transformado.loc[tipo_doc_mask, 'Tipo Doc Identidad'] = '0'
+
+            # Si 'Tipo Doc Identidad' es '0' y 'Nro Doc Identidad' es '-', reemplazar con 'Apellidos Nombres/ Razón Social'
+            nro_doc_mask = (df_transformado['Tipo Doc Identidad'] == '0') & (df_transformado['Nro Doc Identidad'] == '-')
+            df_transformado.loc[nro_doc_mask, 'Nro Doc Identidad'] = df_transformado.loc[nro_doc_mask, 'Apellidos Nombres/ Razón Social']
+
+            modified_count = tipo_doc_mask.sum() + nro_doc_mask.sum()
+            logging.info(f"Regla especial documentos: {modified_count} filas modificadas")
+
         # Normalización de fechas
         if 'Fecha de emisión' in df_transformado.columns:
             df_transformado['Fecha de emisión'] = pd.to_datetime(df_transformado['Fecha de emisión'],

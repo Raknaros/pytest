@@ -1,0 +1,347 @@
+2025-10-19 14:25:07,287 - INFO - Iniciando fase de extracción
+2025-10-19 14:25:07,287 - ERROR - Archivo no encontrado: C:/Users/Raknaros/Downloads/SIRE_setiembre/SIRE/SEPTIEMBRE/20614551373-20251008-200407-propuesta.zip
+2025-10-19 14:25:07,287 - WARNING - No se cargaron datos válidos
+2025-10-19 14:25:34,743 - INFO - Iniciando fase de extracción
+2025-10-19 14:25:34,743 - INFO - Procesando archivo: facturas.csv
+2025-10-19 14:25:34,793 - INFO - Datos extraídos: 26 filas
+2025-10-19 14:25:34,793 - INFO - Iniciando fase de transformación
+2025-10-19 14:25:34,799 - INFO - Transformación completada: 26 filas
+2025-10-19 14:25:34,802 - INFO - Iniciando fase de carga
+2025-10-19 14:25:34,887 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "ubl_version" of relation "_5" does not exist
+LINE 1: INSERT INTO acc._5 (ubl_version, customization_id, invoice_i...
+                            ^
+
+[SQL: INSERT INTO acc._5 (ubl_version, customization_id, invoice_id, issue_date, issue_time, invoice_type_code, note, currency_code, despatch_document_id, despatch_document_type_code, despatch_document_type, supplier_ruc, supplier_name, supplier_address_ty ... 64532 characters truncated ... _no_gravado__25)s, %(Otros_cargos__25)s, %(destino__25)s, %(valor__25)s, %(igv__25)s, %(otros__25)s)]
+[parameters: {'buyer_country_code__0': 'PE', 'buyer_address_line__0': 'AV. OQUENDO FND. OQUENDO MZA. A LOTE. 01 INT. 3B  PROV. CONST. DEL CALLAO PROV. CONST. DEL CALLAO CALLAO', 'pricing_reference_price_amount__0': '82.954', 'item_sellers_id__0': None, 'item_id__0': '1', 'payment_Cuota001_id__0': 'FormaPago', 'customer_city_name__0': 'PROV. CONST. DEL CALLAO', 'despatch_document_type__0': ' GUIA DE REMISION REMITENTE ', 'allowance_total_amount__0': '0.00', 'customer_country_subentity__0': 'PROV. CONST. DEL CALLAO', 'item_tax_scheme_type_code__0': 'VAT', 'payment_Credito_id__0': 'FormaPago', 'supplier_ruc__0': '20610737553', 'customer_ruc__0': '20549945245', 'igv__0': 0, 'supplier_name__0': 'INGENIERIA Y SERVICIO CACH S.A.C.', 'supplier_city_name__0': 'LIMA', 'free_of_charge_indicator__0': 'false', 'invoice_id__0': 'E001-472', 'destino__0': 0, 'invoiced_quantity__0': '100.00', 'pricing_reference_price_type_code__0': '01', 'item_tax_exemption_reason_code__0': '10', 'supplier_address_type_code__0': '0', 'tax_subtotal_taxable_amount__0': '7030.00', 'tax_scheme_id__0': '1000', 'payment_Cuota001_due_date__0': '2024-10-16', 'ubl_version__0': '2.1', 'tax_subtotal_tax_amount__0': '1265.40', 'note__0': 'SON:  OCHO MIL DOSCIENTOS NOVENTA Y CINCO Y 40/100  SOLES', 'customer_country_subentity_code__0': '070101', 'buyer_country_subentity_code__0': '070101', 'invoice_type_code__0': '01', 'buyer_district__0': 'CALLAO', 'item_tax_scheme_name__0': 'IGV', 'payment_Credito_due_date__0': None, 'issue_time__0': '23:43:12.0Z', 'tax_total_amount__0': '1265.40', 'IGV_1__0': 0, 'payment_Cuota001_means_id__0': 'Cuota001', 'customer_country_code__0': 'PE', 'Base_imponible_2__0': 0, 'allowance_charge_indicator__0': 'true', 'supplier_country_subentity__0': 'LIMA', 'currency_code__0': 'PEN', 'payment_Cuota001_amount__0': '8295.40', 'payment_Credito_means_id__0': 'Credito', 'customer_name__0': 'CO LOGISTIC PERU S.A.C.', 'tax_scheme_name__0': 'IGV', 'Base_imponible_1__0': 0 ... 2162 parameters truncated ... 'tax_total_amount__25': '7206.50', 'IGV_1__25': 0, 'payment_Cuota001_means_id__25': 'Cuota001', 'customer_country_code__25': 'PE', 'Base_imponible_2__25': 0, 'allowance_charge_indicator__25': 'true', 'supplier_country_subentity__25': 'LIMA', 'currency_code__25': 'PEN', 'payment_Cuota001_amount__25': '47242.60', 'payment_Credito_means_id__25': 'Credito', 'customer_name__25': 'COORPORACION EMPRESARIAL HP S.A.C.', 'tax_scheme_name__25': 'IGV', 'Base_imponible_1__25': 0, 'customization_id__25': '2.0', 'payable_amount__25': '47242.60', 'prepaid_amount__25': '0.00', 'customer_address_line__25': ' CAL. LIBERTADORES 735 DPTO. S03  LIMA-LIMA-SAN ISIDRO', 'IGV_3__25': 0, 'otros__25': 0, 'item_tax_category_percent__25': '18.00', 'Otros_cargos__25': 0, 'Valor_no_gravado__25': 0, 'tax_scheme_type_code__25': 'VAT', 'despatch_document_type_code__25': '09', 'item_tax_total_amount__25': '2974.698', 'item_tax_subtotal_tax_amount__25': '2974.698', 'customer_district__25': 'SAN ISIDRO ', 'supplier_district__25': 'SANTIAGO DE SURCO', 'tax_category_id__25': 'S', 'allowance_charge_amount__25': '0.00', 'charge_total_amount__25': '0.00', 'IGV_2__25': 0, 'supplier_address_line__25': 'JR. FERNANDO FAUSTOR 139', 'item_tax_category_id__25': 'S', 'buyer_city_name__25': 'LIMA', 'customer_address_type_code__25': '0', 'supplier_country_subentity_code__25': '150140', 'Base_imponible_3__25': 0, 'line_extension_amount__25': '16526.10', 'unit_code__25': 'NIU', 'price_amount__25': '88.85', 'despatch_document_id__25': 'EG07 - 00000490', 'item_tax_subtotal_taxable_amount__25': '16526.10', 'item_tax_scheme_id__25': '1000', 'buyer_country_subentity__25': 'LIMA', 'payment_Credito_amount__25': '47242.60', 'supplier_country_code__25': 'PE', 'issue_date__25': '2024-10-30', 'item_description__25': 'CONTENEDOR DE PLASTICO 360 L KLEINE', 'valor__25': 0}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 17:45:33,957 - INFO - Iniciando fase de extracción
+2025-10-19 17:45:33,957 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 17:45:33,969 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 17:45:33,969 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 17:45:33,976 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 17:45:33,976 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 17:45:33,981 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 17:45:33,981 - INFO - Datos extraídos: 350 filas
+2025-10-19 17:45:33,982 - INFO - Iniciando fase de transformación
+2025-10-19 17:45:33,983 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 17:45:33,983 - ERROR - Error en el proceso ETL: 'FechFecha de emisióna'
+2025-10-19 17:46:14,796 - INFO - Iniciando fase de extracción
+2025-10-19 17:46:14,796 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 17:46:14,808 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 17:46:14,809 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 17:46:14,816 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 17:46:14,816 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 17:46:14,822 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 17:46:14,823 - INFO - Datos extraídos: 350 filas
+2025-10-19 17:46:14,823 - INFO - Iniciando fase de transformación
+2025-10-19 17:46:14,826 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 17:46:14,826 - ERROR - Error en el proceso ETL: 'Fecha de emisióna'
+2025-10-19 17:46:27,886 - INFO - Iniciando fase de extracción
+2025-10-19 17:46:27,886 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 17:46:27,897 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 17:46:27,898 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 17:46:27,904 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 17:46:27,905 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 17:46:27,910 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 17:46:27,911 - INFO - Datos extraídos: 350 filas
+2025-10-19 17:46:27,911 - INFO - Iniciando fase de transformación
+2025-10-19 17:46:27,912 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 17:46:27,922 - INFO - Transformación completada: 350 filas
+2025-10-19 17:46:27,923 - INFO - Iniciando fase de carga
+2025-10-19 17:46:28,081 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "RUC" of relation "_5" does not exist
+LINE 1: INSERT INTO acc._5 ("RUC", "Apellidos y Nombres o Razón soci...
+                            ^
+
+[SQL: INSERT INTO acc._5 ("RUC", "Apellidos y Nombres o Razón social", "Periodo", "CAR SUNAT", "Fecha de emisión", "Fecha Vcto/Pago", "Tipo CP/Doc.", "Serie del CDP", "Año", "Nro CP o Doc. Nro Inicial (Rango)", "Nro Final (Rango)", "Tipo Doc Identidad", "N ... 591451 characters truncated ... 9)s, %(CLU38__349)s, %(CLU39__349)s, %(destino__349)s, %(valor__349)s, %(igv__349)s, %(otros__349)s)]
+[parameters: {'CLU29__0': None, 'CLU8__0': None, 'Tipo_de_Nota__0': None, 'CLU39__0': None, 'Nro_CP_Modificado__0': None, 'Año__0': None, 'CLU25__0': None, 'Serie_del_CDP__0': 'E001', 'PorcPart__0': None, 'Est__Comp___0': '1', 'CLU27__0': None, 'CLU6__0': None, 'BI_Gravado_DGNG__0': 0.0, 'Apellidos_y_Nombres_o_Razón_social__0': 'ZHOUTANG EXPORT OCEAN\xa0S.A.C.', 'Detracción__0': 'D', 'CLU2__0': None, 'CLU24__0': None, 'BI_Gravado_DG__0': 0.0, 'RUC__0': '20614551373', 'Clasif_de_Bss_y_Sss__0': None, 'CLU21__0': None, 'CLU32__0': None, 'igv__0': 0.0, 'ID_Proyecto_Operadores__0': None, 'CLU3__0': None, 'CLU11__0': None, 'Periodo__0': '202509', 'CLU20__0': None, 'CLU1__0': None, 'CLU31__0': None, 'CLU12__0': None, 'Fecha_Vcto/Pago__0': None, 'CLU35__0': None, 'Total_CP__0': '44020.35', 'Nro_Doc_Identidad__0': '10435513714', 'Fecha_de_emisión__0': datetime.date(2025, 5, 9), 'CLU23__0': None, 'CLU38__0': None, 'IGV_/_IPM_DNG__0': 0.0, 'CLU36__0': None, 'valor__0': 44020.35, 'CLU15__0': None, 'destino__0': 4, 'IGV_/_IPM_DG__0': 0.0, 'ISC__0': '0.00', 'CLU4__0': None, 'Nro_Final_ARangoZ__0': None, 'Apellidos_Nombres/_Razón__Social__0': 'GALLO ZAPATA SILVANA CAROLINA', 'IGV_/_IPM_DGNG__0': 0.0, 'BI_Gravado_DNG__0': 0.0 ... 29300 parameters truncated ... 'Nro_Doc_Identidad__349': '20606289970', 'Fecha_de_emisión__349': None, 'CLU23__349': None, 'CLU38__349': None, 'IGV_/_IPM_DNG__349': 0.0, 'CLU36__349': None, 'valor__349': 49.15, 'CLU15__349': None, 'destino__349': 1, 'IGV_/_IPM_DG__349': 8.85, 'ISC__349': '0.00', 'CLU4__349': None, 'Nro_Final_ARangoZ__349': None, 'Apellidos_Nombres/_Razón__Social__349': 'IMPORT AND EXPORT SIN LÍMITES S.A.C.', 'IGV_/_IPM_DGNG__349': 0.0, 'BI_Gravado_DNG__349': 0.0, 'CLU19__349': None, 'Otros_Trib/_Cargos__349': 0.0, 'CLU17__349': None, 'ICBPER__349': '0.00', 'CAR_Orig/_Ind_E_o_I__349': None, 'CLU28__349': None, 'Incal__349': '0', 'Nro_CP_o_Doc__Nro_Inicial_ARangoZ__349': '185', 'CLU26__349': None, 'Tipo_CP_Modificado__349': None, 'Tipo_CP/Doc___349': '01', 'CLU13__349': None, 'Fecha_Emisión_Doc_Modificado__349': None, 'CLU22__349': None, 'Tipo_Doc_Identidad__349': '6', 'CLU18__349': None, 'COD__DAM_O_DSI__349': None, 'CLU14__349': None, 'Valor_Adq__NG__349': 0.0, 'CLU7__349': None, 'CLU33__349': None, 'otros__349': 0.0, 'CLU16__349': None, 'Tipo_de_Cambio__349': '1.000', 'IMB__349': '0.00', 'Serie_CP_Modificado__349': None, 'CLU9__349': None, 'CLU37__349': None, 'CLU30__349': None, 'CLU5__349': None, 'CAR_SUNAT__349': '2060628997001FT040000000185', 'CLU10__349': None, 'Moneda__349': 'PEN', 'CLU34__349': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 17:50:53,906 - INFO - Iniciando fase de extracción
+2025-10-19 17:50:53,907 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 17:50:53,927 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 17:50:53,927 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 17:50:53,934 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 17:50:53,934 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 17:50:53,939 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 17:50:53,940 - INFO - Datos extraídos: 350 filas
+2025-10-19 17:50:53,940 - INFO - Iniciando fase de transformación
+2025-10-19 17:50:53,943 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 17:50:53,957 - INFO - Transformación completada: 350 filas
+2025-10-19 17:50:54,132 - INFO - Iniciando fase de carga
+2025-10-19 17:50:54,311 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "Apellidos y Nombres o Razón social" of relation "_5" does not exist
+LINE 1: INSERT INTO acc._5 (ruc, "Apellidos y Nombres o Razón social...
+                                 ^
+
+[SQL: INSERT INTO acc._5 (ruc, "Apellidos y Nombres o Razón social", periodo_tributario, observaciones, fecha_emision, fecha_vencimiento, tipo_comprobante, numero_serie, "Año", numero_correlativo, "Nro Final (Rango)", tipo_documento, numero_documento, "Ape ... 601947 characters truncated ... 9)s, %(CLU38__349)s, %(CLU39__349)s, %(destino__349)s, %(valor__349)s, %(igv__349)s, %(otros__349)s)]
+[parameters: {'CLU27__0': None, 'numero_correlativo_modificado__0': None, 'otros__0': 0.0, 'BI_Gravado_DNG__0': 0.0, 'CLU30__0': None, 'fecha_vencimiento__0': None, 'CLU33__0': None, 'CLU2__0': None, 'tipo_comprobante_modificado__0': None, 'numero_correlativo__0': '1', 'numero_serie__0': 'E001', 'Otros_Trib/_Cargos__0': 0.0, 'tipo_comprobante__0': '01', 'CLU19__0': None, 'CLU10__0': None, 'Est__Comp___0': '1', 'CLU1__0': None, 'CLU35__0': None, 'CLU25__0': None, 'CLU34__0': None, 'Total_CP__0': '44020.35', 'CLU24__0': None, 'CLU15__0': None, 'Tipo_de_Nota__0': None, 'CLU7__0': None, 'CLU31__0': None, 'periodo_tributario__0': '202509', 'ID_Proyecto_Operadores__0': None, 'PorcPart__0': None, 'ruc__0': '20614551373', 'Valor_Adq__NG__0': 44020.35, 'CLU13__0': None, 'CLU38__0': None, 'CLU22__0': None, 'Clasif_de_Bss_y_Sss__0': None, 'CLU29__0': None, 'CLU14__0': None, 'Año__0': None, 'tipo_moneda__0': 'PEN', 'icbp__0': '0.00', 'valor__0': 44020.35, 'numero_documento__0': '10435513714', 'destino__0': 4, 'Incal__0': '0', 'CLU16__0': None, 'CLU11__0': None, 'CLU39__0': None, 'CLU6__0': None, 'numero_serie_modificado__0': None, 'CLU17__0': None ... 29300 parameters truncated ... 'Clasif_de_Bss_y_Sss__349': None, 'CLU29__349': None, 'CLU14__349': None, 'Año__349': None, 'tipo_moneda__349': 'PEN', 'icbp__349': '0.00', 'valor__349': 49.15, 'numero_documento__349': '20606289970', 'destino__349': 1, 'Incal__349': '0', 'CLU16__349': None, 'CLU11__349': None, 'CLU39__349': None, 'CLU6__349': None, 'numero_serie_modificado__349': None, 'CLU17__349': None, 'CLU18__349': None, 'tasa_detraccion__349': None, 'CLU21__349': None, 'CLU37__349': None, 'IGV_/_IPM_DG__349': 8.85, 'CLU20__349': None, 'CLU9__349': None, 'COD__DAM_O_DSI__349': None, 'BI_Gravado_DGNG__349': 0.0, 'Apellidos_y_Nombres_o_Razón_social__349': 'INVERSIONES Y MULTISERVICIOS MATOAN S.A.C.', 'CLU3__349': None, 'Tipo_de_Cambio__349': '1.000', 'observaciones__349': 'SIRE2060628997001FT040000000185', 'tipo_documento__349': '6', 'CLU28__349': None, 'Fecha_Emisión_Doc_Modificado__349': None, 'Nro_Final_ARangoZ__349': None, 'CLU23__349': None, 'CLU4__349': None, 'CLU5__349': None, 'BI_Gravado_DG__349': 49.15, 'fecha_emision__349': None, 'igv__349': 8.85, 'Apellidos_Nombres/_Razón__Social__349': 'IMPORT AND EXPORT SIN LÍMITES S.A.C.', 'IMB__349': '0.00', 'IGV_/_IPM_DNG__349': 0.0, 'IGV_/_IPM_DGNG__349': 0.0, 'CLU32__349': None, 'CLU26__349': None, 'isc__349': '0.00', 'CLU8__349': None, 'CAR_Orig/_Ind_E_o_I__349': None, 'CLU12__349': None, 'CLU36__349': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 17:52:49,033 - INFO - Iniciando fase de extracción
+2025-10-19 17:52:49,034 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 17:52:49,044 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 17:52:49,044 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 17:52:49,051 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 17:52:49,051 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 17:52:49,056 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 17:52:49,056 - INFO - Datos extraídos: 350 filas
+2025-10-19 17:52:49,057 - INFO - Iniciando fase de transformación
+2025-10-19 17:52:49,058 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 17:52:49,067 - INFO - Transformación completada: 350 filas
+2025-10-19 17:52:49,275 - INFO - Iniciando fase de carga
+2025-10-19 17:52:49,432 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "Apellidos y Nombres o Razón social" of relation "_5" does not exist
+LINE 1: INSERT INTO acc._5 (ruc, "Apellidos y Nombres o Razón social...
+                                 ^
+
+[SQL: INSERT INTO acc._5 (ruc, "Apellidos y Nombres o Razón social", periodo_tributario, observaciones, fecha_emision, fecha_vencimiento, tipo_comprobante, numero_serie, "Año", numero_correlativo, "Nro Final (Rango)", tipo_documento, numero_documento, "Ape ... 601947 characters truncated ... 9)s, %(CLU38__349)s, %(CLU39__349)s, %(destino__349)s, %(valor__349)s, %(igv__349)s, %(otros__349)s)]
+[parameters: {'Nro_Final_ARangoZ__0': None, 'tipo_documento__0': '6', 'Est__Comp___0': '1', 'CLU20__0': None, 'destino__0': 4, 'CLU18__0': None, 'periodo_tributario__0': '202509', 'CLU14__0': None, 'Tipo_de_Cambio__0': '1.000', 'isc__0': '0.00', 'Fecha_Emisión_Doc_Modificado__0': None, 'COD__DAM_O_DSI__0': None, 'Clasif_de_Bss_y_Sss__0': None, 'IMB__0': '0.00', 'CLU19__0': None, 'CLU21__0': None, 'CLU7__0': None, 'CLU33__0': None, 'CLU15__0': None, 'numero_serie__0': 'E001', 'CLU36__0': None, 'IGV_/_IPM_DGNG__0': 0.0, 'CLU27__0': None, 'IGV_/_IPM_DG__0': 0.0, 'CLU23__0': None, 'CAR_Orig/_Ind_E_o_I__0': None, 'CLU3__0': None, 'CLU25__0': None, 'CLU34__0': None, 'CLU13__0': None, 'CLU1__0': None, 'numero_serie_modificado__0': None, 'ruc__0': '20614551373', 'CLU11__0': None, 'CLU28__0': None, 'CLU4__0': None, 'CLU17__0': None, 'Total_CP__0': '44020.35', 'fecha_vencimiento__0': None, 'CLU2__0': None, 'Año__0': None, 'tasa_detraccion__0': 'D', 'CLU5__0': None, 'Tipo_de_Nota__0': None, 'CLU8__0': None, 'IGV_/_IPM_DNG__0': 0.0, 'valor__0': 44020.35, 'Apellidos_y_Nombres_o_Razón_social__0': 'ZHOUTANG EXPORT OCEAN\xa0S.A.C.', 'CLU38__0': None, 'BI_Gravado_DNG__0': 0.0 ... 29300 parameters truncated ... 'CLU28__349': None, 'CLU4__349': None, 'CLU17__349': None, 'Total_CP__349': '58.00', 'fecha_vencimiento__349': None, 'CLU2__349': None, 'Año__349': None, 'tasa_detraccion__349': None, 'CLU5__349': None, 'Tipo_de_Nota__349': None, 'CLU8__349': None, 'IGV_/_IPM_DNG__349': 0.0, 'valor__349': 49.15, 'Apellidos_y_Nombres_o_Razón_social__349': 'INVERSIONES Y MULTISERVICIOS MATOAN S.A.C.', 'CLU38__349': None, 'BI_Gravado_DNG__349': 0.0, 'CLU26__349': None, 'CLU32__349': None, 'CLU10__349': None, 'CLU29__349': None, 'fecha_emision__349': None, 'CLU37__349': None, 'Valor_Adq__NG__349': 0.0, 'CLU39__349': None, 'CLU12__349': None, 'CLU9__349': None, 'PorcPart__349': None, 'BI_Gravado_DGNG__349': 0.0, 'Incal__349': '0', 'tipo_moneda__349': 'PEN', 'CLU31__349': None, 'CLU35__349': None, 'tipo_comprobante_modificado__349': None, 'CLU22__349': None, 'Apellidos_Nombres/_Razón__Social__349': 'IMPORT AND EXPORT SIN LÍMITES S.A.C.', 'icbp__349': '0.00', 'BI_Gravado_DG__349': 49.15, 'numero_correlativo_modificado__349': None, 'igv__349': 8.85, 'CLU6__349': None, 'Otros_Trib/_Cargos__349': 0.0, 'otros__349': 0.0, 'CLU24__349': None, 'CLU16__349': None, 'ID_Proyecto_Operadores__349': None, 'numero_correlativo__349': '185', 'observaciones__349': 'SIRE2060628997001FT040000000185', 'tipo_comprobante__349': '01', 'CLU30__349': None, 'numero_documento__349': '20606289970'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 18:23:03,187 - INFO - Iniciando fase de extracción
+2025-10-19 18:23:03,187 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 18:23:03,201 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 18:23:03,201 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 18:23:03,207 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 18:23:03,207 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 18:23:03,212 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 18:23:03,212 - INFO - Datos extraídos: 350 filas
+2025-10-19 18:23:03,212 - INFO - Iniciando fase de transformación
+2025-10-19 18:23:03,214 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 18:23:03,231 - INFO - Transformación completada: 350 filas
+2025-10-19 18:23:03,331 - INFO - Iniciando fase de carga
+2025-10-19 18:23:03,422 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "otros" of relation "_5" does not exist
+LINE 1: ...numero_documento, destino, valor, igv, icbp, isc, otros, tip...
+                                                             ^
+
+[SQL: INSERT INTO acc._5 (ruc, periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros, tipo_moneda, tasa_detraccion, tipo_comprobante ... 174429 characters truncated ... s, %(numero_serie_modificado__349)s, %(numero_correlativo_modificado__349)s, %(observaciones__349)s)]
+[parameters: {'periodo_tributario__0': 202509, 'tipo_comprobante_modificado__0': None, 'destino__0': 4, 'icbp__0': 0.0, 'tipo_comprobante__0': 1, 'tipo_moneda__0': 'PEN', 'fecha_emision__0': datetime.date(2025, 5, 9), 'numero_documento__0': '10435513714', 'tasa_detraccion__0': 0, 'valor__0': 44020.35, 'isc__0': 0.0, 'ruc__0': 20614551373, 'observaciones__0': 'SIRE1043551371401E0010000000001', 'tipo_documento__0': '6', 'fecha_vencimiento__0': None, 'numero_correlativo__0': '1', 'otros__0': 0.0, 'numero_serie__0': 'E001', 'numero_serie_modificado__0': None, 'numero_correlativo_modificado__0': None, 'igv__0': 0.0, 'periodo_tributario__1': 202509, 'tipo_comprobante_modificado__1': None, 'destino__1': 1, 'icbp__1': 0.0, 'tipo_comprobante__1': 1, 'tipo_moneda__1': 'PEN', 'fecha_emision__1': datetime.date(2025, 11, 9), 'numero_documento__1': '10703146240', 'tasa_detraccion__1': None, 'valor__1': 30506.57, 'isc__1': 0.0, 'ruc__1': 20614551373, 'observaciones__1': 'SIRE1070314624001E0010000000001', 'tipo_documento__1': '6', 'fecha_vencimiento__1': None, 'numero_correlativo__1': '1', 'otros__1': 0.0, 'numero_serie__1': 'E001', 'numero_serie_modificado__1': None, 'numero_correlativo_modificado__1': None, 'igv__1': 5491.18, 'periodo_tributario__2': 202509, 'tipo_comprobante_modificado__2': None, 'destino__2': 1, 'icbp__2': 0.0, 'tipo_comprobante__2': 1, 'tipo_moneda__2': 'PEN', 'fecha_emision__2': None, 'numero_documento__2': '20614181941' ... 7250 parameters truncated ... 'tipo_documento__347': '6', 'fecha_vencimiento__347': None, 'numero_correlativo__347': '1019', 'otros__347': 0.0, 'numero_serie__347': 'F004', 'numero_serie_modificado__347': None, 'numero_correlativo_modificado__347': None, 'igv__347': 7.51, 'periodo_tributario__348': 202508, 'tipo_comprobante_modificado__348': None, 'destino__348': 1, 'icbp__348': 0.0, 'tipo_comprobante__348': 1, 'tipo_moneda__348': 'PEN', 'fecha_emision__348': None, 'numero_documento__348': '20611501219', 'tasa_detraccion__348': None, 'valor__348': 54.07, 'isc__348': 0.0, 'ruc__348': 20610892346, 'observaciones__348': 'SIRE2061150121901FS010000000023', 'tipo_documento__348': '6', 'fecha_vencimiento__348': datetime.date(2025, 8, 15), 'numero_correlativo__348': '23', 'otros__348': 0.0, 'numero_serie__348': 'FS01', 'numero_serie_modificado__348': None, 'numero_correlativo_modificado__348': None, 'igv__348': 9.74, 'periodo_tributario__349': 202508, 'tipo_comprobante_modificado__349': None, 'destino__349': 1, 'icbp__349': 0.0, 'tipo_comprobante__349': 1, 'tipo_moneda__349': 'PEN', 'fecha_emision__349': None, 'numero_documento__349': '20606289970', 'tasa_detraccion__349': None, 'valor__349': 49.15, 'isc__349': 0.0, 'ruc__349': 20610892346, 'observaciones__349': 'SIRE2060628997001FT040000000185', 'tipo_documento__349': '6', 'fecha_vencimiento__349': None, 'numero_correlativo__349': '185', 'otros__349': 0.0, 'numero_serie__349': 'FT04', 'numero_serie_modificado__349': None, 'numero_correlativo_modificado__349': None, 'igv__349': 8.85}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 18:25:38,080 - INFO - Iniciando fase de extracción
+2025-10-19 18:25:38,080 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 18:25:38,091 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 18:25:38,091 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 18:25:38,097 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 18:25:38,097 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 18:25:38,102 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 18:25:38,102 - INFO - Datos extraídos: 350 filas
+2025-10-19 18:25:38,102 - INFO - Iniciando fase de transformación
+2025-10-19 18:25:38,103 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 18:25:38,153 - INFO - Transformación completada: 350 filas
+2025-10-19 18:25:38,296 - INFO - Iniciando fase de carga
+2025-10-19 18:25:38,379 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "otros" of relation "_5" does not exist
+LINE 1: ...numero_documento, destino, valor, igv, icbp, isc, otros, tip...
+                                                             ^
+
+[SQL: INSERT INTO acc._5 (ruc, periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros, tipo_moneda, tasa_detraccion, tipo_comprobante ... 174429 characters truncated ... s, %(numero_serie_modificado__349)s, %(numero_correlativo_modificado__349)s, %(observaciones__349)s)]
+[parameters: {'destino__0': 4, 'fecha_emision__0': datetime.date(2025, 5, 9), 'observaciones__0': 'SIRE1043551371401E0010000000001', 'tipo_comprobante__0': 1, 'tipo_comprobante_modificado__0': None, 'ruc__0': 20614551373, 'numero_correlativo__0': '1', 'icbp__0': 0.0, 'tasa_detraccion__0': 0, 'numero_documento__0': '10435513714', 'numero_serie_modificado__0': None, 'tipo_moneda__0': 'PEN', 'periodo_tributario__0': 202509, 'numero_serie__0': 'E001', 'tipo_documento__0': '6', 'valor__0': 44020.35, 'fecha_vencimiento__0': None, 'isc__0': 0.0, 'otros__0': 0.0, 'igv__0': 0.0, 'numero_correlativo_modificado__0': None, 'destino__1': 1, 'fecha_emision__1': datetime.date(2025, 11, 9), 'observaciones__1': 'SIRE1070314624001E0010000000001', 'tipo_comprobante__1': 1, 'tipo_comprobante_modificado__1': None, 'ruc__1': 20614551373, 'numero_correlativo__1': '1', 'icbp__1': 0.0, 'tasa_detraccion__1': None, 'numero_documento__1': '10703146240', 'numero_serie_modificado__1': None, 'tipo_moneda__1': 'PEN', 'periodo_tributario__1': 202509, 'numero_serie__1': 'E001', 'tipo_documento__1': '6', 'valor__1': 30506.57, 'fecha_vencimiento__1': None, 'isc__1': 0.0, 'otros__1': 0.0, 'igv__1': 5491.18, 'numero_correlativo_modificado__1': None, 'destino__2': 1, 'fecha_emision__2': None, 'observaciones__2': 'SIRE2061418194101E0010000000001', 'tipo_comprobante__2': 1, 'tipo_comprobante_modificado__2': None, 'ruc__2': 20614551373, 'numero_correlativo__2': '1', 'icbp__2': 0.0 ... 7250 parameters truncated ... 'numero_serie__347': 'F004', 'tipo_documento__347': '6', 'valor__347': 41.69, 'fecha_vencimiento__347': None, 'isc__347': 0.0, 'otros__347': 0.0, 'igv__347': 7.51, 'numero_correlativo_modificado__347': None, 'destino__348': 1, 'fecha_emision__348': None, 'observaciones__348': 'SIRE2061150121901FS010000000023', 'tipo_comprobante__348': 1, 'tipo_comprobante_modificado__348': None, 'ruc__348': 20610892346, 'numero_correlativo__348': '23', 'icbp__348': 0.0, 'tasa_detraccion__348': None, 'numero_documento__348': '20611501219', 'numero_serie_modificado__348': None, 'tipo_moneda__348': 'PEN', 'periodo_tributario__348': 202508, 'numero_serie__348': 'FS01', 'tipo_documento__348': '6', 'valor__348': 54.07, 'fecha_vencimiento__348': datetime.date(2025, 8, 15), 'isc__348': 0.0, 'otros__348': 0.0, 'igv__348': 9.74, 'numero_correlativo_modificado__348': None, 'destino__349': 1, 'fecha_emision__349': None, 'observaciones__349': 'SIRE2060628997001FT040000000185', 'tipo_comprobante__349': 1, 'tipo_comprobante_modificado__349': None, 'ruc__349': 20610892346, 'numero_correlativo__349': '185', 'icbp__349': 0.0, 'tasa_detraccion__349': None, 'numero_documento__349': '20606289970', 'numero_serie_modificado__349': None, 'tipo_moneda__349': 'PEN', 'periodo_tributario__349': 202508, 'numero_serie__349': 'FT04', 'tipo_documento__349': '6', 'valor__349': 49.15, 'fecha_vencimiento__349': None, 'isc__349': 0.0, 'otros__349': 0.0, 'igv__349': 8.85, 'numero_correlativo_modificado__349': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 18:26:17,160 - INFO - Iniciando fase de extracción
+2025-10-19 18:26:17,160 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 18:26:17,171 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 18:26:17,171 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 18:26:17,178 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 18:26:17,178 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 18:26:17,183 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 18:26:17,183 - INFO - Datos extraídos: 350 filas
+2025-10-19 18:26:17,184 - INFO - Iniciando fase de transformación
+2025-10-19 18:26:17,184 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 18:26:17,198 - INFO - Transformación completada: 350 filas
+2025-10-19 18:26:17,263 - INFO - Iniciando fase de carga
+2025-10-19 18:26:17,336 - ERROR - Error al cargar datos: (psycopg2.errors.UndefinedColumn) column "otros" of relation "_5" does not exist
+LINE 1: ...numero_documento, destino, valor, igv, icbp, isc, otros, tip...
+                                                             ^
+
+[SQL: INSERT INTO acc._5 (ruc, periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros, tipo_moneda, tasa_detraccion, tipo_comprobante ... 174429 characters truncated ... s, %(numero_serie_modificado__349)s, %(numero_correlativo_modificado__349)s, %(observaciones__349)s)]
+[parameters: {'valor__0': 44020.35, 'numero_correlativo__0': '1', 'periodo_tributario__0': 202509, 'otros__0': 0.0, 'observaciones__0': 'SIRE:1043551371401E0010000000001', 'tipo_comprobante_modificado__0': None, 'tipo_documento__0': '6', 'numero_serie__0': 'E001', 'numero_correlativo_modificado__0': None, 'ruc__0': 20614551373, 'tipo_comprobante__0': 1, 'isc__0': 0.0, 'fecha_emision__0': datetime.date(2025, 5, 9), 'numero_documento__0': '10435513714', 'numero_serie_modificado__0': None, 'igv__0': 0.0, 'tipo_moneda__0': 'PEN', 'tasa_detraccion__0': 0, 'fecha_vencimiento__0': None, 'destino__0': 4, 'icbp__0': 0.0, 'valor__1': 30506.57, 'numero_correlativo__1': '1', 'periodo_tributario__1': 202509, 'otros__1': 0.0, 'observaciones__1': 'SIRE:1070314624001E0010000000001', 'tipo_comprobante_modificado__1': None, 'tipo_documento__1': '6', 'numero_serie__1': 'E001', 'numero_correlativo_modificado__1': None, 'ruc__1': 20614551373, 'tipo_comprobante__1': 1, 'isc__1': 0.0, 'fecha_emision__1': datetime.date(2025, 11, 9), 'numero_documento__1': '10703146240', 'numero_serie_modificado__1': None, 'igv__1': 5491.18, 'tipo_moneda__1': 'PEN', 'tasa_detraccion__1': None, 'fecha_vencimiento__1': None, 'destino__1': 1, 'icbp__1': 0.0, 'valor__2': 38612.0, 'numero_correlativo__2': '1', 'periodo_tributario__2': 202509, 'otros__2': 0.0, 'observaciones__2': 'SIRE:2061418194101E0010000000001', 'tipo_comprobante_modificado__2': None, 'tipo_documento__2': '6', 'numero_serie__2': 'E001' ... 7250 parameters truncated ... 'numero_documento__347': '20610208721', 'numero_serie_modificado__347': None, 'igv__347': 7.51, 'tipo_moneda__347': 'PEN', 'tasa_detraccion__347': None, 'fecha_vencimiento__347': None, 'destino__347': 1, 'icbp__347': 0.0, 'valor__348': 54.07, 'numero_correlativo__348': '23', 'periodo_tributario__348': 202508, 'otros__348': 0.0, 'observaciones__348': 'SIRE:2061150121901FS010000000023', 'tipo_comprobante_modificado__348': None, 'tipo_documento__348': '6', 'numero_serie__348': 'FS01', 'numero_correlativo_modificado__348': None, 'ruc__348': 20610892346, 'tipo_comprobante__348': 1, 'isc__348': 0.0, 'fecha_emision__348': None, 'numero_documento__348': '20611501219', 'numero_serie_modificado__348': None, 'igv__348': 9.74, 'tipo_moneda__348': 'PEN', 'tasa_detraccion__348': None, 'fecha_vencimiento__348': datetime.date(2025, 8, 15), 'destino__348': 1, 'icbp__348': 0.0, 'valor__349': 49.15, 'numero_correlativo__349': '185', 'periodo_tributario__349': 202508, 'otros__349': 0.0, 'observaciones__349': 'SIRE:2060628997001FT040000000185', 'tipo_comprobante_modificado__349': None, 'tipo_documento__349': '6', 'numero_serie__349': 'FT04', 'numero_correlativo_modificado__349': None, 'ruc__349': 20610892346, 'tipo_comprobante__349': 1, 'isc__349': 0.0, 'fecha_emision__349': None, 'numero_documento__349': '20606289970', 'numero_serie_modificado__349': None, 'igv__349': 8.85, 'tipo_moneda__349': 'PEN', 'tasa_detraccion__349': None, 'fecha_vencimiento__349': None, 'destino__349': 1, 'icbp__349': 0.0}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-19 18:34:54,110 - INFO - Iniciando fase de extracción
+2025-10-19 18:34:54,115 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 18:34:54,156 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 18:34:54,157 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 18:34:54,163 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 18:34:54,163 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 18:34:54,169 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 18:34:54,169 - INFO - Datos extraídos: 350 filas
+2025-10-19 18:34:54,169 - INFO - Iniciando fase de transformación
+2025-10-19 18:34:54,206 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 18:34:54,282 - INFO - Transformación completada: 350 filas
+2025-10-19 18:34:54,392 - INFO - Iniciando fase de carga
+2025-10-19 18:34:55,173 - INFO - Datos cargados exitosamente: 350 filas a acc._8
+2025-10-19 18:42:41,119 - INFO - Iniciando fase de extracción
+2025-10-19 18:42:41,119 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip
+2025-10-19 18:42:41,150 - INFO - Extraído archivo interno: 20614551373-20251006-1741-propuesta.csv
+2025-10-19 18:42:41,151 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip
+2025-10-19 18:42:41,159 - INFO - Extraído archivo interno: 20606283858-20250918-2225-propuesta.csv
+2025-10-19 18:42:41,160 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip
+2025-10-19 18:42:41,166 - INFO - Extraído archivo interno: 20610892346-20250918-2217-propuesta.txt
+2025-10-19 18:42:41,167 - INFO - Datos extraídos: 350 filas
+2025-10-19 18:42:41,168 - INFO - Iniciando fase de transformación
+2025-10-19 18:42:41,172 - INFO - Filtro CAR SUNAT: 350 -> 350 filas
+2025-10-19 18:42:41,206 - INFO - Transformación completada: 350 filas
+2025-10-19 18:42:41,359 - INFO - Iniciando fase de carga
+2025-10-19 18:42:41,893 - INFO - Datos cargados exitosamente: 350 filas a acc._8
+2025-10-21 00:12:22,017 - INFO - Iniciando fase de extracción
+2025-10-21 00:12:22,028 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:12:22,079 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:12:22,080 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:12:22,163 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:12:22,163 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:12:22,180 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:12:22,181 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:12:22,181 - INFO - Iniciando fase de transformación
+2025-10-21 00:12:22,218 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:12:22,257 - ERROR - Error en el proceso ETL: '<' not supported between instances of 'str' and 'int'
+2025-10-21 00:18:01,116 - INFO - Iniciando fase de extracción
+2025-10-21 00:18:01,116 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:18:01,159 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:18:01,159 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:18:01,162 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:18:01,162 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:18:01,165 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:18:01,166 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:18:01,166 - INFO - Iniciando fase de transformación
+2025-10-21 00:18:01,169 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:18:01,187 - ERROR - Error en el proceso ETL: 'BI Gravado DG'
+2025-10-21 00:18:32,520 - INFO - Iniciando fase de extracción
+2025-10-21 00:18:32,520 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:18:32,526 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:18:32,527 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:18:32,530 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:18:32,531 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:18:32,534 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:18:32,534 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:18:32,534 - INFO - Iniciando fase de transformación
+2025-10-21 00:18:32,535 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:18:32,552 - ERROR - Error en el proceso ETL: 'BI Gravado DG'
+2025-10-21 00:25:37,003 - INFO - Iniciando fase de extracción
+2025-10-21 00:25:37,003 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:25:37,008 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:25:37,009 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:25:37,012 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:25:37,012 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:25:37,015 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:25:37,015 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:25:37,016 - INFO - Iniciando fase de transformación
+2025-10-21 00:25:37,016 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:25:37,043 - ERROR - Error en el proceso ETL: 'Otros Trib/ Cargos'
+2025-10-21 00:26:51,594 - INFO - Iniciando fase de extracción
+2025-10-21 00:26:51,595 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:26:51,600 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:26:51,601 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:26:51,604 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:26:51,604 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:26:51,607 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:26:51,608 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:26:51,608 - INFO - Iniciando fase de transformación
+2025-10-21 00:26:51,609 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:26:51,624 - ERROR - Error en el proceso ETL: 'observaciones'
+2025-10-21 00:28:01,959 - INFO - Iniciando fase de extracción
+2025-10-21 00:28:01,960 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:28:01,965 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:28:01,965 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:28:01,968 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:28:01,968 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:28:01,971 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:28:01,972 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:28:01,972 - INFO - Iniciando fase de transformación
+2025-10-21 00:28:01,972 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:28:02,003 - INFO - Transformación completada: 59 filas
+2025-10-21 00:28:02,203 - INFO - Iniciando fase de carga
+2025-10-21 00:28:02,738 - ERROR - Error al cargar datos: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "_5_cui_key"
+DETAIL:  Key (cui)=(507E0013) already exists.
+
+[SQL: INSERT INTO acc._5 (periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, numero_final, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros_cargos, tipo_moneda, tipo_comprobante_ ... 27813 characters truncated ... 58)s, %(numero_serie_modificado__58)s, %(numero_correlativo_modificado__58)s, %(observaciones__58)s)]
+[parameters: {'numero_correlativo_modificado__0': None, 'numero_documento__0': '-', 'tipo_documento__0': '-', 'numero_serie_modificado__0': None, 'destino__0': 2, 'icbp__0': 0, 'tipo_comprobante_modificado__0': None, 'fecha_vencimiento__0': None, 'igv__0': 0.0, 'isc__0': 0, 'tipo_moneda__0': 'USD', 'otros_cargos__0': 0, 'periodo_tributario__0': 202509, 'numero_correlativo__0': '1', 'numero_final__0': None, 'tipo_comprobante__0': 1, 'observaciones__0': 'SIRE:2061455137301E0010000000001', 'valor__0': 278899.8, 'numero_serie__0': 'E001', 'fecha_emision__0': datetime.date(2025, 9, 26), 'numero_correlativo_modificado__1': None, 'numero_documento__1': '-', 'tipo_documento__1': '-', 'numero_serie_modificado__1': None, 'destino__1': 2, 'icbp__1': 0, 'tipo_comprobante_modificado__1': None, 'fecha_vencimiento__1': None, 'igv__1': 0.0, 'isc__1': 0, 'tipo_moneda__1': 'USD', 'otros_cargos__1': 0, 'periodo_tributario__1': 202509, 'numero_correlativo__1': '2', 'numero_final__1': None, 'tipo_comprobante__1': 1, 'observaciones__1': 'SIRE:2061455137301E0010000000002', 'valor__1': 278899.8, 'numero_serie__1': 'E001', 'fecha_emision__1': datetime.date(2025, 9, 26), 'numero_correlativo_modificado__2': '1', 'numero_documento__2': '-', 'tipo_documento__2': '-', 'numero_serie_modificado__2': 'E001', 'destino__2': 1, 'icbp__2': 0, 'tipo_comprobante_modificado__2': 1, 'fecha_vencimiento__2': None, 'igv__2': 0.0, 'isc__2': 0 ... 1080 parameters truncated ... 'tipo_moneda__56': 'PEN', 'otros_cargos__56': 0, 'periodo_tributario__56': 202403, 'numero_correlativo__56': '40', 'numero_final__56': None, 'tipo_comprobante__56': 1, 'observaciones__56': 'SIRE:2060648275301E0010000000040', 'valor__56': 198400.0, 'numero_serie__56': 'E001', 'fecha_emision__56': datetime.date(2024, 3, 31), 'numero_correlativo_modificado__57': None, 'numero_documento__57': '20611957476', 'tipo_documento__57': '6', 'numero_serie_modificado__57': None, 'destino__57': 1, 'icbp__57': 0, 'tipo_comprobante_modificado__57': None, 'fecha_vencimiento__57': None, 'igv__57': 23544.0, 'isc__57': 0, 'tipo_moneda__57': 'PEN', 'otros_cargos__57': 0, 'periodo_tributario__57': 202403, 'numero_correlativo__57': '41', 'numero_final__57': None, 'tipo_comprobante__57': 1, 'observaciones__57': 'SIRE:2060648275301E0010000000041', 'valor__57': 130800.0, 'numero_serie__57': 'E001', 'fecha_emision__57': datetime.date(2024, 3, 31), 'numero_correlativo_modificado__58': None, 'numero_documento__58': '20611957476', 'tipo_documento__58': '6', 'numero_serie_modificado__58': None, 'destino__58': 1, 'icbp__58': 0, 'tipo_comprobante_modificado__58': None, 'fecha_vencimiento__58': None, 'igv__58': 48744.07, 'isc__58': 0, 'tipo_moneda__58': 'PEN', 'otros_cargos__58': 0, 'periodo_tributario__58': 202403, 'numero_correlativo__58': '42', 'numero_final__58': None, 'tipo_comprobante__58': 1, 'observaciones__58': 'SIRE:2060648275301E0010000000042', 'valor__58': 270800.4, 'numero_serie__58': 'E001', 'fecha_emision__58': datetime.date(2024, 3, 31)}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-10-21 00:38:36,314 - INFO - Iniciando fase de extracción
+2025-10-21 00:38:36,324 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:38:36,389 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:38:36,389 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:38:36,473 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:38:36,473 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:38:36,490 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:38:36,491 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:38:36,491 - INFO - Iniciando fase de transformación
+2025-10-21 00:38:36,526 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:38:36,573 - INFO - Transformación completada: 59 filas
+2025-10-21 00:38:36,663 - INFO - Iniciando fase de carga
+2025-10-21 00:38:36,742 - ERROR - Error al cargar datos: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "_5_cui_key"
+DETAIL:  Key (cui)=(507E0013) already exists.
+
+[SQL: INSERT INTO acc._5 (periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, numero_final, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros_cargos, tipo_moneda, tipo_comprobante_ ... 27813 characters truncated ... 58)s, %(numero_serie_modificado__58)s, %(numero_correlativo_modificado__58)s, %(observaciones__58)s)]
+[parameters: {'numero_serie__0': 'E001', 'isc__0': 0, 'periodo_tributario__0': 202509, 'fecha_emision__0': datetime.date(2025, 9, 26), 'tipo_comprobante__0': 1, 'numero_correlativo_modificado__0': None, 'destino__0': 2, 'igv__0': 0.0, 'icbp__0': 0, 'numero_final__0': None, 'numero_documento__0': '-', 'numero_serie_modificado__0': None, 'fecha_vencimiento__0': None, 'tipo_documento__0': '-', 'otros_cargos__0': 0, 'tipo_moneda__0': 'USD', 'valor__0': 278899.8, 'observaciones__0': 'SIRE:2061455137301E0010000000001', 'tipo_comprobante_modificado__0': None, 'numero_correlativo__0': '1', 'numero_serie__1': 'E001', 'isc__1': 0, 'periodo_tributario__1': 202509, 'fecha_emision__1': datetime.date(2025, 9, 26), 'tipo_comprobante__1': 1, 'numero_correlativo_modificado__1': None, 'destino__1': 2, 'igv__1': 0.0, 'icbp__1': 0, 'numero_final__1': None, 'numero_documento__1': '-', 'numero_serie_modificado__1': None, 'fecha_vencimiento__1': None, 'tipo_documento__1': '-', 'otros_cargos__1': 0, 'tipo_moneda__1': 'USD', 'valor__1': 278899.8, 'observaciones__1': 'SIRE:2061455137301E0010000000002', 'tipo_comprobante_modificado__1': None, 'numero_correlativo__1': '2', 'numero_serie__2': 'E001', 'isc__2': 0, 'periodo_tributario__2': 202509, 'fecha_emision__2': datetime.date(2025, 9, 26), 'tipo_comprobante__2': 7, 'numero_correlativo_modificado__2': '1', 'destino__2': 1, 'igv__2': 0.0, 'icbp__2': 0, 'numero_final__2': None ... 1080 parameters truncated ... 'numero_documento__56': '20611957476', 'numero_serie_modificado__56': None, 'fecha_vencimiento__56': None, 'tipo_documento__56': '6', 'otros_cargos__56': 0, 'tipo_moneda__56': 'PEN', 'valor__56': 198400.0, 'observaciones__56': 'SIRE:2060648275301E0010000000040', 'tipo_comprobante_modificado__56': None, 'numero_correlativo__56': '40', 'numero_serie__57': 'E001', 'isc__57': 0, 'periodo_tributario__57': 202403, 'fecha_emision__57': datetime.date(2024, 3, 31), 'tipo_comprobante__57': 1, 'numero_correlativo_modificado__57': None, 'destino__57': 1, 'igv__57': 23544.0, 'icbp__57': 0, 'numero_final__57': None, 'numero_documento__57': '20611957476', 'numero_serie_modificado__57': None, 'fecha_vencimiento__57': None, 'tipo_documento__57': '6', 'otros_cargos__57': 0, 'tipo_moneda__57': 'PEN', 'valor__57': 130800.0, 'observaciones__57': 'SIRE:2060648275301E0010000000041', 'tipo_comprobante_modificado__57': None, 'numero_correlativo__57': '41', 'numero_serie__58': 'E001', 'isc__58': 0, 'periodo_tributario__58': 202403, 'fecha_emision__58': datetime.date(2024, 3, 31), 'tipo_comprobante__58': 1, 'numero_correlativo_modificado__58': None, 'destino__58': 1, 'igv__58': 48744.07, 'icbp__58': 0, 'numero_final__58': None, 'numero_documento__58': '20611957476', 'numero_serie_modificado__58': None, 'fecha_vencimiento__58': None, 'tipo_documento__58': '6', 'otros_cargos__58': 0, 'tipo_moneda__58': 'PEN', 'valor__58': 270800.4, 'observaciones__58': 'SIRE:2060648275301E0010000000042', 'tipo_comprobante_modificado__58': None, 'numero_correlativo__58': '42'}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-10-21 00:45:50,354 - INFO - Iniciando fase de extracción
+2025-10-21 00:45:50,354 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:45:50,359 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:45:50,360 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:45:50,363 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:45:50,363 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:45:50,365 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:45:50,367 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:45:50,367 - INFO - Iniciando fase de transformación
+2025-10-21 00:45:50,368 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:45:50,382 - INFO - Transformación completada: 59 filas
+2025-10-21 00:45:50,425 - INFO - Iniciando fase de carga
+2025-10-21 00:45:50,839 - ERROR - Error al cargar datos: (psycopg2.errors.ForeignKeyViolation) insert or update on table "_5" violates foreign key constraint "_5_tipo_documento_fkey"
+DETAIL:  Key (tipo_documento)=(-) is not present in table "ts02".
+
+[SQL: INSERT INTO acc._5 (ruc, periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, numero_final, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros_cargos, tipo_moneda, tipo_comprob ... 28575 characters truncated ... 58)s, %(numero_serie_modificado__58)s, %(numero_correlativo_modificado__58)s, %(observaciones__58)s)]
+[parameters: {'isc__0': 0, 'numero_final__0': None, 'fecha_vencimiento__0': None, 'ruc__0': 20614551373, 'igv__0': 0.0, 'numero_serie_modificado__0': None, 'valor__0': 278899.8, 'tipo_comprobante__0': 1, 'destino__0': 2, 'icbp__0': 0, 'fecha_emision__0': datetime.date(2025, 9, 26), 'tipo_comprobante_modificado__0': None, 'otros_cargos__0': 0, 'tipo_documento__0': '-', 'tipo_moneda__0': 'USD', 'numero_serie__0': 'E001', 'numero_correlativo__0': '1', 'numero_correlativo_modificado__0': None, 'observaciones__0': 'SIRE:2061455137301E0010000000001', 'numero_documento__0': '-', 'periodo_tributario__0': 202509, 'isc__1': 0, 'numero_final__1': None, 'fecha_vencimiento__1': None, 'ruc__1': 20614551373, 'igv__1': 0.0, 'numero_serie_modificado__1': None, 'valor__1': 278899.8, 'tipo_comprobante__1': 1, 'destino__1': 2, 'icbp__1': 0, 'fecha_emision__1': datetime.date(2025, 9, 26), 'tipo_comprobante_modificado__1': None, 'otros_cargos__1': 0, 'tipo_documento__1': '-', 'tipo_moneda__1': 'USD', 'numero_serie__1': 'E001', 'numero_correlativo__1': '2', 'numero_correlativo_modificado__1': None, 'observaciones__1': 'SIRE:2061455137301E0010000000002', 'numero_documento__1': '-', 'periodo_tributario__1': 202509, 'isc__2': 0, 'numero_final__2': None, 'fecha_vencimiento__2': None, 'ruc__2': 20614551373, 'igv__2': 0.0, 'numero_serie_modificado__2': 'E001', 'valor__2': -278899.8, 'tipo_comprobante__2': 7 ... 1139 parameters truncated ... 'tipo_documento__56': '6', 'tipo_moneda__56': 'PEN', 'numero_serie__56': 'E001', 'numero_correlativo__56': '40', 'numero_correlativo_modificado__56': None, 'observaciones__56': 'SIRE:2060648275301E0010000000040', 'numero_documento__56': '20611957476', 'periodo_tributario__56': 202403, 'isc__57': 0, 'numero_final__57': None, 'fecha_vencimiento__57': None, 'ruc__57': 20606482753, 'igv__57': 23544.0, 'numero_serie_modificado__57': None, 'valor__57': 130800.0, 'tipo_comprobante__57': 1, 'destino__57': 1, 'icbp__57': 0, 'fecha_emision__57': datetime.date(2024, 3, 31), 'tipo_comprobante_modificado__57': None, 'otros_cargos__57': 0, 'tipo_documento__57': '6', 'tipo_moneda__57': 'PEN', 'numero_serie__57': 'E001', 'numero_correlativo__57': '41', 'numero_correlativo_modificado__57': None, 'observaciones__57': 'SIRE:2060648275301E0010000000041', 'numero_documento__57': '20611957476', 'periodo_tributario__57': 202403, 'isc__58': 0, 'numero_final__58': None, 'fecha_vencimiento__58': None, 'ruc__58': 20606482753, 'igv__58': 48744.07, 'numero_serie_modificado__58': None, 'valor__58': 270800.4, 'tipo_comprobante__58': 1, 'destino__58': 1, 'icbp__58': 0, 'fecha_emision__58': datetime.date(2024, 3, 31), 'tipo_comprobante_modificado__58': None, 'otros_cargos__58': 0, 'tipo_documento__58': '6', 'tipo_moneda__58': 'PEN', 'numero_serie__58': 'E001', 'numero_correlativo__58': '42', 'numero_correlativo_modificado__58': None, 'observaciones__58': 'SIRE:2060648275301E0010000000042', 'numero_documento__58': '20611957476', 'periodo_tributario__58': 202403}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-10-21 00:47:45,443 - INFO - Iniciando fase de extracción
+2025-10-21 00:47:45,444 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:47:45,451 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:47:45,451 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:47:45,453 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:47:45,455 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:47:45,459 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:47:45,459 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:47:45,459 - INFO - Iniciando fase de transformación
+2025-10-21 00:47:45,460 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:47:45,466 - ERROR - Error en el proceso ETL: 'Detracción'
+2025-10-21 00:47:57,104 - INFO - Iniciando fase de extracción
+2025-10-21 00:47:57,105 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 00:47:57,112 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 00:47:57,112 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 00:47:57,115 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 00:47:57,115 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 00:47:57,119 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 00:47:57,119 - INFO - Datos extraídos: 59 filas
+2025-10-21 00:47:57,119 - INFO - Iniciando fase de transformación
+2025-10-21 00:47:57,120 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 00:47:57,134 - INFO - Transformación completada: 59 filas
+2025-10-21 00:47:57,180 - INFO - Iniciando fase de carga
+2025-10-21 00:47:57,587 - INFO - Datos cargados exitosamente: 59 filas a acc._5
+2025-10-21 10:56:30,059 - INFO - Iniciando fase de extracción
+2025-10-21 10:56:30,069 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 10:56:30,116 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 10:56:30,117 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 10:56:30,126 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 10:56:30,127 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 10:56:30,159 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 10:56:30,160 - INFO - Datos extraídos: 59 filas
+2025-10-21 10:56:30,160 - INFO - Iniciando fase de transformación
+2025-10-21 10:56:30,189 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 10:56:30,203 - INFO - Regla especial documentos: 24 filas modificadas
+2025-10-21 10:56:30,235 - INFO - Transformación completada: 59 filas
+2025-10-21 10:56:30,294 - INFO - Iniciando fase de carga
+2025-10-21 10:56:30,391 - ERROR - Error al cargar datos: (psycopg2.errors.DatatypeMismatch) argument of OR must be type boolean, not type integer
+LINE 1: OLD.subdiario = 5 OR 8
+                             ^
+QUERY:  OLD.subdiario = 5 OR 8
+CONTEXT:  PL/pgSQL function acc.update_cui() line 4 at IF
+
+[SQL: INSERT INTO acc._5 (ruc, periodo_tributario, tipo_comprobante, fecha_emision, fecha_vencimiento, numero_serie, numero_correlativo, numero_final, tipo_documento, numero_documento, destino, valor, igv, icbp, isc, otros_cargos, tipo_moneda, tipo_comprob ... 28575 characters truncated ... 58)s, %(numero_serie_modificado__58)s, %(numero_correlativo_modificado__58)s, %(observaciones__58)s)]
+[parameters: {'numero_correlativo_modificado__0': None, 'fecha_emision__0': datetime.date(2025, 9, 26), 'icbp__0': 0, 'numero_serie_modificado__0': None, 'numero_documento__0': 'OPTIMIZE INTEGRATION GROUP NO 5002 GUIYUAN STREET LUOHU DISTRIC SHENZEN CHINA', 'tipo_comprobante__0': 1, 'observaciones__0': 'SIRE:2061455137301E0010000000001', 'tipo_moneda__0': 'USD', 'tipo_comprobante_modificado__0': None, 'destino__0': 2, 'numero_serie__0': 'E001', 'igv__0': 0.0, 'valor__0': 278899.8, 'ruc__0': 20614551373, 'isc__0': 0, 'periodo_tributario__0': 202509, 'numero_final__0': None, 'fecha_vencimiento__0': None, 'tipo_documento__0': '0', 'numero_correlativo__0': '1', 'otros_cargos__0': 0, 'numero_correlativo_modificado__1': None, 'fecha_emision__1': datetime.date(2025, 9, 26), 'icbp__1': 0, 'numero_serie_modificado__1': None, 'numero_documento__1': 'OPTIMIZE INTEGRATION GROUP INC - NO 5002 GUIYUAN STREET LUOHU DISTRICT  SHENZHEN CHINA', 'tipo_comprobante__1': 1, 'observaciones__1': 'SIRE:2061455137301E0010000000002', 'tipo_moneda__1': 'USD', 'tipo_comprobante_modificado__1': None, 'destino__1': 2, 'numero_serie__1': 'E001', 'igv__1': 0.0, 'valor__1': 278899.8, 'ruc__1': 20614551373, 'isc__1': 0, 'periodo_tributario__1': 202509, 'numero_final__1': None, 'fecha_vencimiento__1': None, 'tipo_documento__1': '0', 'numero_correlativo__1': '2', 'otros_cargos__1': 0, 'numero_correlativo_modificado__2': '1', 'fecha_emision__2': datetime.date(2025, 9, 26), 'icbp__2': 0, 'numero_serie_modificado__2': 'E001', 'numero_documento__2': 'OPTIMIZE INTEGRATION GROUP NO 5002 GUIYUAN STREET LUOHU DISTRIC SHENZEN CHINA', 'tipo_comprobante__2': 7, 'observaciones__2': 'SIRE:2061455137307E0010000000001', 'tipo_moneda__2': 'USD' ... 1139 parameters truncated ... 'ruc__56': 20606482753, 'isc__56': 0, 'periodo_tributario__56': 202403, 'numero_final__56': None, 'fecha_vencimiento__56': None, 'tipo_documento__56': '6', 'numero_correlativo__56': '40', 'otros_cargos__56': 0, 'numero_correlativo_modificado__57': None, 'fecha_emision__57': datetime.date(2024, 3, 31), 'icbp__57': 0, 'numero_serie_modificado__57': None, 'numero_documento__57': '20611957476', 'tipo_comprobante__57': 1, 'observaciones__57': 'SIRE:2060648275301E0010000000041', 'tipo_moneda__57': 'PEN', 'tipo_comprobante_modificado__57': None, 'destino__57': 1, 'numero_serie__57': 'E001', 'igv__57': 23544.0, 'valor__57': 130800.0, 'ruc__57': 20606482753, 'isc__57': 0, 'periodo_tributario__57': 202403, 'numero_final__57': None, 'fecha_vencimiento__57': None, 'tipo_documento__57': '6', 'numero_correlativo__57': '41', 'otros_cargos__57': 0, 'numero_correlativo_modificado__58': None, 'fecha_emision__58': datetime.date(2024, 3, 31), 'icbp__58': 0, 'numero_serie_modificado__58': None, 'numero_documento__58': '20611957476', 'tipo_comprobante__58': 1, 'observaciones__58': 'SIRE:2060648275301E0010000000042', 'tipo_moneda__58': 'PEN', 'tipo_comprobante_modificado__58': None, 'destino__58': 1, 'numero_serie__58': 'E001', 'igv__58': 48744.07, 'valor__58': 270800.4, 'ruc__58': 20606482753, 'isc__58': 0, 'periodo_tributario__58': 202403, 'numero_final__58': None, 'fecha_vencimiento__58': None, 'tipo_documento__58': '6', 'numero_correlativo__58': '42', 'otros_cargos__58': 0}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-10-21 10:59:05,030 - INFO - Iniciando fase de extracción
+2025-10-21 10:59:05,030 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2061455137320251010014040001EXP2.zip
+2025-10-21 10:59:05,044 - INFO - Extraído archivo interno: LE206145513732025100014040001EXP2.csv
+2025-10-21 10:59:05,044 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE1072650130620250410014040001EXP2.zip
+2025-10-21 10:59:05,052 - INFO - Extraído archivo interno: LE107265013062025040014040001EXP2.csv
+2025-10-21 10:59:05,052 - INFO - Procesando archivo: C:/Users/Raknaros/Downloads/LE2060648275320250410014040001EXP2.zip
+2025-10-21 10:59:05,059 - INFO - Extraído archivo interno: LE206064827532025040014040001EXP2.csv
+2025-10-21 10:59:05,059 - INFO - Datos extraídos: 59 filas
+2025-10-21 10:59:05,060 - INFO - Iniciando fase de transformación
+2025-10-21 10:59:05,060 - INFO - Filtro CAR SUNAT: 59 -> 59 filas
+2025-10-21 10:59:05,061 - INFO - Regla especial documentos: 24 filas modificadas
+2025-10-21 10:59:05,077 - INFO - Transformación completada: 59 filas
+2025-10-21 10:59:05,122 - INFO - Iniciando fase de carga
+2025-10-21 10:59:05,568 - INFO - Datos cargados exitosamente: 59 filas a acc._5

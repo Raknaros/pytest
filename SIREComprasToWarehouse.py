@@ -186,6 +186,9 @@ class Transformer:
         df['igv'] = np.select(condiciones, resultados_igv, default=0)
         df['otros_cargos'] = np.select(condiciones, resultados_otros, default=0)
 
+        # Agregar columna tipo_operacion siempre con valor 2 (integer)
+        df['tipo_operacion'] = 2
+
     @staticmethod
     def rename_columns(df: pd.DataFrame, mapping: dict) -> pd.DataFrame:
         """Cambia los nombres de las columnas según el mapping proporcionado."""
@@ -203,7 +206,7 @@ class Transformer:
             'fecha_vencimiento', 'numero_serie', 'numero_correlativo', 'tipo_documento',
             'numero_documento', 'destino', 'valor', 'igv', 'icbp', 'isc', 'otros_cargos',
             'tipo_moneda', 'tasa_detraccion', 'tipo_comprobante_modificado',
-            'numero_serie_modificado', 'numero_correlativo_modificado', 'observaciones'
+            'numero_serie_modificado', 'numero_correlativo_modificado', 'observaciones', 'tipo_operacion'
         ]
 
         # Filtrar solo las columnas que existen
@@ -228,7 +231,7 @@ class Transformer:
 
         # integer
         int_columns = ['periodo_tributario', 'tipo_comprobante', 'destino', 'tasa_detraccion',
-                       'tipo_comprobante_modificado']
+                       'tipo_comprobante_modificado', 'tipo_operacion']
         for col in int_columns:
             if col in df.columns:
                 if col == 'periodo_tributario':
@@ -377,7 +380,8 @@ def main():
         'destino': 'destino',
         'valor': 'valor',
         'igv': 'igv',
-        'otros_cargos': 'otros_cargos'
+        'otros_cargos': 'otros_cargos',
+        'tipo_operacion': 'tipo_operacion'
     }
 
     # Ejecutar ETL con preview
