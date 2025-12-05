@@ -14,14 +14,14 @@ RUC = os.getenv('SUNAT_RUC')
 SOL_USER = os.getenv('SUNAT_SOL_USER')
 SOL_PASS = os.getenv('SUNAT_SOL_PASS')
 # --- Configuración de Servicios ---
-RUN_EXPORT_PROPOSAL = False
+RUN_EXPORT_PROPOSAL = True
 RUN_QUERY_STATUS = False
-RUN_DOWNLOAD_FILE = True
+RUN_DOWNLOAD_FILE = False
 
 # Parámetros para descarga de archivo (rellenar según resultado de consulta de estado)
-NOM_ARCHIVO_REPORTE = "20606283858-20251122-195943-propuesta.zip"  # Ej. "reporte_202509.zip"
+NOM_ARCHIVO_REPORTE = "LE2060628385820251100014040001EXP2.zip"  # Ej. "reporte_202509.zip"
 COD_TIPO_ARCHIVO_REPORTE = "00"  # Ej. "01"
-COD_LIBRO = "080000"  # Ej. "1409"
+COD_LIBRO = "140000"  # Ej. "1409"
 # Conexión a Warehouse (Contabilidad)
 warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSE_NAME')}"
 warehouse = create_engine(warehouse_url)
@@ -32,8 +32,8 @@ warehouse = create_engine(warehouse_url)
 # --- URLs de SUNAT (Basadas en tu información) ---
 # Formateamos la URL de token con el client_id
 TOKEN_URL = f"https://api-seguridad.sunat.gob.pe/v1/clientessol/{CLIENT_ID}/oauth2/token/"
-# URL de ejemplo del API SIRE Compras
-SIRE_API_URL = "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rce/propuesta/web/propuesta"
+# URL de ejemplo del API SIRE
+SIRE_API_URL = "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvie/propuesta/web/propuesta"
 
 
 def get_sunat_access_token() -> str | None:
@@ -95,7 +95,7 @@ def exportar_propuesta_sire(token: str, per_tributario: str):
     Realiza la consulta GET de ejemplo al endpoint de SIRE.
     """
     # 1. Construir la URL completa del endpoint
-    url_completa = f"{SIRE_API_URL}/{per_tributario}/exportacioncomprobantepropuesta?codTipoArchivo=0&codOrigenEnvio=2"
+    url_completa = f"{SIRE_API_URL}/{per_tributario}/exportapropuesta?codTipoArchivo=0"
     print(f"Realizando consulta a: {url_completa}")
 
     # 2. Preparar la cabecera de autorización
@@ -198,7 +198,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     per_tributario = "202509"  # Período tributario a consultar
-    numTicket = 20250300000023
+    numTicket = 20250300000021
 
     # Ejecutar servicios según flags
     if RUN_EXPORT_PROPOSAL:
@@ -220,87 +220,3 @@ if __name__ == "__main__":
             descargar_archivo(token, NOM_ARCHIVO_REPORTE, COD_TIPO_ARCHIVO_REPORTE, COD_LIBRO, per_tributario, "10", numTicket)
         else:
             print("Parámetros de descarga no configurados o numTicket no disponible.")
-
-"""
-RETIRAR LOS XML QUE YA ESTAN ANALIZADOS Y SUBIDOS A LA BASE DE DATOS
-ventas_periodo = ventas[ventas['periodo_tributario'] == 202501]
-
-ventas_periodo['nombre_xml'] = ventas_periodo.apply(lambda row: 'FACTURA' + row['numero_serie'] + '-' + str(row['numero_correlativo']) + str(row['ruc']) + '.xml', axis=1)
-
-
-print(ventas_periodo['nombre_xml'].tolist())
-
-for a in ventas_periodo['nombre_xml'].tolist():
-    os.remove('E:/TODOS LOS XML/'+a)
-"""
-#VERIFICAR FACTURAS BANCARIZADAS POR PROVEEDOR
-#VERIFICAR PERIODO DE LAS FACTURAS BANCARIZADAS POR PROVEEDOR
-#VERIFICAR ADQUIRIENTES DE LAS FACTURAS BANCARIZADAS
-#VERIFICAR PEDIDOS DE ESOS PROVEEDORES BANCARIZADOS
-#VERIFICAR OTROS PEDIDOS
-#EMITIR LOS MANIFIESTAMENTE PENDIENTES Y URGENTES
-#VERIFICAR LOS OTROS PEDIDOS
-
-#TODO VERIFICAR LA CONSISTENCIA DE LA DATA DE CIERRE DE MES EN LOS SIGUIENTES SENTIDOS:
-
-
-#SOBRE LAS ENTIDADES/PROVEEDORES
-#TODO CONSULTAR LISTA DE FACTURAS POR PERIODO TRIBUTARIO
-#QUE CANTIDAD DE VENTAS TOTALES TIENE CADA ENTIDAD/PROVEEDOR
-#TODO AGRUPAR POR ENTIDAD Y SUMAR TOTAL + IGV
-#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A PROVEEDORES TIPO 1
-#TODO CONSULTA PROVEEDORES TIPO 1 Y 2 Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAS DE ESOS PROVEEDORES
-#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A PROVEEDORES TIPO 3
-#TODO CONSULTAR PROVEEDORES TIPO 3 Y CONSULTA QUE FACTURAS CORRESPONDEN A COMPRAS DE ESOS PROVEEDORES
-#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A CUSTOMERS INTERNOS
-#TODO CONSULTAR CUSTOMERS INTERNOS Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAR DE ESOS CUSTOMERS
-#QUE CANTIDAD DE VENTAS CORRESPONDEN DE CADA ENTIDAD/PROVEEDOR A CUSTOMERS EXTERNOS
-#TODO CONSULTAR CUSTOMERS EXTERNOS Y CONSULTAR QUE FACTURAS CORRESPONDEN A COMPRAR DE ESOS CUSTOMERS
-
-#SOBRE LOS COMPROBANTES
-#QUE CANTIDAD DE COMPROBANTES NO TIENEN GUIA
-#TODO CONSULTA Y CONTAR COMPROBANTES QUE NO TENGAN ASOCIADA UNA GUIA
-#QUE CANTIDAD DE COMPROBANTES TIENEN GUIA
-#TODO CONSULTA Y CONTAR COMPROBANTES QUE TENGAN ASOCIADA UNA GUIA
-#EXISTEN COMPROBANTES DE LA MISMA ENTIDAD QUE TENGAN LA MISMA GUIA ASIGNADA?
-#TODO CONSULTAR SEGUN LA ENTIDAD/PROVEEDOR SI ALGUNA GUIA ASOCIADA SE REPITE Y COLOCAR ESTADO OBSERVADO GUIA REPETIDA
-
-
-#SOBRE LOS PEDIDOS
-#IDENTIFICAR LOS PEDIDOS EXISTENTES DEL PERIODO CON LA SUMA DE LOS TOTALES DE LAS FACTURAS EMITIDAS EN ORDEN DE FECHA
-#TODO VERIFICAR PEDIDOS ENTREGADOS, SUMAR COMPROBANTES DE ESE ADQUIRIENTE SEGUN FECHA DE EMISION ASCENDENTE HASTA LLEGAR AL TOTAL DEL PEDIDO ENTREGADO
-#EXCLUIR ESOS PEDIDOS YA EXISTENTES EN LA TABLA PEDIDOS DE LA AUTOGENERACION
-#TODO FILTRAR ESAS FACTURAS DE LA LISTA PARA TRASLADAR Y AUTOGENERAR PEDIDOS
-#COMPARAR LA INFORMACIO EXISTENTE DE LAS FACTURAS POR SI HUBIESE ALGUNA QUE AGREGAR DESDE WAREHOUSE A SALESSYSTEM
-#TODO DETERMINAR QUE INFORMACION DE LA TABLA _5 WAREHOUSE ES NECESARIA TRASLADAR A FACTURAS PARA COMPLEMENTAR
-#TRANSFERIR ENTRE BASES DE DATOS SOLO LAS FACTURAS QUE NO EXISTEN YA Y VERIFICAR SI HAY FORMA DE IDENTIFICARLAS POR TOTAL O POR ITEMS Y COLOCARLES EL NUMERO DE FACTURA Y GUIA SI FUESE NECESARIO
-#TODO BUSCAR FORMA DE IDENTIFICAR _5 CON FACTURAS QUE TIENEN PENDIENTE EL NUMERO DE CORRELATIVO Y DE GUIA SI FUESE NECESARIO
-#TRANSFERIR TAMBIEN LAS GUIAS
-#TODO TRANSFERIR LAS GUIAS TAMBIEN
-
-"""
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
-
-# Token del bot
-BOT_TOKEN = "tu_token_aqui"
-
-# Comando para enviar el chat ID
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = update.effective_chat.id
-    await update.message.reply_text(f"Tu chat ID es: {chat_id}")
-
-def main():
-    # Crear aplicación
-    application = Application.builder().token(BOT_TOKEN).build()
-
-    # Agregar manejador de comandos
-    application.add_handler(CommandHandler("start", start))
-
-    # Iniciar el bot
-    application.run_polling()  # Usa run_polling directamente
-
-if __name__ == "__main__":
-    main()
-
-"""

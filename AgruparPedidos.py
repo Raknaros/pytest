@@ -15,7 +15,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 # Conexión a Warehouse (Contabilidad)
-warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSEE_NAME')}"
+warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSE_NAME')}"
 warehouse = create_engine(warehouse_url)
 
 # Conexión a SalesSystem (Facturación)
@@ -24,9 +24,9 @@ salessystem = create_engine(salessystem_url)
 
 ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
 
-periodo = "202509"
+periodo = "202510"
 
-directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\2025\\pdfpedidossetiembre')
+directorio = ('C:\\Users\\Raknaros\\Desktop\\temporal\\2025\\pdfpedidosoctubre')
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]

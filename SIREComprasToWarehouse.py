@@ -349,9 +349,7 @@ def main():
 
     # Configuración
     rutas_archivos = [
-        "C:/Users/Raknaros/Downloads/20614551373-20251006-174112-propuesta.zip",
-        "C:/Users/Raknaros/Downloads/20606283858-20250918-222528-propuesta.zip",
-        "C:/Users/Raknaros/Downloads/20610892346-20250918-221707-propuesta.zip"
+        "D:/pytest/20606283858-20251122-195943-propuesta.zip",
     ]
     db_url = f"postgresql://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSEE_NAME')}"
     schema = "acc"
@@ -396,3 +394,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
