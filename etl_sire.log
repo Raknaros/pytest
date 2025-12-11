@@ -345,3 +345,14 @@ CONTEXT:  PL/pgSQL function acc.update_cui() line 4 at IF
 2025-10-21 10:59:05,077 - INFO - Transformación completada: 59 filas
 2025-10-21 10:59:05,122 - INFO - Iniciando fase de carga
 2025-10-21 10:59:05,568 - INFO - Datos cargados exitosamente: 59 filas a acc._5
+2025-11-26 22:28:34,063 - INFO - Iniciando fase de extracción
+2025-11-26 22:28:34,072 - INFO - Procesando archivo: D:/pytest/20606283858-20251122-195943-propuesta.zip
+2025-11-26 22:28:34,156 - INFO - Extraído archivo interno: 20606283858-20251122-1959-propuesta.txt
+2025-11-26 22:28:34,156 - INFO - Datos extraídos: 65 filas
+2025-11-26 22:28:34,156 - INFO - Iniciando fase de transformación
+2025-11-26 22:28:34,193 - INFO - Filtro CAR SUNAT: 65 -> 65 filas
+2025-11-26 22:28:34,229 - INFO - Transformación completada: 65 filas
+2025-11-26 22:28:34,330 - INFO - Iniciando fase de carga
+2025-11-26 22:28:34,358 - ERROR - Error al cargar datos: (psycopg2.OperationalError) connection to server at "192.168.18.143", port 5432 failed: FATAL:  database "None" does not exist
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
