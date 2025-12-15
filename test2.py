@@ -1,225 +1,69 @@
-import os
-import requests
-from dotenv import load_dotenv
-import sys
 import pandas as pd
-
-from sqlalchemy import create_engine
-
-# --- 1. Cargar Configuración ---
-load_dotenv()
-CLIENT_ID = os.getenv('SUNAT_CLIENT_ID')
-CLIENT_SECRET = os.getenv('SUNAT_CLIENT_SECRET')
-RUC = os.getenv('SUNAT_RUC')
-SOL_USER = os.getenv('SUNAT_SOL_USER')
-SOL_PASS = os.getenv('SUNAT_SOL_PASS')
-# --- Configuración de Servicios ---
-RUN_EXPORT_PROPOSAL = False
-RUN_QUERY_STATUS = False
-RUN_DOWNLOAD_FILE = True
-
-# Parámetros para descarga de archivo (rellenar según resultado de consulta de estado)
-NOM_ARCHIVO_REPORTE = "20606283858-20251122-195943-propuesta.zip"  # Ej. "reporte_202509.zip"
-COD_TIPO_ARCHIVO_REPORTE = "00"  # Ej. "01"
-COD_LIBRO = "080000"  # Ej. "1409"
-# Conexión a Warehouse (Contabilidad)
-warehouse_url = f"{os.getenv('DB_WAREHOUSE_DIALECT')}://{os.getenv('DB_WAREHOUSE_USER')}:{os.getenv('DB_WAREHOUSE_PASSWORD')}@{os.getenv('DB_WAREHOUSE_HOST')}:{os.getenv('DB_WAREHOUSE_PORT')}/{os.getenv('DB_WAREHOUSE_NAME')}"
-warehouse = create_engine(warehouse_url)
-
-#credenciales=pd.read_sql(
-#    "SELECT entities.ruc, entities.usuario_sol, entities.clave_sol otras_credenciales.usuario, otras_credenciales.contrasena FROM priv.entities JOIN priv.otras_credenciales ON entities.ruc=otras_credenciales.ruc", con=warehouse)
-
-# --- URLs de SUNAT (Basadas en tu información) ---
-# Formateamos la URL de token con el client_id
-TOKEN_URL = f"https://api-seguridad.sunat.gob.pe/v1/clientessol/{CLIENT_ID}/oauth2/token/"
-# URL de ejemplo del API SIRE Compras
-SIRE_API_URL = "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rce/propuesta/web/propuesta"
+import os
 
 
-def get_sunat_access_token() -> str | None:
-    """
-    Se autentica contra SUNAT para obtener un Bearer Token.
-    Usa el flujo 'password' (Clave SOL).
-    """
-    print(f"Iniciando autenticación para Client ID: {CLIENT_ID}...")
+def auditar_integridad(ruta_header, ruta_lines, ruta_salida):
+    print("🔍 Iniciando auditoría de integridad...")
 
-    # 1. Construir el username (RUC + Usuario SOL)
-    username_sol = f"{RUC}{SOL_USER}"
-
-    # 2. Definir el payload (cuerpo) de la petición
-    payload = {
-        'grant_type': 'password',
-        'scope': 'https://api-cpe.sunat.gob.pe',
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-        'username': username_sol,
-        'password': SOL_PASS
-    }
-
-    # 3. Definir las cabeceras (headers)
-    # Como el body es 'x-www-form-urlencoded', usamos el parámetro 'data' en requests.
-    # 'requests' pondrá el 'Content-Type' correcto automáticamente.
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-
+    # 1. Cargar los CSVs
+    # dtype=str es importante para que no rompa el formato del CUI
     try:
-        # 4. Hacemos el POST a la URL de tokens
-        response = requests.post(TOKEN_URL, data=payload, headers=headers, timeout=10)
+        df_header = pd.read_csv(ruta_header, dtype=str)
+        df_lines = pd.read_csv(ruta_lines, dtype=str)
+    except FileNotFoundError as e:
+        print(f"❌ Error: No se encuentra el archivo: {e.filename}")
+        return
 
-        # Verificar si la petición fue exitosa
-        response.raise_for_status()
+    # 2. Obtener los Sets de CUIs únicos
+    cuis_cabecera = set(df_header['CUI'].unique())
+    cuis_lineas = set(df_lines['CUI'].unique())
 
-        data = response.json()
-        access_token = data.get('access_token')
+    print(f"📊 Cabeceras únicas encontradas: {len(cuis_cabecera)}")
+    print(f"📊 Líneas únicas encontradas (por CUI): {len(cuis_lineas)}")
 
-        if not access_token:
-            print("❌ Error: La respuesta de autenticación no incluyó un 'access_token'.")
-            print(data)
-            return None
+    # 3. Calcular la diferencia de conjuntos (A - B)
+    # CUIs que están en Cabecera PERO NO en Líneas
+    cuis_huerfanos = cuis_cabecera - cuis_lineas
 
-        print("✅ Token de acceso obtenido exitosamente.")
-        return access_token
+    cantidad_huerfanos = len(cuis_huerfanos)
 
-    except requests.exceptions.HTTPError as http_err:
-        print(f"❌ Error HTTP al obtener token: {http_err}")
-        print(f"Respuesta del servidor: {http_err.response.text}")
-    except Exception as e:
-        print(f"❌ Ocurrió un error inesperado al obtener token: {e}")
+    if cantidad_huerfanos == 0:
+        print("\n✅ ¡INTEGRIDAD CORRECTA! Todas las cabeceras tienen al menos una línea.")
+    else:
+        print(f"\n⚠️ ALERTA: Se encontraron {cantidad_huerfanos} cabeceras SIN líneas (Huérfanas).")
 
-    return None
+        # 4. Crear un DataFrame con los resultados y guardar
+        df_resultado = pd.DataFrame({
+            'cui_huerfano': list(cuis_huerfanos)
+        })
 
+        # Opcional: Traer el nombre del archivo original si está en el header
+        if 'filename' in df_header.columns:
+            # Hacemos merge para saber qué archivo XML causó el problema
+            df_resultado = df_resultado.merge(
+                df_header[['cui', 'filename']],
+                left_on='cui_huerfano',
+                right_on='cui',
+                how='left'
+            ).drop(columns=['cui'])
 
-def exportar_propuesta_sire(token: str, per_tributario: str):
-    """
-    Realiza la consulta GET de ejemplo al endpoint de SIRE.
-    """
-    # 1. Construir la URL completa del endpoint
-    url_completa = f"{SIRE_API_URL}/{per_tributario}/exportacioncomprobantepropuesta?codTipoArchivo=0&codOrigenEnvio=2"
-    print(f"Realizando consulta a: {url_completa}")
-
-    # 2. Preparar la cabecera de autorización
-    headers = {
-        'Authorization': f'Bearer {token}'
-    }
-
-    try:
-        response = requests.get(url_completa, headers=headers, timeout=10)
-        response.raise_for_status()
-
-        # 3. Si todo sale bien, muestra los datos
-        data = response.json()
-        print("✅ Consulta exitosa:")
-        print(data)
-        # Deberías ver algo como: {'numTicket': '...'}
-        return data
-
-    except requests.exceptions.HTTPError as http_err:
-        print(f"❌ Error HTTP al consultar API: {http_err}")
+        archivo_salida = os.path.join(ruta_salida, 'reporte_cuis_sin_lineas.csv')
+        df_resultado.to_csv(archivo_salida, index=False)
+        print(f"📂 Reporte guardado en: {archivo_salida}")
+        print("   Revisa estos XMLs, probablemente el parser de ítems falló en ellos.")
 
 
-        print(f"Respuesta del servidor: {http_err.response.text}")
-        return None
-    except Exception as e:
-        print(f"❌ Ocurrió un error inesperado al consultar API: {e}")
-        return None
-def consulta_estado_ticket(token: str, perIni: str, perFin: str, page: int, perPage: int, numTicket: str):
-    """
-    Consulta el estado de un ticket en el API de SIRE.
-    """
-    # 1. Construir la URL completa del endpoint
-    url_completa = f"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/gestionprocesosmasivos/web/masivo/consultaestadotickets?perIni={perIni}&perFin={perFin}&page={page}&perPage={perPage}&numTicket={numTicket}"
-    print(f"Consultando estado de ticket: {url_completa}")
-
-    # 2. Preparar la cabecera de autorización
-    headers = {
-        'Authorization': f'Bearer {token}'
-    }
-
-    try:
-        response = requests.get(url_completa, headers=headers, timeout=10)
-        response.raise_for_status()
-
-        # 3. Si todo sale bien, muestra los datos
-        data = response.json()
-        print("✅ Consulta de estado de ticket exitosa:")
-        print(data)
-        return data
-
-    except requests.exceptions.HTTPError as http_err:
-        print(f"❌ Error HTTP al consultar estado de ticket: {http_err}")
-        print(f"Respuesta del servidor: {http_err.response.text}")
-    except Exception as e:
-        print(f"❌ Ocurrió un error inesperado al consultar estado de ticket: {e}")
-
-    return None
-
-def descargar_archivo(token: str, nomArchivoReporte: str, codTipoArchivoReporte: str, codLibro: str, perTributario: str, codProceso: str, numTicket: str):
-    """
-    Descarga un archivo de reporte desde el API de SIRE.
-    """
-    # 1. Construir la URL completa del endpoint
-    url_completa = f"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/gestionprocesosmasivos/web/masivo/archivoreporte?nomArchivoReporte={nomArchivoReporte}&codTipoArchivoReporte={codTipoArchivoReporte}&codLibro={codLibro}&perTributario={perTributario}&codProceso={codProceso}&numTicket={numTicket}"
-    print(f"Descargando archivo: {url_completa}")
-
-    # 2. Preparar la cabecera de autorización
-    headers = {
-        'Authorization': f'Bearer {token}'
-    }
-
-    try:
-        response = requests.get(url_completa, headers=headers, timeout=10)
-        response.raise_for_status()
-
-        # 3. Guardar el archivo descargado
-        with open(nomArchivoReporte, 'wb') as f:
-            f.write(response.content)
-        print(f"✅ Archivo descargado exitosamente: {nomArchivoReporte}")
-
-    except requests.exceptions.HTTPError as http_err:
-        print(f"❌ Error HTTP al descargar archivo: {http_err}")
-        print(f"Respuesta del servidor: {http_err.response.text}")
-    except Exception as e:
-        print(f"❌ Ocurrió un error inesperado al descargar archivo: {e}")
-
-
-
-
-
-# --- Flujo Principal de Ejecución ---
+# --- EJECUCIÓN ---
 if __name__ == "__main__":
-    if not all([os.getenv('SUNAT_CLIENT_ID'), os.getenv('SUNAT_CLIENT_SECRET'), os.getenv('SUNAT_RUC'), os.getenv('SUNAT_SOL_USER'), os.getenv('SUNAT_SOL_PASS')]):
-        print("Error fatal: Faltan una o más variables de entorno (.env).")
-        sys.exit(1)
+    # Ajusta estas rutas a donde generaste tus reportes
+    CARPETA_OUTPUT = r"D:\parser_sunat\output"
 
-    token = get_sunat_access_token()
-    if not token:
-        print("No se pudo obtener el token de acceso.")
-        sys.exit(1)
+    # Busca los archivos más recientes o pon el nombre exacto
+    FILE_HEADER = os.path.join(CARPETA_OUTPUT, "resultados_header_20251214_184628.csv")  # Pon el nombre exacto generado
+    FILE_LINES = os.path.join(CARPETA_OUTPUT, "resultados_lines_20251214_184628.csv")  # Pon el nombre exacto generado
 
-    per_tributario = "202509"  # Período tributario a consultar
-    numTicket = 20250300000023
+    auditar_integridad(FILE_HEADER, FILE_LINES, CARPETA_OUTPUT)
 
-    # Ejecutar servicios según flags
-    if RUN_EXPORT_PROPOSAL:
-        print("Ejecutando: Exportar Propuesta")
-        data = exportar_propuesta_sire(token, per_tributario)
-        if data and isinstance(data, dict) and 'numTicket' in data:
-            numTicket = data['numTicket']
-            print(f"NumTicket obtenido: {numTicket}")
-        else:
-            print("No se pudo obtener numTicket de la respuesta de la propuesta.")
-
-    if RUN_QUERY_STATUS and numTicket:
-        print("Ejecutando: Consulta Estado de Ticket")
-        consulta_estado_ticket(token, per_tributario, per_tributario, 1, 20, numTicket)
-
-    if RUN_DOWNLOAD_FILE:
-        print("Ejecutando: Descargar Archivo")
-        if NOM_ARCHIVO_REPORTE and COD_TIPO_ARCHIVO_REPORTE and COD_LIBRO and numTicket:
-            descargar_archivo(token, NOM_ARCHIVO_REPORTE, COD_TIPO_ARCHIVO_REPORTE, COD_LIBRO, per_tributario, "10", numTicket)
-        else:
-            print("Parámetros de descarga no configurados o numTicket no disponible.")
 
 """
 RETIRAR LOS XML QUE YA ESTAN ANALIZADOS Y SUBIDOS A LA BASE DE DATOS
