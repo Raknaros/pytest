@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Helvetica', sans-serif; color: #333; margin: 40px; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #002E6D; padding-bottom: 20px; }
+        .logo { color: #002E6D; font-size: 24px; font-weight: bold; }
+        .info-cliente { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th { background-color: #002E6D; color: white; padding: 10px; text-align: left; }
+        td { border-bottom: 1px solid #ddd; padding: 10px; }
+        .total { text-align: right; margin-top: 20px; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">LIBELAW <br><small style="font-size: 12px;">Estudio Contable</small></div>
+        <div style="text-align: right;">
+            <strong>Cotización N° {{ nro_cotizacion }}</strong><br>
+            Fecha: {{ fecha }}
+        </div>
+    </div>
+
+    <div class="info-cliente">
+        <strong>Para:</strong> {{ cliente }}<br>
+        <strong>RUC:</strong> {{ ruc }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Descripción del Servicio</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for servicio in servicios %}
+            <tr>
+                <td>{{ servicio.descripcion }}</td>
+                <td>S/ {{ "{:,.2f}".format(servicio.monto) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        Total Inversión Mensual: S/ {{ "{:,.2f}".format(total) }}
+    </div>
+</body>
+</html>
