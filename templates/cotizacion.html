@@ -2,16 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <title>Cotización Libelaw</title>
+    <title>Proforma THB</title>
     <style>
         .invoice-box {
             max-width: 800px;
             margin: auto;
             padding: 30px;
             border: 1px solid #eee;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-            font-size: 16px;
-            line-height: 24px;
+            font-size: 14px;
+            line-height: 20px;
             font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
             color: #555;
         }
@@ -20,67 +19,87 @@
             width: 100%;
             line-height: inherit;
             text-align: left;
+            border-collapse: collapse;
         }
 
         .invoice-box table td {
-            padding: 5px;
+            padding: 8px;
             vertical-align: top;
         }
 
-        .invoice-box table tr td:nth-child(2) {
-            text-align: right;
-        }
-
-        .invoice-box table tr.top table td {
-            padding-bottom: 20px;
-        }
+        /* Alineación de columnas */
+        .text-right { text-align: right !important; }
+        .text-center { text-align: center !important; }
 
         .invoice-box table tr.top table td.title {
-            font-size: 45px;
-            line-height: 45px;
-            color: #002E6D; /* Azul Libelaw */
+            font-size: 40px;
+            line-height: 40px;
+            color: #002E6D;
         }
 
         .invoice-box table tr.information table td {
-            padding-bottom: 40px;
+            padding-bottom: 30px;
         }
 
         .invoice-box table tr.heading td {
-            background: #002E6D; /* Azul Libelaw */
+            background: #002E6D;
             border-bottom: 1px solid #ddd;
             font-weight: bold;
             color: white;
-        }
-
-        .invoice-box table tr.details td {
-            padding-bottom: 20px;
         }
 
         .invoice-box table tr.item td {
             border-bottom: 1px solid #eee;
         }
 
-        .invoice-box table tr.item.last td {
-            border-bottom: none;
+        /* Sección de totales y observaciones */
+        .footer-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
         }
 
-        .invoice-box table tr.total td:nth-child(2) {
-            border-top: 2px solid #002E6D;
+        .observations-box {
+            width: 55%;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .totals-box {
+            width: 35%;
+        }
+
+        .totals-box table tr td:nth-child(2) {
+            text-align: right;
             font-weight: bold;
         }
 
-        /* Estilo para WhatsApp/Móvil */
-        @media only screen and (max-width: 600px) {
-            .invoice-box table tr.top table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
-            .invoice-box table tr.information table td {
-                width: 100%;
-                display: block;
-                text-align: center;
-            }
+        .total-row {
+            background: #eee;
+            font-size: 16px;
+        }
+        .bank-info {
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 2px solid #002E6D;
+        font-size: 11px;
+        color: #444;
+        }
+        .bank-grid {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        }
+        .bank-item {
+        width: 48%;
+        }
+        .bank-name {
+        font-weight: bold;
+        color: #002E6D;
+        text-transform: uppercase;
         }
     </style>
 </head>
@@ -89,16 +108,15 @@
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
             <tr class="top">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
                             <td class="title">
-                                <img src="https://tu-dominio.com/logo.png" style="width: 100%; max-width: 150px" />
+                                <img src="{{ logo_base64 }}" style="width: 100%; max-width: 180px" />
                             </td>
                             <td>
-                                Cotización #: {{ nro_cotizacion }}<br />
-                                Creado: {{ fecha }}<br />
-                                Vence: {{ fecha_vencimiento }}
+                                Cotización # {{ nro_cotizacion }}<br />
+                                Fecha: {{ fecha }}<br />
                             </td>
                         </tr>
                     </table>
@@ -106,18 +124,18 @@
             </tr>
 
             <tr class="information">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
                             <td>
-                                <strong>Libelaw S.A.C.</strong><br />
-                                RUC: 20XXXXXXXXX<br />
-                                Lima, Perú
+                                Cal. Monte Alamo Mz T-4 Lt 13 Dpto. 201 Urb. Surco<br />
+                                Surco, Lima<br />
+                                Correo: raulherreraramos55@gmail.com<br />
+                                Telefono: 952194813
                             </td>
                             <td>
-                                <strong>{{ cliente }}</strong><br />
+                                CLIENTE: {{ cliente }}<br />
                                 RUC: {{ ruc }}<br />
-                                {{ contacto_email }}
                             </td>
                         </tr>
                     </table>
@@ -125,22 +143,64 @@
             </tr>
 
             <tr class="heading">
-                <td>Servicio</td>
-                <td>Inversión</td>
+                <td width="50%">Producto</td>
+                <td class="text-center">Cant.</td>
+                <td class="text-right">Precio Unit.</td>
+                <td class="text-right">Total</td>
             </tr>
 
-            {% for servicio in servicios %}
-            <tr class="item {% if loop.last %}last{% endif %}">
-                <td>{{ servicio.descripcion }}</td>
-                <td>S/ {{ "{:,.2f}".format(servicio.monto) }}</td>
+            {% for item in servicios %}
+            <tr class="item">
+                <td>{{ item.descripcion }}</td>
+                <td class="text-center">{{ item.cantidad }}</td>
+                <td class="text-right">S/ {{ "{:,.2f}".format(item.precio) }}</td>
+                <td class="text-right">S/ {{ "{:,.2f}".format(item.total_linea) }}</td>
             </tr>
             {% endfor %}
-
-            <tr class="total">
-                <td></td>
-                <td>Total Mensual: S/ {{ "{:,.2f}".format(total) }}</td>
-            </tr>
         </table>
+        <div class="footer-container">
+            <div class="observations-box">
+                <strong>Observaciones:</strong><br>
+                {{ observaciones if observaciones else 'Sin observaciones adicionales.' }}
+            </div>
+
+            <div class="totals-box">
+                <table>
+                    <tr>
+                        <td><strong>SUBTOTAL:</strong></td>
+                        <td>S/ {{ "{:,.2f}".format(subtotal) }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IGV (18%):</strong></td>
+                        <td>S/ {{ "{:,.2f}".format(igv) }}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>TOTAL:</strong></td>
+                        <td>S/ {{ "{:,.2f}".format(total) }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="bank-info">
+            <strong>INFORMACIÓN DE PAGO:</strong>
+            <div class="bank-grid">
+                <div class="bank-item">
+                    <span class="bank-name">BCP Soles</span><br>
+                    Nro. Cuenta: {{ cuenta_bcp }}<br>
+                    CCI: {{ cci_bcp }}<br>
+                    Titular: {{ titular }}
+                </div>
+                <div class="bank-item">
+                    <span class="bank-name">Interbank Soles</span><br>
+                    Nro. Cuenta: {{ cuenta_interbank }}<br>
+                    CCI: {{ cci_interbank }}<br>
+                    Titular: {{ titular }}
+                </div>
+            </div>
+            <p style="margin-top: 10px; font-style: italic;">
+                * Por favor, enviar el comprobante de transferencia al correo raulherreraramos55@gmail.com
+            </p>
+        </div>
     </div>
 </body>
 </html>
