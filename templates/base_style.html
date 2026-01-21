@@ -1,0 +1,33 @@
+<style>
+    body {
+        font-family: {{ estilo.fuente | default("'Helvetica Neue', Helvetica, Arial, sans-serif") }};
+        background-image: url('{{ estilo.textura_fondo }}');
+        background-repeat: repeat;
+        color: #555;
+        margin: 0;
+        padding: 0;
+    }
+    .invoice-box {
+        max-width: 800px;
+        margin: auto;
+        padding: 30px;
+        border: 1px solid #eee;
+        background-color: white;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th {
+        background-color: {{ estilo.color_primario }};
+        color: white;
+        padding: 10px;
+        text-align: left;
+    }
+    td { border-bottom: 1px solid #ddd; padding: 10px; vertical-align: top; }
+    .text-right { text-align: right; }
+    .total {
+        text-align: right;
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: {{ estilo.color_primario }};
+    }
+</style>
