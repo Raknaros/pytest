@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Cotización - {{ alias_proveedor }}</title>
+    {% include 'cotizacion_base_style.html' %}
+
+    <style>
+        /* Estilos específicos de estructura para esta plantilla */
+        .header-table { margin-bottom: 20px; }
+        .logo-img {
+            width: 100%; /* Ocupa todo el ancho disponible hasta el tope */
+            max-width: 1000px; /* Este será tu nuevo límite, juega con este número */
+            height: auto; /* Esto es clave para que no se distorsione */
+            display: block; /* Ayuda a centrarla si lo necesitas */
+        }
+
+        .footer-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .observations-box {
+            width: 55%;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+        .totals-box { width: 35%; }
+        .totals-box table tr td:nth-child(2) { text-align: right; }
+
+        .total-row {
+            background-color: {{ estilo.color_primario }};
+            color: white;
+            font-size: 16px;
+        }
+
+        .bank-info {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 2px solid {{ estilo.color_primario }};
+            font-size: 11px;
+            color: #444;
+        }
+        .bank-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .bank-item { width: 48%; }
+        .bank-name {
+            font-weight: bold;
+            color: {{ estilo.color_primario }};
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <table class="header-table">
+            <tr class="top">
+                <td colspan="4">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="{{ logo_base64 }}" class="logo-img" />
+                            </td>
+                            <td class="text-right">
+                                <strong style="color: {{ estilo.color_primario }}; font-size: 26px; line-height: 1.2;">Proforma # {{ nro_cotizacion }}</strong><br />
+                                Fecha: {{ fecha }}<br />
+                                Vencimiento: {{ fecha_vencimiento }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="4">
+                    <table>
+                        <tr>
+                            <td>
+                                Av. Brasil Nro. 727 Dpto. 902 Urb. Breña<br />
+                                Jesus Maria, Lima<br />
+                                Tel: 952194813
+                            </td>
+                            <td class="text-right">
+                                <strong>CLIENTE:</strong> {{ cliente }}<br />
+                                <strong>RUC:</strong> {{ ruc }}<br />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <th width="50%">Producto / Servicio</th>
+                <th class="text-center">Cant.</th>
+                <th class="text-right">Precio Unit.</th>
+                <th class="text-right">Total</th>
+            </tr>
+
+            {% for item in servicios %}
+            <tr class="item">
+                <td>{{ item.descripcion }}</td>
+                <td class="text-center">{{ item.cantidad }}</td>
+                <td class="text-right">S/ {{ "{:,.2f}".format(item.precio) }}</td>
+                <td class="text-right">S/ {{ "{:,.2f}".format(item.total_linea) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="footer-container">
+            <div class="observations-box">
+                <strong>Observaciones:</strong><br>
+                {{ observaciones if observaciones else 'Sin observaciones adicionales.' }}
+            </div>
+
+            <div class="totals-box">
+                <table>
+                    <tr>
+                        <td>SUBTOTAL:</td>
+                        <td>S/ {{ "{:,.2f}".format(subtotal) }}</td>
+                    </tr>
+                    <tr>
+                        <td>IGV (18%):</td>
+                        <td>S/ {{ "{:,.2f}".format(igv) }}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>TOTAL:</strong></td>
+                        <td><strong>S/ {{ "{:,.2f}".format(total) }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="bank-info">
+            <strong>INFORMACIÓN DE PAGO:</strong>
+            <div class="bank-grid">
+                <div class="bank-item">
+                    <span class="bank-name">{{ banco_nombre }}</span><br>
+                    Nro. Cuenta: {{ banco_cuenta }}<br>
+                    CCI: {{ banco_cci }}<br>
+                    Titular: {{ banco_titular }}
+                </div>
+
+                {% if banco_nombre_2 %}
+                <div class="bank-item">
+                    <span class="bank-name">{{ banco_nombre_2 }}</span><br>
+                    Nro. Cuenta: {{ banco_cuenta_2 }}<br>
+                    CCI: {{ banco_cci_2 }}<br>
+                    Titular: {{ banco_titular }}
+                </div>
+                {% endif %}
+            </div>
+            <p style="margin-top: 10px; font-style: italic; font-size: 10px;">
+                * Por favor, enviar el comprobante de transferencia al correo correspondiente para procesar su orden.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@ import requests
 import json
 
 # 1. Definir la URL y los Headers
-url = "https://db-api.giumarchan.com/api/mysql/resumen-proveedores?periodo=202602"
+url = "https://db-api.giumarchan.com/api/acc/declaraciones?periodo=202602&ruc=20606283858"
 headers = {
     "X-API-Key": "Giu12FF8DB*"
 }

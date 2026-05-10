@@ -22,11 +22,11 @@ warehouse = create_engine(warehouse_url)
 salessystem_url = f"{os.getenv('DB_SALESSYSTEM_DIALECT')}://{os.getenv('DB_SALESSYSTEM_USER')}:{os.getenv('DB_SALESSYSTEM_PASSWORD')}@{os.getenv('DB_SALESSYSTEM_HOST')}:{os.getenv('DB_SALESSYSTEM_PORT')}/{os.getenv('DB_SALESSYSTEM_NAME')}"
 salessystem = create_engine(salessystem_url)
 
-ruta = 'C:/Users/Raknaros/Downloads/pdfpedidosoctubre/pdfpedidosnoviembre'
+ruta = 'C:/Users/Raknaros/Desktop/temporal/ABRIL/pdfs'
 
-periodo = "202512"
+periodo = "202604"
 
-directorio = ('C:/Users/Raknaros/Desktop/temporal/archivos_sunat')
+directorio = ('C:/Users/Raknaros/Desktop/temporal/ABRIL/pdfs')
 
 # Obtener lista de archivos PDF en el directorio
 archivos = [archivo for archivo in os.listdir(directorio) if archivo.endswith('.pdf')]
@@ -36,12 +36,19 @@ facturas_noanuladas = pd.read_sql(
     dtype={'proveedor': str, 'adquiriente': str, 'correlativo': str, 'numero_documento_referencia': str}, con=warehouse)
 
 
-facturas_noanuladas['guia'] = np.where(
-    (facturas_noanuladas['tipo_documento_referencia'] == '9') &
-    (facturas_noanuladas['numero_documento_referencia'].str[:4] == 'EG07'),
-    facturas_noanuladas['numero_documento_referencia'].astype(str).str.split('-', n=1).str[1].fillna('0').astype(str).str.replace('|', '', regex=False).astype(int),
-    None
-)
+# 1. Extraemos SOLO el correlativo numérico que está después de "EGXX -"
+# \w{2} acepta letras o números (como 07), \s* ignora espacios, y (\d+) captura los números.
+correlativo_eg = facturas_noanuladas['numero_documento_referencia'].str.extract(r'EG\w{2}\s*-\s*(\d+)', expand=False)
+
+# 2. Verificamos que el tipo 9 esté presente (soporta formatos como "9", "31|9", etc.)
+es_tipo_9 = facturas_noanuladas['tipo_documento_referencia'].astype(str).str.contains(r'(?:^|\|)9(?:\||$)', regex=True)
+
+# 3. Mantenemos el correlativo solo donde es_tipo_9 es True
+facturas_noanuladas['guia'] = correlativo_eg.where(es_tipo_9, np.nan)
+
+# 4. Convertimos a Int64 para quitar los ceros a la izquierda (ej: '0001342' -> 1342)
+# Luego lo pasamos a string y manejamos los nulos para que tu código posterior funcione perfecto.
+facturas_noanuladas['guia'] = facturas_noanuladas['guia'].astype('Int64').astype(str).replace('<NA>', 'None')
 
 proveedores = pd.read_sql("SELECT numero_documento AS proveedor, alias FROM proveedores", con=salessystem,
                           dtype_backend="pyarrow")
